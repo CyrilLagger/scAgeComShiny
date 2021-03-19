@@ -16,18 +16,17 @@ library(htmlwidgets)
 
 ## Global Data ####
 
-LRdb_curated <- copy(scDiffCom::LRI_mouse$LRI_curated)
-LRdb_curated[, SOURCE := gsub("SCT:SingleCellSignalR|SCT:CellPhoneDB|SCT:DLRP", "", SOURCE)]
-LRdb_curated[, SOURCE := gsub(";;", ";", SOURCE)]
-LRdb_curated[, SOURCE := sub(";$", "", SOURCE)]
-LRdb_curated[, SOURCE := sub("^;", "", SOURCE)]
+LRI_curated <- copy(scDiffCom::LRI_mouse$LRI_curated)
+LRI_curated[, SOURCE := gsub("SCT:SingleCellSignalR|SCT:CellPhoneDB|SCT:DLRP", "", SOURCE)]
+LRI_curated[, SOURCE := gsub(";;", ";", SOURCE)]
+LRI_curated[, SOURCE := sub(";$", "", SOURCE)]
+LRI_curated[, SOURCE := sub("^;", "", SOURCE)]
 
 DATASETS_COMBINED <- readRDS("data/scagecom_results_processed.rds")
-DATASETS_COMBINED <- lapply(DATASETS_COMBINED, function(i) i$dataset)
 DATASETS_COMBINED <- lapply(
   DATASETS_COMBINED,
   function(dataset) {
-    dt <- dataset@cci_detected
+    dt <- dataset@cci_table_detected
     dt[, LOG2FC_BASE := LOGFC*log2(exp(1))]
     dt[, LOG2FC_ID := {
       temp <- LOG2FC_BASE
@@ -59,7 +58,7 @@ DATASETS_COMBINED <- lapply(
           LOG2FC_BASE
         )
       )}]
-    dataset@cci_detected <- dt
+    dataset@cci_table_detected <- dt
     return(dataset)
   }
 )
@@ -73,7 +72,7 @@ names(DATASETS_COMBINED) <- c(
 ABBR <- lapply(
   DATASETS_COMBINED,
   function(dataset) {
-    dt <- unique(dataset@cci_detected[, c("EMITTER_CELLTYPE", "EMITTER_CELL_ABR")])
+    dt <- unique(dataset@cci_table_detected[, c("EMITTER_CELLTYPE", "EMITTER_CELL_ABR")])
     setnames(
       dt,
       old = c("EMITTER_CELLTYPE", "EMITTER_CELL_ABR"),
@@ -88,7 +87,7 @@ LRI_REGULATION_SUMMARY <- rbindlist(
   lapply(
     DATASETS_COMBINED,
     function(i) {
-      i@cci_detected[, c("ID", "ER_CELLTYPES", "LR_GENES", "ER_CELLFAMILIES", "REGULATION")]
+      i@cci_table_detected[, c("ID", "ER_CELLTYPES", "LRI", "ER_CELLFAMILIES", "REGULATION")]
     }
   ),
   use.names = TRUE,
@@ -99,17 +98,76 @@ LRI_ORA_SUMMARY <- rbindlist(
   lapply(
     DATASETS_COMBINED,
     function(i) {
-      i@ora_default$LR_GENES
+      i@ora_table$LRI
     }
   ),
   use.names = TRUE,
   idcol = "DATASET"
 )
 
+TISSUE_COUNTS_SUMMARY <- readRDS("data/tissue_cci_counts.rds")
+TISSUE_COUNTS_SUMMARY[
+  data.table(
+    old_names = c(
+      "calico",
+      "droplet_female", "droplet_male",
+      "facs_female", "facs_male"
+    ),
+    new_names = c(
+      "Calico2019",
+      "TMS Droplet (female)", "TMS Droplet (male)",
+      "TMS FACS (female)", "TMS FACS (male)"
+    )
+  ),
+  on = "DATASET==old_names",
+  DATASET := i.new_names
+]
+
+
 ##
 
-CCI_SUMMARY <- readRDS("data/scagecom_summary.rds")
-names(CCI_SUMMARY) <- names(DATASETS_COMBINED)
+ORA_KEYWORD_SUMMARY <- readRDS("data/ora_keyword_summary.rds")
+ORA_KEYWORD_COUNTS <- ORA_KEYWORD_SUMMARY[
+  ,
+  .N,
+  by = c("TYPE", "REGULATION", "GENDER", "DATASET", "VALUE")
+]
+ORA_KEYWORD_COUNTS <- dcast.data.table(
+  ORA_KEYWORD_COUNTS,
+  TYPE + VALUE + REGULATION ~ DATASET + GENDER,
+  value.var = "N",
+  fill = 0
+)[,
+  c(
+    "TYPE", "VALUE", "REGULATION",
+    "either_either",
+    "facs_male", "facs_female",
+    "droplet_male", "droplet_female",
+    "calico_male")
+]
+setnames(
+  ORA_KEYWORD_COUNTS,
+  old = c("either_either",
+          "facs_male", "facs_female",
+          "droplet_male", "droplet_female",
+          "calico_male"),
+  new = c("Overall (union)",
+          "TMS FACS (male)", "TMS FACS (female)",
+          "TMS Droplet (male)", "TMS Droplet (female)",
+          "Calico2019")
+)
+name_conversion <- data.table(
+  old_names = c("LRI", "GO_TERMS", "KEGG_PWS", "ER_CELLFAMILIES"),
+  new_names = c("LRI", "GO Terms", "KEGG Pathways", "Cell-Type Families")
+)
+ORA_KEYWORD_COUNTS[
+  name_conversion,
+  on = "TYPE==old_names",
+  TYPE := i.new_names
+]
+
+#CCI_SUMMARY <- readRDS("data/scagecom_summary.rds")
+#names(CCI_SUMMARY) <- names(DATASETS_COMBINED)
 
 ## Global functions ####
 
@@ -137,7 +195,7 @@ show_DT <- function(
     caption = tags$caption(style = 'caption-side: top; text-align: center; color:black; font-size:150% ;',table_title),
     rownames = rownames,
     extensions = c("Buttons")
-  ) 
+  )
   if(!is.null(cols_numeric)) {
     res <- DT::formatSignif(
       table = res,
@@ -168,7 +226,7 @@ show_volcano <- function(
     geom_vline(xintercept = -log2(1.5)) +
     xlab(expression(paste(Log[2], "FC"))) +
     ylab(expression(paste(-Log[10], " ", p[BH]))) +
-    xlim(xlims) + ylim(ylims) + 
+    xlim(xlims) + ylim(ylims) +
     ggtitle("Volcano Plot of detected CCI (interactive)") +
     theme(plot.title = element_text(hjust = 0.5)) +
     theme(text=element_text(size=20)) #+
@@ -188,7 +246,7 @@ show_scores <- function(
       y = `Score Old`,
       color = `Age Regulation`
     )
-  ) + 
+  ) +
     geom_point() +
     scale_color_manual(values = c(
       "UP" = "red", "DOWN" = "blue",
@@ -218,7 +276,7 @@ show_LRIFC <- function(
       y = LOG2FC_R,
       color = `Age Regulation`
     )
-  ) + 
+  ) +
     geom_point() +
     scale_color_manual(values = c(
       "UP" = "red", "DOWN" = "blue",
@@ -233,5 +291,64 @@ show_LRIFC <- function(
     theme(plot.title = element_text(hjust = 0.5)) +
     theme(text=element_text(size=20))
   #theme(legend.title = element_blank())
+  return(p)
+}
+
+get_plot_keyword_tissue_vs_dataset <- function(
+  value
+) {
+  dt <- dcast.data.table(
+    ORA_KEYWORD_SUMMARY[
+      VALUE == value &
+        GENDER %in% c("male", "female") &
+        DATASET %in% c("facs", "droplet", "calico")],
+    ID ~ DATASET + GENDER,
+    value.var = "REGULATION",
+    fun.aggregate = paste0,
+    fill = "NOT_OR",
+    collapse = ":"
+  )
+  dt <- melt.data.table(
+    dt,
+    id.vars = "ID"
+  )
+  dt[data.table(
+    old_values = c(
+      "UP", "DOWN", "FLAT",
+      "UP:DOWN", "DOWN:UP",
+      "UP:FLAT", "FLAT:UP",
+      "DOWN:FLAT", "FLAT:DOWN",
+      "NOT_OR"
+    ),
+    new_values = c(
+      "UP", "DOWN", "FLAT",
+      "UP:DOWN", "UP:DOWN",
+      "UP", "UP",
+      "DOWN", "DOWN",
+      "NOT_OR"
+    )
+  ),
+  on = "value==old_values",
+  value := i.new_values
+  ]
+  p <- ggplot(dt, aes(variable, ID)) +
+    geom_tile(aes(
+      fill = value,
+      width = 0.9,
+      height = 0.9),
+      colour = "black") +
+    scale_fill_manual(values = c(
+      "UP" = "red",
+      "DOWN" = "blue",
+      "FLAT" = "green",
+      "UP:DOWN" = "yellow",
+      "NOT_OR" = "gray")) +
+    ggtitle(paste0("Over-representation of '", value, "'")) +
+    scale_y_discrete(limits = sort(unique(dt$ID), decreasing = TRUE)) +
+    theme(plot.title = element_text(hjust = 0.5)) +
+    theme(text=element_text(size = 20)) +
+    theme(axis.text=element_text(size = 18)) +
+    xlab("Dataset") +
+    ylab("Tissue")
   return(p)
 }

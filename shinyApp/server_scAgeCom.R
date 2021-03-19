@@ -35,8 +35,8 @@ server_scAgeCom <- function(
       c(ALL_LRI_LABEL,
         sort(
           unique(
-            DATASETS_COMBINED[[input$TSA_CCI_DATASET_CHOICE]]@cci_detected[
-              ID == input$TSA_TISSUE_CHOICE][["LR_GENES"]]))
+            DATASETS_COMBINED[[input$TSA_CCI_DATASET_CHOICE]]@cci_table_detected[
+              ID == input$TSA_TISSUE_CHOICE][["LRI"]]))
       )
     updateSelectizeInput(
       session = session,
@@ -72,56 +72,68 @@ server_scAgeCom <- function(
   output$TSA_ORA_NETWORK_PLOT <- plot_TSA_ORA_network(input)
   ## TCA overall ####
   source("utils_combined_analysis.R", local = TRUE)
-  output$TCA_DATASET_CHOICE <- choose_TCA_dataset(input)
+  #output$TCA_DATASET_CHOICE <- choose_TCA_dataset(input)
   output$TCA_TITLE <- get_TCA_title(input)
-  output$TCA_OVERVIEW_TABLE <- get_TCA_overview_table(input)
+  #output$TCA_OVERVIEW_TABLE <- get_TCA_overview_table(input)
   ## TCA CCI sidebar ####
-  output$TCA_DOWNLOAD_TABLE <- download_TCA_table(input)
-  output$TCA_TISSUE_CHOICE <- choose_TCA_tissue(input)
+  #output$TCA_DOWNLOAD_TABLE <- download_TCA_table(input)
+  #output$TCA_TISSUE_CHOICE <- choose_TCA_tissue(input)
   #output$TCA_LRI_CHOICE <- choose_TCA_lri(input)
+  # observe({
+  #   req(input$TCA_DATASET_CHOICE)
+  #   ALL_LRI_LABEL = 'All LRI'
+  #   choices <-
+  #     c(ALL_LRI_LABEL,
+  #       sort(
+  #         unique(
+  #           DATASETS_COMBINED[[input$TCA_DATASET_CHOICE]]@cci_table_detected[["LRI"]]))
+  #     )
+  #   updateSelectizeInput(
+  #     session = session,
+  #     inputId = 'TCA_LRI_CHOICE',
+  #     choices = choices,
+  #     selected = ALL_LRI_LABEL,
+  #     options = list(
+  #       allowEmptyOption = TRUE,
+  #       placeholder = 'Type LRIs',
+  #       maxOptions = length(choices)
+  #     ),
+  #     server = TRUE
+  #   )
+  # })
+  ## TCA CCIs mainpanel ####
+  # output$TCA_CCI_DETAILS <- get_TCA_cci_details(input)
+  # output$TCA_CCI_TEXTOUTPUT <- get_TCA_cci_text(input)
+  # output$TCA_INTERACTION_TABLE <- get_TCA_interaction_table(input)
+  # output$TCA_VOLCANO_PLOT <- plot_TCA_VOLCANO(input)
+  # output$TCA_VOLCANO_TEXTOUTPUT <- get_TCA_VOLCANO_text(input)
+  # output$TCA_SCORES_PLOT <- plot_TCA_SCORES(input)
+  # output$TCA_SCORES_TEXTOUTPUT <- get_TCA_SCORES_text(input)
+  # output$TCA_LRIFC_PLOT <- plot_TCA_LRIFC(input)
+  # output$TCA_LRIFC_TEXTOUTPUT <- get_TCA_LRIFC_text(input)
+  ## TCA GLOBAL sidebar ####
+  ## TCA GLOBAL mainpanel ####
+  output$TCA_GLOBAL_DETAILS <- get_TCA_global_details(input)
+  output$TCA_GLOBAL_TABLE <- get_TCA_global_table(input)
+  #output$TCA_GLOBAL_ORA_PLOT <- plot_TCA_global_ora(input)
+  ## TCA KEYWORD sidebar ####
   observe({
-    req(input$TCA_DATASET_CHOICE)
-    ALL_LRI_LABEL = 'All LRI'
-    choices <-
-      c(ALL_LRI_LABEL,
-        sort(
-          unique(
-            DATASETS_COMBINED[[input$TCA_DATASET_CHOICE]]@cci_detected[["LR_GENES"]]))
-      )
+    req(input$TCA_KEYWORD_CATEGORY_CHOICE)
+    choices <- sort(unique(ORA_KEYWORD_COUNTS[
+      TYPE == input$TCA_KEYWORD_CATEGORY_CHOICE
+      ]$VALUE))
     updateSelectizeInput(
       session = session,
-      inputId = 'TCA_LRI_CHOICE',
+      "TCA_KEYWORD_VALUE_CHOICE",
       choices = choices,
-      selected = ALL_LRI_LABEL,
       options = list(
-        allowEmptyOption = TRUE,
-        placeholder = 'Type LRIs',
+        #placeholder = 'Type LRIs',
         maxOptions = length(choices)
       ),
       server = TRUE
     )
   })
-  ## TCA CCIs mainpanel ####
-  output$TCA_CCI_DETAILS <- get_TCA_cci_details(input)
-  output$TCA_CCI_TEXTOUTPUT <- get_TCA_cci_text(input)
-  output$TCA_INTERACTION_TABLE <- get_TCA_interaction_table(input)
-  output$TCA_VOLCANO_PLOT <- plot_TCA_VOLCANO(input)
-  output$TCA_VOLCANO_TEXTOUTPUT <- get_TCA_VOLCANO_text(input)
-  output$TCA_SCORES_PLOT <- plot_TCA_SCORES(input)
-  output$TCA_SCORES_TEXTOUTPUT <- get_TCA_SCORES_text(input)
-  output$TCA_LRIFC_PLOT <- plot_TCA_LRIFC(input)
-  output$TCA_LRIFC_TEXTOUTPUT <- get_TCA_LRIFC_text(input)
-  ## TCA GLOBAL sidebar ####
-  ## TCA GLOBAL mainpanel ####
-  output$TCA_GLOBAL_DETAILS <- get_TCA_global_details(input)
-  output$TCA_GLOBAL_TABLE <- get_TCA_global_table(input)
-  output$TCA_GLOBAL_ORA_PLOT <- plot_TCA_global_ora(input)
-  ## TCA LRI sidebar ####
-  output$TCA_LRI_SUMMARY_CHOICE <- choose_TCA_lri_summary(input)
-  ## TCA LRI mainpanel
-  output$TCA_LRI_SUMMARY <- get_TCA_lri_summary(input)
-  # source("utils_LRdb.R", local = TRUE)
-  # output$LRdb_TABLE <- show_LRdb_table(input)
-  # output$LRdb_UPSET_PLOT <- show_LRdb_upset(input)
+  ## TCA KEYWORD mainpanel
+  output$TCA_KEYWORD_SUMMARY <- get_TCA_keyword_summary(input)
 }
 

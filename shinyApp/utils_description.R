@@ -20,7 +20,7 @@ get_INTRO_OVERVIEW <- function(
         style = "width: 60%; margin:auto; font-size: 18px; text-align: justify;",
         tags$p("Add some image here."),
         tags$h2(
-          "Overview of the analysis", 
+          "Overview of the analysis",
           style = color_theme
         ),
         tags$p(
@@ -32,7 +32,7 @@ get_INTRO_OVERVIEW <- function(
           "Link to the future paper:..."
         ),
         tags$h3(
-          "Team and Acknowledgement", 
+          "Team and Acknowledgement",
           style = color_theme
         )
       )
@@ -49,7 +49,7 @@ get_INTRO_method_htlm <- function(
       tags$div(
         style = "width: 60%; margin:auto; font-size: 18px; text-align: justify;",
         tags$h3(
-          "Code - scDiffCom", 
+          "Code - scDiffCom",
           style = color_theme
         ),
         tags$p(
@@ -71,7 +71,7 @@ get_INTRO_method_htlm <- function(
       )
     }
   )
-  
+
 }
 
 get_INTRO_scrna_htlm <- function(
@@ -195,30 +195,30 @@ get_INTRO_lri_html <- function(
 
 get_INTRO_lri_table <- function(
   input
-) 
+)
 {
   DT::renderDataTable({
-    req(input$LRdb_DATABASE)
-    dt <- LRdb_curated[
+    req(input$LRI_DATABASE)
+    dt <- LRI_curated[
       apply(
         sapply(
-          input$LRdb_DATABASE,
+          input$LRI_DATABASE,
           function(i) {
-            grepl(i, LRdb_curated$DATABASE)
+            grepl(i, LRI_curated$DATABASE)
           }
         ),
         MARGIN = 1,
         any
       )
     ]
-    cols_to_show_LRdb <- c(
+    cols_to_show_LRI <- c(
       "LIGAND_1", "LIGAND_2",
       "RECEPTOR_1", "RECEPTOR_2", "RECEPTOR_3",
       "DATABASE", "SOURCE"
     )
-    dt <- dt[, cols_to_show_LRdb, with = FALSE]
-    setcolorder(dt, cols_to_show_LRdb)
-    options_LRdb <- list(
+    dt <- dt[, cols_to_show_LRI, with = FALSE]
+    setcolorder(dt, cols_to_show_LRI)
+    options_LRI <- list(
       pageLength = 10,
       columnDefs = list(
         list(
@@ -233,10 +233,10 @@ get_INTRO_lri_table <- function(
     )
     show_DT(
       data = dt,
-      cols_to_show = cols_to_show_LRdb,
+      cols_to_show = cols_to_show_LRI,
       cols_numeric = NULL,
       table_title = "Table of Ligand-Receptor Interactions",
-      options = options_LRdb
+      options = options_LRI
     )
   })
 }
@@ -246,27 +246,27 @@ plot_INTRO_lri_upset <- function(
 ) {
   renderPlot({
     temp <- "By Databases"
-    LRdb_sources <- c(
+    LRI_sources <- c(
       "FANTOM5", "HPMR", "HPRD", "PMID",
       "CellPhoneDB", "KEGG", "IUPHAR", "reactome",
       "cellsignal.com", "PPI"
     )
-    LRdb_DBS <- c(
+    LRI_DBS <- c(
       "CellChat", "CellPhoneDB", "CellTalkDB", "connectomeDB2020",
       "ICELLNET", "NicheNet", "SingleCellSignalR", "scTensor"
     )
-    dt <- LRdb_curated
+    dt <- LRI_curated
     dt[, COMPLEX := !is.na(LIGAND_2) | !is.na(RECEPTOR_2)]
-    dt[, c(LRdb_DBS) := lapply(LRdb_DBS, function(i) {
+    dt[, c(LRI_DBS) := lapply(LRI_DBS, function(i) {
       ifelse(grepl(i, DATABASE), TRUE, FALSE)
     })]
-    dt[, c(LRdb_sources) := lapply(LRdb_sources, function(i) {
+    dt[, c(LRI_sources) := lapply(LRI_sources, function(i) {
       ifelse(grepl(i, SOURCE), TRUE, FALSE)
     })]
     if(temp == "By Databases") {
       ComplexUpset::upset(
         as.data.frame(dt),
-        LRdb_DBS,
+        LRI_DBS,
         base_annotations = list(
           'Intersection size' = intersection_size(
             mapping = aes(fill = COMPLEX),
@@ -282,7 +282,7 @@ plot_INTRO_lri_upset <- function(
     } else if(temp == "By Sources") {
       ComplexUpset::upset(
         as.data.frame(dt),
-        LRdb_sources,
+        LRI_sources,
         base_annotations=list(
           'Intersection size'=intersection_size(
             counts=TRUE,

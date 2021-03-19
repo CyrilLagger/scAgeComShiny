@@ -8,7 +8,7 @@ choose_TSA_tissue <- function(
     choices <- sort(unique(unlist(lapply(
       DATASETS_COMBINED,
       function(dataset) {
-        dataset@cci_detected$ID
+        dataset@cci_table_detected$ID
       }
     ))))
     pickerInput(
@@ -39,21 +39,10 @@ get_TSA_overview_table <- function(
 ) {
   DT::renderDT({
     req(input$TSA_TISSUE_CHOICE)
-    dt <- rbindlist(
-      lapply(
-      CCI_SUMMARY,
-      function(dataset) {
-        dataset[["ID"]][ID == input$TSA_TISSUE_CHOICE ]
-      }
-    ),
-    idcol = "Dataset"
-    )
+    dt <- TISSUE_COUNTS_SUMMARY[ID == input$TSA_TISSUE_CHOICE ]
     req(dt)
     old_col_names <- c(
-      "Dataset",
-      "N_CELLTYPES", "N_CCI", "N_CCI_FLAT", "N_CCI_DOWN", "N_CCI_UP"#, 
-      #"N_CCI_NON_SIGNIFICANT_CHANGE"
-    )
+      "DATASET", "N_CELLTYPES", "TOTAL", "FLAT", "DOWN", "UP")
     new_col_names <- c(
       "Dataset",
       "Total cell-types", "Total CCI", "Flat CCI",
@@ -93,15 +82,7 @@ choose_TSA_dataset <- function(
 ) {
   renderUI({
     req(input$TSA_TISSUE_CHOICE)
-    dt <- rbindlist(
-      lapply(
-        CCI_SUMMARY,
-        function(dataset) {
-          dataset[["ID"]][ID == input$TSA_TISSUE_CHOICE ]
-        }
-      ),
-      idcol = "Dataset"
-    )
+    dt <- TISSUE_COUNTS_SUMMARY[ID == input$TSA_TISSUE_CHOICE ]
     if (choice == "CCI") {
       iid <- "TSA_CCI_DATASET_CHOICE"
     }
@@ -111,7 +92,7 @@ choose_TSA_dataset <- function(
     pickerInput(
       label = "Choose a dataset",
       inputId = iid,
-      choices = sort(unique(dt$Dataset)),
+      choices = sort(unique(dt$DATASET)),
       options = list(
         `actions-box` = TRUE
       ),
@@ -126,7 +107,7 @@ choose_TSA_emitter <- function(
 ) {
   renderUI({
     req(input$TSA_CCI_DATASET_CHOICE, input$TSA_TISSUE_CHOICE)
-    choices <- sort(unique(DATASETS_COMBINED[[input$TSA_CCI_DATASET_CHOICE]]@cci_detected[
+    choices <- sort(unique(DATASETS_COMBINED[[input$TSA_CCI_DATASET_CHOICE]]@cci_table_detected[
       ID == input$TSA_TISSUE_CHOICE
     ][["EMITTER_CELLTYPE"]]))
     pickerInput(
@@ -145,7 +126,7 @@ choose_TSA_receiver <- function(
 ) {
   renderUI({
     req(input$TSA_CCI_DATASET_CHOICE, input$TSA_TISSUE_CHOICE)
-    choices <- sort(unique(DATASETS_COMBINED[[input$TSA_CCI_DATASET_CHOICE]]@cci_detected[
+    choices <- sort(unique(DATASETS_COMBINED[[input$TSA_CCI_DATASET_CHOICE]]@cci_table_detected[
       ID == input$TSA_TISSUE_CHOICE
     ][["RECEIVER_CELLTYPE"]]))
     pickerInput(
@@ -159,38 +140,38 @@ choose_TSA_receiver <- function(
   })
 }
 
-choose_TSA_lri <- function(
-  input,
-  session
-) {
-  renderUI({
-    req(input$TSA_CCI_DATASET_CHOICE, input$TSA_TISSUE_CHOICE)
-    ALL_LRI_LABEL = 'All LRI'
-    choices <-
-      c(ALL_LRI_LABEL,
-        sort(unique(DATASETS_COMBINED[[input$TSA_CCI_DATASET_CHOICE]]@cci_detected[ID == input$TSA_TISSUE_CHOICE][["LR_GENES"]]))
-      )
-    # SelectizeInput(
-    #   inputId = 'TSA_LRI_CHOICE',
-    #   label = 'Filter by Ligand-Receptor Interactions',
-    #   choices = choices,
-    #   selected = ALL_LRI_LABEL,
-    #   multiple = TRUE,
-    #   options = list(allowEmptyOption = TRUE,
-    #                  placeholder = 'Type LRIs')
-    # )
-    updateSelectizeInput(
-      session = session,
-      "TSA_LRI_CHOICE",
-      #label = 'Filter by Ligand-Receptor Interactions',
-      choices = choices,
-      selected = ALL_LRI_LABEL,
-      options = list(allowEmptyOption = TRUE,
-                     placeholder = 'Type LRIs'),
-      server = TRUE
-    )
-  })
-}
+# choose_TSA_lri <- function(
+#   input,
+#   session
+# ) {
+#   renderUI({
+#     req(input$TSA_CCI_DATASET_CHOICE, input$TSA_TISSUE_CHOICE)
+#     ALL_LRI_LABEL = 'All LRI'
+#     choices <-
+#       c(ALL_LRI_LABEL,
+#         sort(unique(DATASETS_COMBINED[[input$TSA_CCI_DATASET_CHOICE]]@cci_table_detected[ID == input$TSA_TISSUE_CHOICE][["LRI"]]))
+#       )
+#     # SelectizeInput(
+#     #   inputId = 'TSA_LRI_CHOICE',
+#     #   label = 'Filter by Ligand-Receptor Interactions',
+#     #   choices = choices,
+#     #   selected = ALL_LRI_LABEL,
+#     #   multiple = TRUE,
+#     #   options = list(allowEmptyOption = TRUE,
+#     #                  placeholder = 'Type LRIs')
+#     # )
+#     updateSelectizeInput(
+#       session = session,
+#       "TSA_LRI_CHOICE",
+#       #label = 'Filter by Ligand-Receptor Interactions',
+#       choices = choices,
+#       selected = ALL_LRI_LABEL,
+#       options = list(allowEmptyOption = TRUE,
+#                      placeholder = 'Type LRIs'),
+#       server = TRUE
+#     )
+#   })
+# }
 
 get_TSA_slider_log2fc <- function(
   input
@@ -199,7 +180,7 @@ get_TSA_slider_log2fc <- function(
     req(input$TSA_CCI_DATASET_CHOICE, input$TSA_TISSUE_CHOICE)
     max_val <- ceiling(
       max(
-        DATASETS_COMBINED[[input$TSA_CCI_DATASET_CHOICE]]@cci_detected[
+        DATASETS_COMBINED[[input$TSA_CCI_DATASET_CHOICE]]@cci_table_detected[
           ID == input$TSA_TISSUE_CHOICE
         ][["LOG2FC_ID"]]
       )
@@ -220,7 +201,7 @@ download_TSA_table <- function(
 ) {
   dt <- reactive(
     {
-      dt <-  DATASETS_COMBINED[[input$TSA_CCI_DATASET_CHOICE]]@cci_detected[
+      dt <-  DATASETS_COMBINED[[input$TSA_CCI_DATASET_CHOICE]]@cci_table_detected[
         ID == input$TSA_TISSUE_CHOICE
       ]
       setorder(
@@ -232,7 +213,7 @@ download_TSA_table <- function(
                         "Age-Regulation", "Score Young", "Score Old")
       setnames(
         dt,
-        old = c("LR_GENES", "EMITTER_CELLTYPE", "RECEIVER_CELLTYPE", "LOG2FC_ID", "BH_P_VALUE_DE",
+        old = c("LRI", "EMITTER_CELLTYPE", "RECEIVER_CELLTYPE", "LOG2FC_ID", "BH_P_VALUE_DE",
                 "REGULATION", "CCI_SCORE_YOUNG", "CCI_SCORE_OLD"),
         new = cols_to_keep
       )
@@ -295,7 +276,7 @@ get_TSA_interaction_table <- function(
   DT::renderDT({
     req(input$TSA_CCI_DATASET_CHOICE, input$TSA_TISSUE_CHOICE, input$TSA_EMITTER_CHOICE, input$TSA_RECEIVER_CHOICE,
         input$TSA_LRI_CHOICE, input$TSA_SLIDER_PVALUE, input$TSA_SLIDER_LOG2FC)
-    dt <-  DATASETS_COMBINED[[input$TSA_CCI_DATASET_CHOICE]]@cci_detected[
+    dt <-  DATASETS_COMBINED[[input$TSA_CCI_DATASET_CHOICE]]@cci_table_detected[
       ID == input$TSA_TISSUE_CHOICE
     ]
     req(dt)
@@ -310,7 +291,7 @@ get_TSA_interaction_table <- function(
       dt <- dt[
         `EMITTER_CELLTYPE` %in% input$TSA_EMITTER_CHOICE &
           `RECEIVER_CELLTYPE` %in% input$TSA_RECEIVER_CHOICE &
-          `LR_GENES` %in% input$TSA_LRI_CHOICE &
+          `LRI` %in% input$TSA_LRI_CHOICE &
           `BH_P_VALUE_DE` <= input$TSA_SLIDER_PVALUE &
           abs(LOG2FC_ID) >= input$TSA_SLIDER_LOG2FC
       ]
@@ -322,7 +303,7 @@ get_TSA_interaction_table <- function(
     )
     setnames(
       dt,
-      old = c("LR_GENES", "EMITTER_CELLTYPE", "RECEIVER_CELLTYPE", "LOG2FC_ID", "BH_P_VALUE_DE",
+      old = c("LRI", "EMITTER_CELLTYPE", "RECEIVER_CELLTYPE", "LOG2FC_ID", "BH_P_VALUE_DE",
               "REGULATION", "CCI_SCORE_YOUNG", "CCI_SCORE_OLD"),
       new = c("LRI", "Emitter Cell Type", "Receiver Cell Type", "LOG2FC", "Adj. p-value",
               "Age-Regulation", "Score Young", "Score Old")
@@ -343,7 +324,7 @@ plot_TSA_VOLCANO <- function(
   renderPlot({
     req(input$TSA_CCI_DATASET_CHOICE, input$TSA_TISSUE_CHOICE, input$TSA_EMITTER_CHOICE, input$TSA_RECEIVER_CHOICE,
         input$TSA_LRI_CHOICE, input$TSA_SLIDER_PVALUE, input$TSA_SLIDER_LOG2FC)
-    dt <-  DATASETS_COMBINED[[input$TSA_CCI_DATASET_CHOICE]]@cci_detected[
+    dt <-  DATASETS_COMBINED[[input$TSA_CCI_DATASET_CHOICE]]@cci_table_detected[
       ID == input$TSA_TISSUE_CHOICE
     ]
     req(dt)
@@ -360,13 +341,13 @@ plot_TSA_VOLCANO <- function(
       dt <- dt[
         `EMITTER_CELLTYPE` %in% input$TSA_EMITTER_CHOICE &
           `RECEIVER_CELLTYPE` %in% input$TSA_RECEIVER_CHOICE &
-          `LR_GENES` %in% input$TSA_LRI_CHOICE &
+          `LRI` %in% input$TSA_LRI_CHOICE &
           `BH_P_VALUE_DE` <= input$TSA_SLIDER_PVALUE &
           abs(LOG2FC_ID) >= input$TSA_SLIDER_LOG2FC
       ]
     }
     dt[, minus_log10_pval := -log10(`BH_P_VALUE_DE` + 1E-4)]
-    dt <- dt[, c("LR_GENES", "EMITTER_CELLTYPE", "RECEIVER_CELLTYPE",  "LOG2FC_ID", "minus_log10_pval", "REGULATION")]
+    dt <- dt[, c("LRI", "EMITTER_CELLTYPE", "RECEIVER_CELLTYPE",  "LOG2FC_ID", "minus_log10_pval", "REGULATION")]
     setnames(
       dt,
       old = c("REGULATION", "LOG2FC_ID"),
@@ -386,7 +367,7 @@ get_TSA_VOLCANO_text <- function(
   renderPrint({
     req(input$TSA_CCI_DATASET_CHOICE, input$TSA_TISSUE_CHOICE, input$TSA_EMITTER_CHOICE, input$TSA_RECEIVER_CHOICE,
         input$TSA_LRI_CHOICE, input$TSA_SLIDER_PVALUE, input$TSA_SLIDER_LOG2FC)
-    dt <-  DATASETS_COMBINED[[input$TSA_CCI_DATASET_CHOICE]]@cci_detected[
+    dt <-  DATASETS_COMBINED[[input$TSA_CCI_DATASET_CHOICE]]@cci_table_detected[
       ID == input$TSA_TISSUE_CHOICE
     ]
     req(dt)
@@ -401,16 +382,16 @@ get_TSA_VOLCANO_text <- function(
       dt <- dt[
         `EMITTER_CELLTYPE` %in% input$TSA_EMITTER_CHOICE &
           `RECEIVER_CELLTYPE` %in% input$TSA_RECEIVER_CHOICE &
-          `LR_GENES` %in% input$TSA_LRI_CHOICE &
+          `LRI` %in% input$TSA_LRI_CHOICE &
           `BH_P_VALUE_DE` <= input$TSA_SLIDER_PVALUE &
           abs(LOG2FC_ID) >= input$TSA_SLIDER_LOG2FC
       ]
     }
     dt[, minus_log10_pval := -log10(`BH_P_VALUE_DE` + 1E-4)]
-    dt <- dt[, c("LR_GENES", "EMITTER_CELLTYPE", "RECEIVER_CELLTYPE", "REGULATION", "LOG2FC_ID", "minus_log10_pval")]
+    dt <- dt[, c("LRI", "EMITTER_CELLTYPE", "RECEIVER_CELLTYPE", "REGULATION", "LOG2FC_ID", "minus_log10_pval")]
     setnames(
-      dt, 
-      old = c("LR_GENES", "EMITTER_CELLTYPE", "RECEIVER_CELLTYPE", "REGULATION", "LOG2FC_ID"),
+      dt,
+      old = c("LRI", "EMITTER_CELLTYPE", "RECEIVER_CELLTYPE", "REGULATION", "LOG2FC_ID"),
       new = c("LRI", "Emitter Cell Type", "Receiver Cell Type", "Age Regulation", "LOG2FC")
     )
     brushedPoints(dt, input$TSA_VOLCANO_brush, xvar = "LOG2FC", yvar = "minus_log10_pval")
@@ -423,7 +404,7 @@ plot_TSA_SCORES <- function(
   renderPlot({
     req(input$TSA_CCI_DATASET_CHOICE, input$TSA_TISSUE_CHOICE, input$TSA_EMITTER_CHOICE, input$TSA_RECEIVER_CHOICE,
         input$TSA_LRI_CHOICE, input$TSA_SLIDER_PVALUE, input$TSA_SLIDER_LOG2FC)
-    dt <-  DATASETS_COMBINED[[input$TSA_CCI_DATASET_CHOICE]]@cci_detected[
+    dt <-  DATASETS_COMBINED[[input$TSA_CCI_DATASET_CHOICE]]@cci_table_detected[
       ID == input$TSA_TISSUE_CHOICE
     ]
     min_young <- min(dt[CCI_SCORE_YOUNG > 0][["CCI_SCORE_YOUNG"]])
@@ -444,12 +425,12 @@ plot_TSA_SCORES <- function(
       dt <- dt[
         `EMITTER_CELLTYPE` %in% input$TSA_EMITTER_CHOICE &
           `RECEIVER_CELLTYPE` %in% input$TSA_RECEIVER_CHOICE &
-          `LR_GENES` %in% input$TSA_LRI_CHOICE &
+          `LRI` %in% input$TSA_LRI_CHOICE &
           `BH_P_VALUE_DE` <= input$TSA_SLIDER_PVALUE &
           abs(LOG2FC_ID) >= input$TSA_SLIDER_LOG2FC
       ]
     }
-    dt <- dt[, c("LR_GENES", "EMITTER_CELLTYPE", "RECEIVER_CELLTYPE",  "LOG2FC_ID", "REGULATION", "CCI_SCORE_YOUNG", "CCI_SCORE_OLD")]
+    dt <- dt[, c("LRI", "EMITTER_CELLTYPE", "RECEIVER_CELLTYPE",  "LOG2FC_ID", "REGULATION", "CCI_SCORE_YOUNG", "CCI_SCORE_OLD")]
     setnames(
       dt,
       old = c("REGULATION", "CCI_SCORE_YOUNG", "CCI_SCORE_OLD", "LOG2FC_ID"),
@@ -465,7 +446,7 @@ get_TSA_SCORES_text <- function(
   renderPrint({
     req(input$TSA_CCI_DATASET_CHOICE, input$TSA_TISSUE_CHOICE, input$TSA_EMITTER_CHOICE, input$TSA_RECEIVER_CHOICE,
         input$TSA_LRI_CHOICE, input$TSA_SLIDER_PVALUE, input$TSA_SLIDER_LOG2FC)
-    dt <-  DATASETS_COMBINED[[input$TSA_CCI_DATASET_CHOICE]]@cci_detected[
+    dt <-  DATASETS_COMBINED[[input$TSA_CCI_DATASET_CHOICE]]@cci_table_detected[
       ID == input$TSA_TISSUE_CHOICE
     ]
     min_young <- min(dt[CCI_SCORE_YOUNG > 0][["CCI_SCORE_YOUNG"]])
@@ -484,15 +465,15 @@ get_TSA_SCORES_text <- function(
       dt <- dt[
         `EMITTER_CELLTYPE` %in% input$TSA_EMITTER_CHOICE &
           `RECEIVER_CELLTYPE` %in% input$TSA_RECEIVER_CHOICE &
-          `LR_GENES` %in% input$TSA_LRI_CHOICE &
+          `LRI` %in% input$TSA_LRI_CHOICE &
           `BH_P_VALUE_DE` <= input$TSA_SLIDER_PVALUE &
           abs(LOG2FC_ID) >= input$TSA_SLIDER_LOG2FC
       ]
     }
-    dt <- dt[, c("LR_GENES", "EMITTER_CELLTYPE", "RECEIVER_CELLTYPE",  "LOG2FC_ID", "REGULATION", "CCI_SCORE_YOUNG", "CCI_SCORE_OLD")]
+    dt <- dt[, c("LRI", "EMITTER_CELLTYPE", "RECEIVER_CELLTYPE",  "LOG2FC_ID", "REGULATION", "CCI_SCORE_YOUNG", "CCI_SCORE_OLD")]
     setnames(
-      dt, 
-      old = c("LR_GENES", "EMITTER_CELLTYPE", "RECEIVER_CELLTYPE", "REGULATION", "CCI_SCORE_YOUNG", "CCI_SCORE_OLD", "LOG2FC_ID"),
+      dt,
+      old = c("LRI", "EMITTER_CELLTYPE", "RECEIVER_CELLTYPE", "REGULATION", "CCI_SCORE_YOUNG", "CCI_SCORE_OLD", "LOG2FC_ID"),
       new = c("LRI", "Emitter Cell Type", "Receiver Cell Type", "Age Regulation", "Score Young", "Score Old", "LOG2FC")
     )
     brushedPoints(dt, input$TSA_SCORES_brush)
@@ -505,7 +486,7 @@ plot_TSA_LRIFC <- function(
   renderPlot({
     req(input$TSA_CCI_DATASET_CHOICE, input$TSA_TISSUE_CHOICE, input$TSA_EMITTER_CHOICE, input$TSA_RECEIVER_CHOICE,
         input$TSA_LRI_CHOICE, input$TSA_SLIDER_PVALUE, input$TSA_SLIDER_LOG2FC)
-    dt <-  DATASETS_COMBINED[[input$TSA_CCI_DATASET_CHOICE]]@cci_detected[
+    dt <-  DATASETS_COMBINED[[input$TSA_CCI_DATASET_CHOICE]]@cci_table_detected[
       ID == input$TSA_TISSUE_CHOICE
     ]
     dt[, LOG2FC_L := log2(
@@ -544,12 +525,12 @@ plot_TSA_LRIFC <- function(
       dt <- dt[
         `EMITTER_CELLTYPE` %in% input$TSA_EMITTER_CHOICE &
           `RECEIVER_CELLTYPE` %in% input$TSA_RECEIVER_CHOICE &
-          `LR_GENES` %in% input$TSA_LRI_CHOICE &
+          `LRI` %in% input$TSA_LRI_CHOICE &
           `BH_P_VALUE_DE` <= input$TSA_SLIDER_PVALUE &
           abs(LOG2FC_ID) >= input$TSA_SLIDER_LOG2FC
       ]
     }
-    dt <- dt[, c("LR_GENES", "EMITTER_CELLTYPE", "RECEIVER_CELLTYPE",  "LOG2FC_ID", "REGULATION", "LOG2FC_L", "LOG2FC_R")]
+    dt <- dt[, c("LRI", "EMITTER_CELLTYPE", "RECEIVER_CELLTYPE",  "LOG2FC_ID", "REGULATION", "LOG2FC_L", "LOG2FC_R")]
     setnames(
       dt,
       old = c("REGULATION", "LOG2FC_ID"),
@@ -565,7 +546,7 @@ get_TSA_LRIFC_text <- function(
   renderPrint({
     req(input$TSA_CCI_DATASET_CHOICE, input$TSA_TISSUE_CHOICE, input$TSA_EMITTER_CHOICE, input$TSA_RECEIVER_CHOICE,
         input$TSA_LRI_CHOICE, input$TSA_SLIDER_PVALUE, input$TSA_SLIDER_LOG2FC)
-    dt <-  DATASETS_COMBINED[[input$TSA_CCI_DATASET_CHOICE]]@cci_detected[
+    dt <-  DATASETS_COMBINED[[input$TSA_CCI_DATASET_CHOICE]]@cci_table_detected[
       ID == input$TSA_TISSUE_CHOICE
     ]
     dt[, LOG2FC_L := log2(
@@ -603,15 +584,15 @@ get_TSA_LRIFC_text <- function(
       dt <- dt[
         `EMITTER_CELLTYPE` %in% input$TSA_EMITTER_CHOICE &
           `RECEIVER_CELLTYPE` %in% input$TSA_RECEIVER_CHOICE &
-          `LR_GENES` %in% input$TSA_LRI_CHOICE &
+          `LRI` %in% input$TSA_LRI_CHOICE &
           `BH_P_VALUE_DE` <= input$TSA_SLIDER_PVALUE &
           abs(LOG2FC_ID) >= input$TSA_SLIDER_LOG2FC
       ]
     }
-    dt <- dt[, c("LR_GENES", "EMITTER_CELLTYPE", "RECEIVER_CELLTYPE",  "LOG2FC_ID", "REGULATION", "LOG2FC_L", "LOG2FC_R")]
+    dt <- dt[, c("LRI", "EMITTER_CELLTYPE", "RECEIVER_CELLTYPE",  "LOG2FC_ID", "REGULATION", "LOG2FC_L", "LOG2FC_R")]
     setnames(
-      dt, 
-      old = c("LR_GENES", "EMITTER_CELLTYPE", "RECEIVER_CELLTYPE", "REGULATION", "LOG2FC_ID"),
+      dt,
+      old = c("LRI", "EMITTER_CELLTYPE", "RECEIVER_CELLTYPE", "REGULATION", "LOG2FC_ID"),
       new = c("LRI", "Emitter Cell Type", "Receiver Cell Type", "Age Regulation", "LOG2FC")
     )
     brushedPoints(dt, input$TSA_LRIFC_brush)
@@ -624,7 +605,7 @@ choose_TSA_ORA_category <- function(
   input
 ) {
   renderUI({
-    #choices <- names(DATASETS_COMBINED[[input$TSA_ORA_DATASET_CHOICE]]@ora_default)
+    #choices <- names(DATASETS_COMBINED[[input$TSA_ORA_DATASET_CHOICE]]@ora_table)
     choices <- c("KEGG Pathways", "GO Terms", "LRIs", "Cell Types", "Cell Families")
     pickerInput(
       inputId = "TSA_ORA_CATEGORY_CHOICE",
@@ -658,11 +639,11 @@ get_TSA_ORA_table <- function(
   DT::renderDataTable({
     req(input$TSA_ORA_DATASET_CHOICE, input$TSA_TISSUE_CHOICE, input$TSA_ORA_CATEGORY_CHOICE, input$TSA_ORA_TYPE_CHOICE)
     replacement <- data.table(
-      VALUE_OLD = c("KEGG_PWS", "GO_TERMS", "LR_GENES", "ER_CELLTYPES", "ER_CELLFAMILIES"),
+      VALUE_OLD = c("KEGG_PWS", "GO_TERMS", "LRI", "ER_CELLTYPES", "ER_CELLFAMILIES"),
       VALUE_NEW = c("KEGG Pathways", "GO Terms", "LRIs", "Cell Types", "Cell Families")
     )
     replacement <- replacement[VALUE_NEW == input$TSA_ORA_CATEGORY_CHOICE ][["VALUE_OLD"]]
-    dt <- DATASETS_COMBINED[[input$TSA_ORA_DATASET_CHOICE]]@ora_default[[replacement]][
+    dt <- DATASETS_COMBINED[[input$TSA_ORA_DATASET_CHOICE]]@ora_table[[replacement]][
       ID == input$TSA_TISSUE_CHOICE
     ]
     req(dt)
@@ -700,7 +681,7 @@ plot_TSA_ORA <- function(
   renderPlot({
     req(input$TSA_ORA_DATASET_CHOICE, input$TSA_TISSUE_CHOICE, input$TSA_ORA_CATEGORY_CHOICE, input$TSA_ORA_TYPE_CHOICE)
     replacement <- data.table(
-      VALUE_OLD = c("KEGG_PWS", "GO_TERMS", "LR_GENES", "ER_CELLTYPES", "ER_CELLFAMILIES"),
+      VALUE_OLD = c("KEGG_PWS", "GO_TERMS", "LRI", "ER_CELLTYPES", "ER_CELLFAMILIES"),
       VALUE_NEW = c("KEGG Pathways", "GO Terms", "LRIs", "Cell Types", "Cell Families")
     )
     replacement <- replacement[VALUE_NEW == input$TSA_ORA_CATEGORY_CHOICE ][["VALUE_OLD"]]
@@ -734,10 +715,10 @@ plot_TSA_ORA <- function(
         input$TSA_ORA_TYPE_CHOICE,
         "-regulated CCIs"
       )
-    ) + 
+    ) +
       ylab("") +
       theme(text=element_text(size=20)) +
-      theme(plot.title = element_text(hjust = 0.5, size = 16)) 
+      theme(plot.title = element_text(hjust = 0.5, size = 16))
     return(p)
   })
 }
@@ -749,7 +730,7 @@ plot_TSA_ORA_network <- function(
     req(input$TSA_ORA_DATASET_CHOICE, input$TSA_TISSUE_CHOICE)
     obj <- DATASETS_COMBINED[[input$TSA_ORA_DATASET_CHOICE]]
     abbr <- ABBR[[input$TSA_ORA_DATASET_CHOICE]]
-    abbr <- unique(abbr[ORIGINAL_CELLTYPE %in% obj@cci_detected[ID == input$TSA_TISSUE_CHOICE][["EMITTER_CELLTYPE"]]])
+    abbr <- unique(abbr[ORIGINAL_CELLTYPE %in% obj@cci_table_detected[ID == input$TSA_TISSUE_CHOICE][["EMITTER_CELLTYPE"]]])
     req(obj)
     BuildNetwork(
       object = obj,
@@ -774,7 +755,7 @@ plot_TSA_ORA_network <- function(
 #       tags$div(
 #         tags$p(
 #           "We give the number of detected cell-cell interactions (CCI) in the ",
-#           span(input$TSA_TISSUE_CHOICE, style = color_theme), 
+#           span(input$TSA_TISSUE_CHOICE, style = color_theme),
 #           ", and how many of them change significantly with age.",
 #           "Note that some CCI can appear or disappear with age whereas others can be down- or up-regulated",
 #           " but still detected in both young and old samples."
@@ -785,7 +766,7 @@ plot_TSA_ORA_network <- function(
 #     }
 #   )
 # }
-# 
+#
 # get_TSA_network_intro <- function(
 #   input
 # ) {
@@ -802,12 +783,12 @@ plot_TSA_ORA_network <- function(
 #     )
 #   })
 # }
-# 
+#
 # plot_TSA_network <- function(
 #   input
 # ) {
 #   renderVisNetwork({
-#     req(input$TSA_DATASET_CHOICE, input$TSA_TISSUE_CHOICE, 
+#     req(input$TSA_DATASET_CHOICE, input$TSA_TISSUE_CHOICE,
 #         input$TSA_NETWORK_TYPE_CHOICE, input$TSA_NETWORK_LAYOUT_CHOICE)
 #     obj <- DATASETS_COMBINED[[input$TSA_DATASET_CHOICE]]
 #     net_type <- input$TSA_NETWORK_TYPE_CHOICE
@@ -834,7 +815,7 @@ plot_TSA_ORA_network <- function(
 #       ID = input$TSA_TISSUE_CHOICE
 #     )
 #     # ora_tables <- scDiffCom::get_ora_tables(obj)
-#     # names(ora_tables) <- c("GO Terms", "LR_GENES", "LR_CELLTYPE", "Cell Families")
+#     # names(ora_tables) <- c("GO Terms", "LRI", "LR_CELLTYPE", "Cell Families")
 #     # ora_tables <- lapply(
 #     #   ora_tables,
 #     #   function(ORA_dt) {
@@ -854,7 +835,7 @@ plot_TSA_ORA_network <- function(
 #     # setnames(
 #     #   cci_table_filtered,
 #     #   new = c("L_CELLTYPE", "R_CELLTYPE", "BH_PVAL_DIFF", "LR_NAME"),
-#     #   old = c("EMITTER_CELLTYPE", "RECEIVER_CELLTYPE", "Adj. P-Value", "LR_GENES")
+#     #   old = c("EMITTER_CELLTYPE", "RECEIVER_CELLTYPE", "Adj. P-Value", "LRI")
 #     # )
 #     # obj <- scDiffCom:::set_cci_table_filtered(obj, cci_table_filtered)
 #     # req(obj)
@@ -865,7 +846,7 @@ plot_TSA_ORA_network <- function(
 #     # )
 #   })
 # }
-# 
+#
 # get_TSA_cci_intro <- function(
 #   input
 # ) {
@@ -885,7 +866,7 @@ plot_TSA_ORA_network <- function(
 #     }
 #   )
 # }
-# 
+#
 # get_TSA_ora_intro <- function(
 #   input
 # ) {
@@ -911,13 +892,13 @@ plot_TSA_ORA_network <- function(
 #     }
 #   )
 # }
-# 
+#
 # get_TSA_ORA_slider_or <- function(
 #   input
 # ) {
 #   renderUI({
 #     req(input$TSA_DATASET_CHOICE, input$TSA_TISSUE_CHOICE, input$TSA_ORA_CATEGORY_CHOICE, input$TSA_ORA_TYPE_CHOICE)
-#     ora_table <- DATASETS_COMBINED[[input$TSA_DATASET_CHOICE]]@ora_default[[input$TSA_ORA_CATEGORY_CHOICE]][
+#     ora_table <- DATASETS_COMBINED[[input$TSA_DATASET_CHOICE]]@ora_table[[input$TSA_ORA_CATEGORY_CHOICE]][
 #       ID == input$TSA_TISSUE_CHOICE
 #     ]
 #     req(ora_table)
@@ -938,7 +919,7 @@ plot_TSA_ORA_network <- function(
 #     )
 #   })
 # }
-# 
+#
 # #output$TSA_NETWORK_INTRO <- get_TSA_network_intro(input)
 # #output$TSA_NETWORK_PLOT <- plot_TSA_network(input)
 # # tab detailed interactions
