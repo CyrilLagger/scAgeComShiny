@@ -137,7 +137,10 @@ server_scAgeCom <- function(
       server = TRUE
     )
   })
-  ## TCA KEYWORD mainpanel
+  ## TCA KEYWORD mainpanel ####
   output$TCA_KEYWORD_SUMMARY <- get_TCA_keyword_summary(input)
+  ## HELP overall ####
+  source("utils_help.R", local = TRUE)
+  output$HELP = get_HELP(input)
 }
 
