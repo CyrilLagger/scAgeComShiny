@@ -2,7 +2,6 @@ tab_combined_analysis <- tabPanel(
   title = "Global Analysis",
   fluidRow(
     column(width = 6, titlePanel(htmlOutput("TCA_TITLE")), offset = 3),
-    #column(width = 6, DT::dataTableOutput("TCA_OVERVIEW_TABLE"), style = "padding-bottom: 50px", offset = 3)
   ),
   tabsetPanel(
     type = "tabs",
@@ -38,7 +37,7 @@ tab_combined_analysis <- tabPanel(
           selectInput(
             inputId = "TCA_KEYWORD_CATEGORY_CHOICE",
             label = "Category",
-            choices = c("LRI", "GO Terms", "KEGG Pathways", "Cell-Type Families")
+            choices = c("LRI", "GO Terms", "KEGG Pathways", "Cell Type Families")
           ),
           selectizeInput(
             inputId = "TCA_KEYWORD_VALUE_CHOICE",
