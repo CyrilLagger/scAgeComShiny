@@ -34,6 +34,8 @@ tab_combined_analysis <- tabPanel(
       sidebarLayout(
         sidebarPanel(
           width = 3,
+          # uiOutput("TCA_KEYWORD_CATEGORY_CHOICE"),
+          # uiOutput("TCA_KEYWORD_VALUE_CHOICE")
           selectInput(
             inputId = "TCA_KEYWORD_CATEGORY_CHOICE",
             label = "Category",
