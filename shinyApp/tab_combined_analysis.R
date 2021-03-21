@@ -13,7 +13,7 @@ tab_combined_analysis <- tabPanel(
           selectInput(
             inputId = "TCA_GLOBAL_TABLE_CHOICE",
             label = "Category",
-            choices = c("LRI", "GO Terms", "KEGG Pathways", "Cell-Type Families")
+            choices = c("LRI", "GO Terms", "KEGG Pathways", "ERI Family")
           ),
           selectInput(
             inputId = "TCA_GLOBAL_ORA_REGULATION_CHOICE",
@@ -37,7 +37,7 @@ tab_combined_analysis <- tabPanel(
           selectInput(
             inputId = "TCA_KEYWORD_CATEGORY_CHOICE",
             label = "Category",
-            choices = c("LRI", "GO Terms", "KEGG Pathways", "Cell Type Families")
+            choices = c("LRI", "GO Terms", "KEGG Pathways", "ERI Family")
           ),
           selectizeInput(
             inputId = "TCA_KEYWORD_VALUE_CHOICE",
