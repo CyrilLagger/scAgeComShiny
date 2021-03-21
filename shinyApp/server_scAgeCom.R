@@ -117,8 +117,14 @@ server_scAgeCom <- function(
   output$TCA_GLOBAL_TABLE <- get_TCA_global_table(input)
   #output$TCA_GLOBAL_ORA_PLOT <- plot_TCA_global_ora(input)
   ## TCA KEYWORD sidebar ####
-  observe({
-    req(input$TCA_KEYWORD_CATEGORY_CHOICE)
+  # output$TCA_KEYWORD_CATEGORY_CHOICE <- get_TCA_keyword_category_choice(input)
+  # output$TCA_KEYWORD_VALUE_CHOICE <- get_TCA_keyword_value_choice(input)
+  observeEvent(input$TCA_KEYWORD_CATEGORY_CHOICE, {
+    updateSelectizeInput(
+      session = session,
+      'TCA_KEYWORD_CATEGORY_CHOICE',
+      selected = input$TCA_KEYWORD_CATEGORY_CHOICE
+    )
     choices <- sort(unique(ORA_KEYWORD_COUNTS[
       TYPE == input$TCA_KEYWORD_CATEGORY_CHOICE
       ]$VALUE))
@@ -126,11 +132,17 @@ server_scAgeCom <- function(
       session = session,
       "TCA_KEYWORD_VALUE_CHOICE",
       choices = choices,
-      options = list(
-        #placeholder = 'Type LRIs',
-        maxOptions = length(choices)
-      ),
+      options = list(#placeholder = 'Type LRIs',
+        maxOptions = length(choices)),
       server = TRUE
+    )
+  }, ignoreNULL = FALSE, ignoreInit = FALSE)
+  # Separate handling of JS triggered event
+  observeEvent(input$TCA_KEYWORD_VALUE_CHOICE_JS_TRIGGERED, {
+    updateSelectizeInput(
+      session = session,
+      "TCA_KEYWORD_VALUE_CHOICE",
+      selected = input$TCA_KEYWORD_VALUE_CHOICE_JS_TRIGGERED,
     )
   })
   ## TCA KEYWORD mainpanel ####

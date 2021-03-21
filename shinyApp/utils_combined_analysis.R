@@ -523,6 +523,28 @@ get_TCA_keyword_summary <- function(
   })
 }
 
+# get_TCA_keyword_category_choice <- function(
+#   input
+# ) {renderUI({
+#     selectInput(
+#       inputId = "TCA_KEYWORD_CATEGORY_CHOICE",
+#       label = "Category",
+#       choices = c("LRI", "GO Terms", "KEGG Pathways", "Cell-Type Families")
+#     )
+#   })
+# }
+# 
+# get_TCA_keyword_value_choice <- function(
+#   input
+# ) {renderUI({
+#     selectizeInput(
+#       inputId = "TCA_KEYWORD_VALUE_CHOICE",
+#       label = "Choose a term of interest",
+#       choices = NULL,
+#       multiple = FALSE
+#     )
+#   }) 
+# }
 ## deprecated ####
 #
 # get_TCA_cci_intro <- function(

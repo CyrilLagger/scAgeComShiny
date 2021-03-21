@@ -20,86 +20,27 @@ $(document).ready(() => {
 });
 
 //    #### TCA_GLOBAL_TABLE events ####
-/*
-var $sel = null;
-var selectized_flag = false;
-const TCA_KEYWORD_SUMMARY = "a[data-value='TCA_KEYWORD_SUMMARY']";
-*/
-// Click on input
-// Press backspace
-// Type the term (case-insensitive)
-// Press enter
-
-// Selectize in javascript to access $sel object for future reference
-/*
-$(document).one('click', TCA_KEYWORD_SUMMARY, function() {
-  let intervalID = setInterval(function () {
-    let selector = $("select#TCA_SUMMARY_LRI_CHOICE");
-    if (selector.length > 0) {
-      $sel = selector.selectize();
-      selectized_flag = true;
-      clearInterval(intervalID);
-    }
-  }, 50);
-});
-*/
+// https://stackoverflow.com/questions/38797646/hyperlink-from-one-datatable-to-another-in-shiny
 
 // Add event handler for click on term in "Common and Global Changes"
 const TCA_GLOBAL_TABLE_term_selector = "div[data-value='Global Analysis'] #TCA_GLOBAL_TABLE tr";
-const setValueInSelectize = (selectizeObj, value) => {
-  s = selectizeObj[0].selectize;
-  s.setValue(value);
-};
-/*
+const TCA_KEYWORD_SUMMARY_selector = "a[data-value='TCA_KEYWORD_SUMMARY']";
+const TCA_GLOBAL_TABLE_CATEGORY_CHOICE_selector = "input#TCA_GLOBAL_TABLE_CHOICE-selectized";
+const TCA_KEYWORD_VALUE_CATEGORY_SERVER_INPUT_ID = "TCA_KEYWORD_CATEGORY_CHOICE";
+const TCA_KEYWORD_VALUE_CHOICE_SERVER_INPUT_ID = "TCA_KEYWORD_VALUE_CHOICE_JS_TRIGGERED";
+const TIMEOUT = 1000; // ms
+
 function TCA_GLOBAL_TABLE_term_click_handler() {
-  var row = $(this);
-  var cell = row.children("td").eq(1);
+  let row = $(this);
+  let value = row.children("td").eq(1).text();
+  let category = $(TCA_GLOBAL_TABLE_CATEGORY_CHOICE_selector).siblings('div').text();
   
-  $(TCA_GLOBAL_TABLE_summary_across_dsets_selector).trigger('click');
-  
-  if (selectized_flag) {
-    setValueInSelectize($sel, cell.text());
-  } else {
-    let intervalID = setInterval(function () {
-      if (selectized_flag) {
-        setValueInSelectize($sel, cell.text());
-        clearInterval(intervalID);
-      }
-    }, 100);
-  }
+  $(TCA_KEYWORD_SUMMARY_selector).trigger('click');
+  Shiny.setInputValue(TCA_KEYWORD_VALUE_CATEGORY_SERVER_INPUT_ID, category, {priority: "event"});
+  setTimeout(() => {
+    Shiny.setInputValue(TCA_KEYWORD_VALUE_CHOICE_SERVER_INPUT_ID, value, {priority: "event"});
+  }, TIMEOUT);
 }
 $(document).on("dblclick", TCA_GLOBAL_TABLE_term_selector, TCA_GLOBAL_TABLE_term_click_handler);
-*/
-//    #########################################
 
-
-
-/*
-$sel = $("select#TCA_SUMMARY_LRI_CHOICE").selectize();
-s = $sel[0].selectize;
-//s.search("Calm2:Sell").items
-s.setValue("Ceacam1:Havcr2");
-
-if ($(selector).length == 1) {$(selector).selectize();} else {$(selector).on('load', function() {$(this).selectize();})}
-
-$("select#TCA_SUMMARY_LRI_CHOICE").on('load', function() {alert('Loaded.')});
-*/
-
-
-/*
-$("#TCA_GLOBAL_TABLE").on("click", function() {
-  // alert('Clicked on ' + $(this).children("td").eq(1).text());
-  console.log($(this));
-});
-*/
-
-// Bind onclick event to table row's
-/*
-var intervalId = setInterval(function() {
-  if ($("div[data-value='Global Analysis'").attr('aria-hidden') === "false") {
-    $("#TCA_GLOBAL_TABLE tbody tr").click(function() {
-      alert('Clicked on ' + $(this).children("td").eq(1).text());
-    });
-  }
-}, 5000);
-*/
+//    #################################
