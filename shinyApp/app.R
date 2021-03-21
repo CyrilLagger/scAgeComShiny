@@ -1,8 +1,13 @@
 ####################################################
 ##
-## Project: scAgeCom
+## Project: scAgeComShiny
 ##
-## cyril.lagger@liverpool.ac.uk - December 2020
+## Last update - March 2021
+##
+## cyril.lagger@liverpool.ac.uk
+## ursu_eugen@hotmail.com
+## anais.equey@etu.univ-amu.fr
+##
 ##
 ####################################################
 ##

@@ -3,31 +3,37 @@ server_scAgeCom <- function(
   output,
   session
 ) {
-  ## INTRO overall ####
+  ## MAINT TITLE ####
+  output$MAIN_TITLE <- renderUI({
+    scAgeCom_data$shiny_html_content$main_title
+  })
+  ## INTRO TITLE ####
   source("utils_description.R", local = TRUE)
-  output$INTRO_TITLE <- get_INTRO_title(input)
-  output$INTRO_OVERVIEW <- get_INTRO_OVERVIEW(input)
+  output$INTRO_TITLE <- get_intro_title(input)
+  ## INTRO OVERVIEW mainpanel ####
+  output$INTRO_OVERVIEW <- get_intro_overview(input)
   ## INTRO METHOD mainpanel ####
-  output$INTRO_METHOD_HTML <- get_INTRO_method_htlm(input)
-  ## INTRO SCRNA mainpanel ####
-  output$INTRO_SCRNA_HTML <- get_INTRO_scrna_htlm(input)
-  ## INTRO LRdb mainpanel ####
-  output$INTRO_LRI_HTML <- get_INTRO_lri_html(input)
-  output$INTRO_LRI_DETAILS <- get_INTRO_lri_details(input)
-  output$INTRO_LRI_TABLE <- get_INTRO_lri_table(input)
-  output$INTRO_LRI_UPSET_PLOT <- plot_INTRO_lri_upset(input)
+  output$INTRO_METHOD <- get_intro_method(input)
+  ## INTRO SCRNA DATA mainpanel ####
+  output$INTRO_SCRNA_DATA <- get_intro_scrna_data(input)
+  ## INTRO LRI sidebar ####
+  output$INTRO_LRI_DATABASE_CHOICE <- choose_intro_lri_database(input)
+  ## INTRO LRI mainpanel ####
+  output$INTRO_LRI_TABLE <- get_intro_lri_table(input)
+  output$INTRO_LRI_UPSET_PLOT <- plot_intro_lri_upset(input)
+  output$INTRO_LRI_HTML <- get_intro_lri_html(input)
+  output$INTRO_LRI_DETAILS <- get_intro_lri_details(input)
   ## TSA overall ####
   source("utils_tissue_specific.R", local = TRUE)
-  output$TSA_TISSUE_CHOICE <- choose_TSA_tissue(input)
-  output$TSA_TITLE <- get_TSA_title(input)
-  output$TSA_OVERVIEW_TABLE <- get_TSA_overview_table(input)
+  output$TSA_TISSUE_CHOICE <- choose_tsa_tissue(input)
+  output$TSA_TITLE <- get_tsa_title(input)
+  output$TSA_OVERVIEW_TABLE <- get_tsa_overview_table(input)
   ## TSA CCI sidebar ####
   output$TSA_CCI_DATASET_CHOICE <- choose_TSA_dataset(input, "CCI")
   output$TSA_ORA_DATASET_CHOICE <- choose_TSA_dataset(input, "ORA")
   output$TSA_DOWNLOAD_TABLE <- download_TSA_table(input)
   output$TSA_EMITTER_CHOICE <- choose_TSA_emitter(input)
   output$TSA_RECEIVER_CHOICE <- choose_TSA_receiver(input)
-  #output$TSA_LRI_CHOICE <- choose_TSA_lri(input, session)
   observe({
     req(input$TSA_CCI_DATASET_CHOICE, input$TSA_TISSUE_CHOICE)
     ALL_LRI_LABEL = 'All LRI'
@@ -35,13 +41,12 @@ server_scAgeCom <- function(
       c(ALL_LRI_LABEL,
         sort(
           unique(
-            DATASETS_COMBINED[[input$TSA_CCI_DATASET_CHOICE]]@cci_table_detected[
+            scAgeCom_data$DATASETS_COMBINED[[input$TSA_CCI_DATASET_CHOICE]]@cci_table_detected[
               ID == input$TSA_TISSUE_CHOICE][["LRI"]]))
       )
     updateSelectizeInput(
       session = session,
       "TSA_LRI_CHOICE",
-      #label = 'Filter by Ligand-Receptor Interactions',
       choices = choices,
       selected = ALL_LRI_LABEL,
       options = list(
@@ -120,20 +125,22 @@ server_scAgeCom <- function(
   # output$TCA_KEYWORD_CATEGORY_CHOICE <- get_TCA_keyword_category_choice(input)
   # output$TCA_KEYWORD_VALUE_CHOICE <- get_TCA_keyword_value_choice(input)
   observeEvent(input$TCA_KEYWORD_CATEGORY_CHOICE, {
+    req(input$TCA_KEYWORD_CATEGORY_CHOICE)
     updateSelectizeInput(
       session = session,
       'TCA_KEYWORD_CATEGORY_CHOICE',
       selected = input$TCA_KEYWORD_CATEGORY_CHOICE
     )
-    choices <- sort(unique(ORA_KEYWORD_COUNTS[
+    choices <- sort(unique(scAgeCom_data$ORA_KEYWORD_COUNTS[
       TYPE == input$TCA_KEYWORD_CATEGORY_CHOICE
-      ]$VALUE))
+    ]$VALUE))
     updateSelectizeInput(
       session = session,
       "TCA_KEYWORD_VALUE_CHOICE",
       choices = choices,
-      options = list(#placeholder = 'Type LRIs',
-        maxOptions = length(choices)),
+      options = list(
+        maxOptions = length(choices)
+      ),
       server = TRUE
     )
   }, ignoreNULL = FALSE, ignoreInit = FALSE)

@@ -1,8 +1,17 @@
 tab_tissue_specific <- tabPanel(
   title = "Tissue-Specific Analysis",
   fluidRow(
-    column(width = 6, titlePanel(htmlOutput("TSA_TITLE")), offset = 3),
-    column(width = 6, DT::dataTableOutput("TSA_OVERVIEW_TABLE"), style = "padding-bottom: 50px", offset = 3)
+    column(
+      width = 6,
+      titlePanel(htmlOutput("TSA_TITLE")),
+      offset = 3
+      ),
+    column(
+      width = 6,
+      DT::dataTableOutput("TSA_OVERVIEW_TABLE"),
+      style = "padding-bottom: 50px",
+      offset = 3
+      )
   ),
   tabsetPanel(
     type = "tabs",
@@ -15,7 +24,12 @@ tab_tissue_specific <- tabPanel(
           selectInput(
             inputId = "TSA_CCI_DETAILS_CHOICE",
             label = "Choose between Table or Plots",
-            choices = c("CCI Table", "Volcano Plot", "Score Plot", "LRI-FC Plot")
+            choices = c(
+              "CCI Table",
+              "Volcano Plot",
+              "Score Plot",
+              "LRI-FC Plot"
+            )
           ),
           hr(),
           downloadButton("TSA_DOWNLOAD_TABLE", "Download Table"),
@@ -28,7 +42,6 @@ tab_tissue_specific <- tabPanel(
             choices = NULL,
             multiple = TRUE
             ),
-          #uiOutput("TSA_LRI_CHOICE"),
           sliderInput(
             inputId = "TSA_SLIDER_PVALUE",
             label = "Filter by Adj. p-value",
@@ -40,41 +53,20 @@ tab_tissue_specific <- tabPanel(
         ),
         mainPanel(
           fluidRow(
-            column(width = 12, uiOutput("TSA_CCI_DETAILS"), style = "padding:50px"),
-            column(width = 12, uiOutput("TSA_CCI_TEXTOUTPUT"))#,
-            #column(width = 12, htmlOutput("TSA_CCI_INTRO"), style = "padding:50px")
+            column(
+              width = 12,
+              uiOutput("TSA_CCI_DETAILS"),
+              style = "padding:50px"
+            ),
+            column(
+              width = 12,
+              uiOutput("TSA_CCI_TEXTOUTPUT")
+            )
           )
         )
       ),
       value = "TSA_INTERACTION_ANALYSIS"
     ),
-    # tabPanel(
-    #   title = "Network Representation",
-    #   sidebarLayout(
-    #     sidebarPanel(
-    #       width = 3,
-    #       selectInput(
-    #         inputId = "TSA_NETWORK_TYPE_CHOICE",
-    #         label = "Choose the Type of Network",
-    #         choices = c("Young", "Old", "Change", "ORA")
-    #       ),
-    #       selectInput(
-    #         inputId = "TSA_NETWORK_LAYOUT_CHOICE",
-    #         label = "Choose between Conventional or Bipartite Layout",
-    #         choices = c("Circular", "Bipartite")
-    #       )
-    #     ),
-    #     mainPanel(
-    #       fluidRow(
-    #         column(width = 12, visNetworkOutput("TSA_NETWORK_PLOT", height = "800px")),
-    #         column(width = 12, htmlOutput("TSA_NETWORK_INTRO"), style = "padding:50px"),
-    #         column(width = 12, htmlOutput("TSA_OVERVIEW_INTRO"), style = "padding:50px")
-    #       )
-    #       
-    #     )
-    #   ),
-    #   value = "TSA_OVERVIEW"
-    # ),
     tabPanel(
       title = "Over-Representation Analysis",
       sidebarLayout(
@@ -98,8 +90,16 @@ tab_tissue_specific <- tabPanel(
         ),
         mainPanel(
           fluidRow(
-            column(width = 12, uiOutput("TSA_ORA_DETAILS"), style = "padding:50px"),
-            column(width = 12, htmlOutput("TSA_ORA_INTRO"), style = "padding:50px")
+            column(
+              width = 12,
+              uiOutput("TSA_ORA_DETAILS"),
+              style = "padding:50px"
+            ),
+            column(
+              width = 12,
+              htmlOutput("TSA_ORA_INTRO"),
+              style = "padding:50px"
+            )
           )
         )
       ),
