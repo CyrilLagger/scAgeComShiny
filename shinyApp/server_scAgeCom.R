@@ -4,7 +4,7 @@ server_scAgeCom <- function(
   session
 ) {
   ## MAINT TITLE ####
-  output$MAIN_TITLE <- renderUI({
+  output$MAIN_TITLE <- renderText({
     scAgeCom_data$shiny_html_content$main_title
   })
   ## INTRO TITLE ####

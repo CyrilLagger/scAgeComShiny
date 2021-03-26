@@ -54,16 +54,20 @@ get_TCA_global_table <- function(
 get_TCA_keyword_summary <- function(
   input
 ) {
-  renderPlot({
+  #renderPlot({
+  plotly::renderPlotly({
     req(
       input$TCA_KEYWORD_CATEGORY_CHOICE,
       input$TCA_KEYWORD_VALUE_CHOICE
       )
-    scAgeCom_data$plot_keyword_tissue_vs_dataset(
-      scAgeCom_data$ORA_KEYWORD_SUMMARY_UNIQUE,
-      scAgeCom_data$ORA_KEYWORD_TEMPLATE,
-      input$TCA_KEYWORD_CATEGORY_CHOICE,
-      input$TCA_KEYWORD_VALUE_CHOICE
+    plotly::ggplotly(
+      p = scAgeCom_data$plot_keyword_tissue_vs_dataset(
+        scAgeCom_data$ORA_KEYWORD_SUMMARY_UNIQUE,
+        scAgeCom_data$ORA_KEYWORD_TEMPLATE,
+        input$TCA_KEYWORD_CATEGORY_CHOICE,
+        input$TCA_KEYWORD_VALUE_CHOICE
+      ),
+      tooltip = 'text'
     )
   })
 }

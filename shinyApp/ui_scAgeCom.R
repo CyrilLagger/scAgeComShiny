@@ -6,7 +6,8 @@ source("tab_help.R")
 
 ui_scAgeCom <- fluidPage(
   titlePanel(
-    title = htmlOutput("MAIN_TITLE")
+    title = textOutput("MAIN_TITLE", inline = TRUE),
+    windowTitle = textOutput("MAIN_TITLE")
   ),
   tags$head(
     tags$style(HTML("hr {border-top: 1px solid #000000;}")),
