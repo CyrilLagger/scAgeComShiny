@@ -57,7 +57,7 @@ server_scAgeCom <- function(
       server = TRUE
     )
   })
-  output$TSA_SLIDER_LOG2FC <- get_TSA_slider_log2fc(input)
+  #output$TSA_SLIDER_LOG2FC <- get_TSA_slider_log2fc(input)
   ## TSA CCIs mainpanel ####
   output$TSA_CCI_DETAILS <- get_TSA_cci_details(input)
   output$TSA_CCI_TEXTOUTPUT <- get_TSA_cci_text(input)
@@ -126,7 +126,7 @@ server_scAgeCom <- function(
   # output$TCA_KEYWORD_VALUE_CHOICE <- get_TCA_keyword_value_choice(input)
   observeEvent(input$TCA_KEYWORD_CATEGORY_CHOICE, {
     req(input$TCA_KEYWORD_CATEGORY_CHOICE)
-    updateSelectizeInput(
+    updateSelectInput(
       session = session,
       'TCA_KEYWORD_CATEGORY_CHOICE',
       selected = input$TCA_KEYWORD_CATEGORY_CHOICE
@@ -157,5 +157,19 @@ server_scAgeCom <- function(
   ## HELP overall ####
   source("utils_help.R", local = TRUE)
   output$HELP = get_HELP(input)
+  ## Testing stuff ####
+  # event_click_tca <- reactive({
+  #   req(
+  #     input$TCA_KEYWORD_CATEGORY_CHOICE,
+  #     input$TCA_KEYWORD_VALUE_CHOICE
+  #   )
+  #   event_data("plotly_click", source = "TCA_PLOT_KEYWORD_SUMMARY")
+  # })
+  # observeEvent(event_click_tca(), {
+  #   #print("coucou")
+  #   updateNavbarPage(session, inputId = "navbarID", selected = "TSA_navbar")
+  #   print(str(event_click_tca()))
+  #   #updateTabsetPanel(session, inputId = "", selected = "")
+  # })
 }
 

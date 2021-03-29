@@ -5,9 +5,10 @@ source("tab_combined_analysis.R")
 source("tab_help.R")
 
 ui_scAgeCom <- fluidPage(
+  theme = shinytheme("cerulean"),
   titlePanel(
     title = textOutput("MAIN_TITLE", inline = TRUE),
-    windowTitle = textOutput("MAIN_TITLE")
+    windowTitle = "scAgeCom"
   ),
   tags$head(
     tags$style(HTML("hr {border-top: 1px solid #000000;}")),
@@ -20,6 +21,7 @@ ui_scAgeCom <- fluidPage(
   ),
   navbarPage(
     title = "scAgeCom",
+    id = "navbarID",
     tab_description,
     tab_tissue_specific,
     tab_combined_analysis,

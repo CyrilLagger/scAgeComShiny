@@ -143,30 +143,30 @@ choose_TSA_receiver <- function(
   })
 }
 
-get_TSA_slider_log2fc <- function(
-  input
-) {
-  renderUI({
-    req(input$TSA_CCI_DATASET_CHOICE, input$TSA_TISSUE_CHOICE)
-    max_val <- ceiling(
-      max(
-        scAgeCom_data$DATASETS_COMBINED[[
-          input$TSA_CCI_DATASET_CHOICE
-        ]]@cci_table_detected[
-          ID == input$TSA_TISSUE_CHOICE
-        ][["LOG2FC_ID"]]
-      )
-    )
-    sliderInput(
-      inputId = "TSA_SLIDER_LOG2FC",
-      label = "Filter by LOG2FC",
-      min = 0,
-      max = max_val,
-      value = 0,
-      step = 0.01
-    )
-  })
-}
+# get_TSA_slider_log2fc <- function(
+#   input
+# ) {
+#   renderUI({
+#     req(input$TSA_CCI_DATASET_CHOICE, input$TSA_TISSUE_CHOICE)
+#     max_val <- ceiling(
+#       max(
+#         scAgeCom_data$DATASETS_COMBINED[[
+#           input$TSA_CCI_DATASET_CHOICE
+#         ]]@cci_table_detected[
+#           ID == input$TSA_TISSUE_CHOICE
+#         ][["LOG2FC_ID"]]
+#       )
+#     )
+#     sliderInput(
+#       inputId = "TSA_SLIDER_LOG2FC",
+#       label = "Filter by LOG2FC",
+#       min = 0,
+#       max = max_val,
+#       value = 0,
+#       step = 0.01
+#     )
+#   })
+# }
 
 download_TSA_table <- function(
   input
@@ -216,15 +216,37 @@ get_TSA_cci_details <- function(
   input
 ) {
   renderUI({
-    if (input$TSA_CCI_DETAILS_CHOICE == "CCI Table") {
-      DT::dataTableOutput("TSA_INTERACTION_TABLE")
-    } else if (input$TSA_CCI_DETAILS_CHOICE == "Volcano Plot") {
-      plotOutput("TSA_VOLCANO_PLOT", brush = "TSA_VOLCANO_brush", height = "600px")
-    } else if (input$TSA_CCI_DETAILS_CHOICE == "Score Plot") {
-      plotOutput("TSA_SCORES_PLOT", brush = "TSA_SCORES_brush", height = "600px")
-    } else if (input$TSA_CCI_DETAILS_CHOICE == "LRI-FC Plot") {
-      plotOutput("TSA_LRIFC_PLOT", brush = "TSA_LRIFC_brush", height = "600px")
-    }
+    fluidRow(
+      column(
+        width = 12,
+        dataTableOutput("TSA_INTERACTION_TABLE"),
+        style = "padding:50px"
+      ),
+      column(
+        width = 12,
+        plotly::plotlyOutput(
+          "TSA_VOLCANO_PLOT",
+          height = "600px"
+        ),
+        style = "padding:50px"
+      ),
+      column(
+        width = 12,
+        plotly::plotlyOutput(
+          "TSA_SCORES_PLOT",
+          height = "600px"
+        ),
+        style = "padding:50px"
+      ),
+      column(
+        width = 12,
+        plotly::plotlyOutput(
+          "TSA_LRIFC_PLOT",
+          height = "600px"
+        ),
+        style = "padding:50px"
+      )
+    )
   })
 }
 
@@ -253,9 +275,9 @@ get_TSA_interaction_table <- function(
       input$TSA_TISSUE_CHOICE,
       input$TSA_EMITTER_CHOICE,
       input$TSA_RECEIVER_CHOICE,
-      input$TSA_LRI_CHOICE,
-      input$TSA_SLIDER_PVALUE,
-      input$TSA_SLIDER_LOG2FC
+      input$TSA_LRI_CHOICE#,
+      #input$TSA_SLIDER_PVALUE,
+      #input$TSA_SLIDER_LOG2FC
     )
     dt <-  scAgeCom_data$DATASETS_COMBINED[[
       input$TSA_CCI_DATASET_CHOICE
@@ -266,8 +288,8 @@ get_TSA_interaction_table <- function(
       input$TSA_EMITTER_CHOICE,
       input$TSA_RECEIVER_CHOICE,
       input$TSA_LRI_CHOICE,
-      input$TSA_SLIDER_PVALUE,
-      input$TSA_SLIDER_LOG2FC,
+      #input$TSA_SLIDER_PVALUE,
+      #input$TSA_SLIDER_LOG2FC,
       TRUE
     )
     dt <- scAgeCom_data$fix_cci_table_names(
@@ -287,15 +309,15 @@ get_TSA_interaction_table <- function(
 plot_TSA_VOLCANO <- function(
   input
 ) {
-  renderPlot({
+  renderPlotly({
     req(
       input$TSA_CCI_DATASET_CHOICE,
       input$TSA_TISSUE_CHOICE,
       input$TSA_EMITTER_CHOICE,
       input$TSA_RECEIVER_CHOICE,
-      input$TSA_LRI_CHOICE,
-      input$TSA_SLIDER_PVALUE,
-      input$TSA_SLIDER_LOG2FC
+      input$TSA_LRI_CHOICE#,
+      #input$TSA_SLIDER_PVALUE,
+      #input$TSA_SLIDER_LOG2FC
     )
     dt <-  scAgeCom_data$DATASETS_COMBINED[[
       input$TSA_CCI_DATASET_CHOICE
@@ -308,8 +330,8 @@ plot_TSA_VOLCANO <- function(
       input$TSA_EMITTER_CHOICE,
       input$TSA_RECEIVER_CHOICE,
       input$TSA_LRI_CHOICE,
-      input$TSA_SLIDER_PVALUE,
-      input$TSA_SLIDER_LOG2FC,
+      #input$TSA_SLIDER_PVALUE,
+      #input$TSA_SLIDER_LOG2FC,
       FALSE
     )
     dt <- scAgeCom_data$fix_cci_table_names(
@@ -318,11 +340,21 @@ plot_TSA_VOLCANO <- function(
       scAgeCom_data$cols_to_show_cci_table
     )
     dt[, minus_log10_pval := -log10(`Adj. p-value` + 1E-4)]
-    scAgeCom_data$show_volcano(
-      data = dt,
-      xlims = xlims,
-      ylims = ylims
-    )
+    p <- plotly::ggplotly(
+      scAgeCom_data$show_volcano(
+        data = dt,
+        xlims = xlims,
+        ylims = ylims
+      ),
+      tooltip = c(
+        "LRI",
+        "Emitter Cell Type",
+        "Receiver Cell Type"
+      )
+    ) %>%
+      config(mathjax = "cdn") %>%
+      layout(margin = list (t = 150, r = 300))
+    p
   })
 }
 
@@ -335,9 +367,9 @@ get_TSA_VOLCANO_text <- function(
       input$TSA_TISSUE_CHOICE,
       input$TSA_EMITTER_CHOICE,
       input$TSA_RECEIVER_CHOICE,
-      input$TSA_LRI_CHOICE,
-      input$TSA_SLIDER_PVALUE,
-      input$TSA_SLIDER_LOG2FC
+      input$TSA_LRI_CHOICE#,
+      #input$TSA_SLIDER_PVALUE,
+      #input$TSA_SLIDER_LOG2FC
     )
     dt <-  scAgeCom_data$DATASETS_COMBINED[[
       input$TSA_CCI_DATASET_CHOICE
@@ -348,8 +380,8 @@ get_TSA_VOLCANO_text <- function(
       input$TSA_EMITTER_CHOICE,
       input$TSA_RECEIVER_CHOICE,
       input$TSA_LRI_CHOICE,
-      input$TSA_SLIDER_PVALUE,
-      input$TSA_SLIDER_LOG2FC,
+      #input$TSA_SLIDER_PVALUE,
+      #input$TSA_SLIDER_LOG2FC,
       FALSE
     )
     dt <- scAgeCom_data$fix_cci_table_names(
@@ -370,15 +402,15 @@ get_TSA_VOLCANO_text <- function(
 plot_TSA_SCORES <- function(
   input
 ) {
-  renderPlot({
+  renderPlotly({
     req(
       input$TSA_CCI_DATASET_CHOICE,
       input$TSA_TISSUE_CHOICE,
       input$TSA_EMITTER_CHOICE,
       input$TSA_RECEIVER_CHOICE,
       input$TSA_LRI_CHOICE,
-      input$TSA_SLIDER_PVALUE,
-      input$TSA_SLIDER_LOG2FC
+      #input$TSA_SLIDER_PVALUE,
+      #input$TSA_SLIDER_LOG2FC
     )
     dt <-  scAgeCom_data$DATASETS_COMBINED[[
       input$TSA_CCI_DATASET_CHOICE
@@ -395,8 +427,8 @@ plot_TSA_SCORES <- function(
       input$TSA_EMITTER_CHOICE,
       input$TSA_RECEIVER_CHOICE,
       input$TSA_LRI_CHOICE,
-      input$TSA_SLIDER_PVALUE,
-      input$TSA_SLIDER_LOG2FC,
+      #input$TSA_SLIDER_PVALUE,
+      #input$TSA_SLIDER_LOG2FC,
       FALSE
     )
     dt <- scAgeCom_data$fix_cci_table_names(
@@ -404,11 +436,21 @@ plot_TSA_SCORES <- function(
       scAgeCom_data$cols_old_cci_table,
       scAgeCom_data$cols_to_show_cci_table
     )
-    scAgeCom_data$show_scores(
-      data = dt,
-      xlims = xlims,
-      ylims = ylims
-    )
+    p <- plotly::ggplotly(
+      scAgeCom_data$show_scores(
+        data = dt,
+        xlims = xlims,
+        ylims = ylims
+      ),
+      tooltip = c(
+        "LRI",
+        "Emitter Cell Type",
+        "Receiver Cell Type"
+      )
+    ) %>%
+      config(mathjax = "cdn") %>%
+      layout(margin = list (t = 150, r = 300))
+    p
   })
 }
 
@@ -422,8 +464,8 @@ get_TSA_SCORES_text <- function(
       input$TSA_EMITTER_CHOICE,
       input$TSA_RECEIVER_CHOICE,
       input$TSA_LRI_CHOICE,
-      input$TSA_SLIDER_PVALUE,
-      input$TSA_SLIDER_LOG2FC
+      #input$TSA_SLIDER_PVALUE,
+      #input$TSA_SLIDER_LOG2FC
     )
     dt <-  scAgeCom_data$DATASETS_COMBINED[[
       input$TSA_CCI_DATASET_CHOICE
@@ -438,8 +480,8 @@ get_TSA_SCORES_text <- function(
       input$TSA_EMITTER_CHOICE,
       input$TSA_RECEIVER_CHOICE,
       input$TSA_LRI_CHOICE,
-      input$TSA_SLIDER_PVALUE,
-      input$TSA_SLIDER_LOG2FC,
+      #input$TSA_SLIDER_PVALUE,
+      #input$TSA_SLIDER_LOG2FC,
       FALSE
     )
     dt <- scAgeCom_data$fix_cci_table_names(
@@ -454,15 +496,15 @@ get_TSA_SCORES_text <- function(
 plot_TSA_LRIFC <- function(
   input
 ) {
-  renderPlot({
+  renderPlotly({
     req(
       input$TSA_CCI_DATASET_CHOICE,
       input$TSA_TISSUE_CHOICE,
       input$TSA_EMITTER_CHOICE,
       input$TSA_RECEIVER_CHOICE,
       input$TSA_LRI_CHOICE,
-      input$TSA_SLIDER_PVALUE,
-      input$TSA_SLIDER_LOG2FC
+      #input$TSA_SLIDER_PVALUE,
+      #input$TSA_SLIDER_LOG2FC
     )
     dt <-  scAgeCom_data$DATASETS_COMBINED[[
       input$TSA_CCI_DATASET_CHOICE
@@ -497,8 +539,8 @@ plot_TSA_LRIFC <- function(
       input$TSA_EMITTER_CHOICE,
       input$TSA_RECEIVER_CHOICE,
       input$TSA_LRI_CHOICE,
-      input$TSA_SLIDER_PVALUE,
-      input$TSA_SLIDER_LOG2FC,
+      #input$TSA_SLIDER_PVALUE,
+      #input$TSA_SLIDER_LOG2FC,
       FALSE
     )
     dt <- scAgeCom_data$fix_cci_table_names(
@@ -506,11 +548,21 @@ plot_TSA_LRIFC <- function(
       c(scAgeCom_data$cols_old_cci_table, "LOG2FC_L", "LOG2FC_R"),
       c(scAgeCom_data$cols_to_show_cci_table, "LOG2FC_L", "LOG2FC_R")
     )
-    scAgeCom_data$show_LRIFC(
-      data = dt,
-      xlims = xlims,
-      ylims = ylims
-    )
+    p <- plotly::ggplotly(
+      scAgeCom_data$show_LRIFC(
+        data = dt,
+        xlims = xlims,
+        ylims = ylims
+      ),
+      tooltip = c(
+        "LRI",
+        "Emitter Cell Type",
+        "Receiver Cell Type"
+      )
+    ) %>%
+      config(mathjax = "cdn") #%>%
+      #layout(margin = list (t = 150, r = 300))
+    p
   })
 }
 
@@ -524,8 +576,8 @@ get_TSA_LRIFC_text <- function(
       input$TSA_EMITTER_CHOICE,
       input$TSA_RECEIVER_CHOICE,
       input$TSA_LRI_CHOICE,
-      input$TSA_SLIDER_PVALUE,
-      input$TSA_SLIDER_LOG2FC
+      #input$TSA_SLIDER_PVALUE,
+      #input$TSA_SLIDER_LOG2FC
     )
     dt <-  scAgeCom_data$DATASETS_COMBINED[[
       input$TSA_CCI_DATASET_CHOICE
@@ -558,8 +610,8 @@ get_TSA_LRIFC_text <- function(
       input$TSA_EMITTER_CHOICE,
       input$TSA_RECEIVER_CHOICE,
       input$TSA_LRI_CHOICE,
-      input$TSA_SLIDER_PVALUE,
-      input$TSA_SLIDER_LOG2FC,
+      #input$TSA_SLIDER_PVALUE,
+      #input$TSA_SLIDER_LOG2FC,
       FALSE
     )
     dt <- scAgeCom_data$fix_cci_table_names(
@@ -577,8 +629,7 @@ choose_TSA_ORA_category <- function(
   input
 ) {
   renderUI({
-    #choices <- names(DATASETS_COMBINED[[input$TSA_ORA_DATASET_CHOICE]]@ora_table)
-    choices <- c("KEGG Pathways", "GO Terms", "LRIs", "Cell Types", "Cell Families")
+    choices <- c("LRIs", "Cell Types", "GO Terms", "KEGG Pathways", "Cell Families")
     pickerInput(
       inputId = "TSA_ORA_CATEGORY_CHOICE",
       label = "Category",
@@ -595,12 +646,38 @@ get_TSA_ora_details <- function(
   input
 ) {
   renderUI({
-    if (input$TSA_ORA_DETAILS_CHOICE == "ORA Table") {
-      DT::dataTableOutput("TSA_ORA_TABLE")
-    } else if (input$TSA_ORA_DETAILS_CHOICE == "ORA Score Plot") {
-      plotOutput("TSA_ORA_PLOT", height = "800px")
-    } else if (input$TSA_ORA_DETAILS_CHOICE == "ORA Network") {
-      visNetworkOutput("TSA_ORA_NETWORK_PLOT", height = "800px")
+    req(input$TSA_ORA_CATEGORY_CHOICE)
+    if (input$TSA_ORA_CATEGORY_CHOICE == "Cell Types") {
+      fluidRow(
+        column(
+          width = 12,
+          visNetworkOutput("TSA_ORA_NETWORK_PLOT", height = "800px"),
+          style = "padding:50px"
+        ),
+        column(
+          width = 12,
+          dataTableOutput("TSA_ORA_TABLE"),
+          style = "padding:50px"
+        ),
+        column(
+          width = 12,
+          plotOutput("TSA_ORA_PLOT", height = "800px"),
+          style = "padding:50px"
+        )
+      )
+    } else {
+      fluidRow(
+        column(
+          width = 12,
+          dataTableOutput("TSA_ORA_TABLE"),
+          style = "padding:50px"
+        ),
+        column(
+          width = 12,
+          plotOutput("TSA_ORA_PLOT", height = "800px"),
+          style = "padding:50px"
+        )
+      )
     }
   })
 }
@@ -609,7 +686,12 @@ get_TSA_ORA_table <- function(
   input
 ) {
   DT::renderDataTable({
-    req(input$TSA_ORA_DATASET_CHOICE, input$TSA_TISSUE_CHOICE, input$TSA_ORA_CATEGORY_CHOICE, input$TSA_ORA_TYPE_CHOICE)
+    req(
+      input$TSA_ORA_DATASET_CHOICE,
+      input$TSA_TISSUE_CHOICE,
+      input$TSA_ORA_CATEGORY_CHOICE,
+      input$TSA_ORA_TYPE_CHOICE
+    )
     replacement <- data.table(
       VALUE_OLD = c("KEGG_PWS", "GO_TERMS", "LRI", "ER_CELLTYPES", "ER_CELLFAMILIES"),
       VALUE_NEW = c("KEGG Pathways", "GO Terms", "LRIs", "Cell Types", "Cell Families")
@@ -618,18 +700,39 @@ get_TSA_ORA_table <- function(
     dt <- scAgeCom_data$DATASETS_COMBINED[[input$TSA_ORA_DATASET_CHOICE]]@ora_table[[replacement]][
       ID == input$TSA_TISSUE_CHOICE
     ]
-    req(dt)
+    if (input$TSA_ORA_CATEGORY_CHOICE == "GO Terms") {
+      req(input$TSA_ORA_GO_ASPECT_CHOICE)
+      dt <- dt[ASPECT == input$TSA_ORA_GO_ASPECT_CHOICE]
+      level_str <- "LEVEL"
+      level_str_new <- "GO Level"
+      options = list(
+        columnDefs = list(list(targets = 1:4, searchable = FALSE)),
+        pageLength = 10
+      )
+      filter <- "top"
+    } else {
+      level_str <- NULL
+      level_str_new <- NULL
+      options <- NULL
+      filter <- "none"
+    }
     if(input$TSA_ORA_TYPE_CHOICE == "Up") {
-      dt <- dt[`OR_UP` >= 1 & BH_P_VALUE_UP <= 0.05, c("VALUE", "ORA_SCORE_UP", "OR_UP", "BH_P_VALUE_UP")]
+      cols_to_keep <- c("VALUE", "ORA_SCORE_UP", "OR_UP", "BH_P_VALUE_UP", level_str)
+      dt <- dt[`OR_UP` >= 1 & BH_P_VALUE_UP <= 0.05, cols_to_keep, with = FALSE]
     } else if(input$TSA_ORA_TYPE_CHOICE == "Down") {
-      dt <- dt[`OR_DOWN` >= 1 & BH_P_VALUE_DOWN <= 0.05, c("VALUE","ORA_SCORE_DOWN", "OR_DOWN", "BH_P_VALUE_DOWN")]
+      cols_to_keep <- c("VALUE","ORA_SCORE_DOWN", "OR_DOWN", "BH_P_VALUE_DOWN", level_str)
+      dt <- dt[`OR_DOWN` >= 1 & BH_P_VALUE_DOWN <= 0.05, cols_to_keep, with = FALSE ]
     } else if(input$TSA_ORA_TYPE_CHOICE == "Flat") {
-      dt <- dt[`OR_FLAT` >= 1 & BH_P_VALUE_FLAT <= 0.05, c("VALUE","ORA_SCORE_FLAT", "OR_FLAT", "BH_P_VALUE_FLAT")]
+      cols_to_keep <- c("VALUE","ORA_SCORE_FLAT", "OR_FLAT", "BH_P_VALUE_FLAT", level_str)
+      dt <- dt[`OR_FLAT` >= 1 & BH_P_VALUE_FLAT <= 0.05, cols_to_keep, with = FALSE]
+    }
+    if (input$TSA_ORA_CATEGORY_CHOICE == "GO Terms") {
+      dt[, LEVEL := as.factor(LEVEL)]
     }
     setnames(
       dt,
       old = colnames(dt),
-      new = c(input$TSA_ORA_CATEGORY_CHOICE, "ORA Score", "Odds Ratio", "Adj. p-value")
+      new = c(input$TSA_ORA_CATEGORY_CHOICE, "ORA Score", "Odds Ratio", "Adj. p-value", level_str_new )
     )
     setorder(dt, -`ORA Score`)
     cols_numeric <- c("ORA Score", "Odds Ratio", "Adj. p-value")
@@ -642,7 +745,9 @@ get_TSA_ORA_table <- function(
         " over-represented among ",
         input$TSA_ORA_TYPE_CHOICE,
         "-regulated CCIs"
-      )
+      ),
+      filter = filter,
+      options = options
     )
   })
 }

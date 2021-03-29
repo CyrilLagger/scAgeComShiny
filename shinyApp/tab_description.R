@@ -57,6 +57,17 @@ tab_description <- tabPanel(
             )
           ),
           conditionalPanel(
+            condition = "input.INTRO_LRI_DETAILS_CHOICE != 'References'",
+            selectInput(
+              inputId = "INTRO_LRI_SPECIES_CHOICE",
+              label = "Choose a Species",
+              choices = c(
+                "Mouse",
+                "Human"
+              )
+            )
+          ),
+          conditionalPanel(
             condition = "input.INTRO_LRI_DETAILS_CHOICE == 'LRI Table'",
             uiOutput("INTRO_LRI_DATABASE_CHOICE")
           )

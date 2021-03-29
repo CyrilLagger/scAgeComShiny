@@ -21,16 +21,6 @@ tab_tissue_specific <- tabPanel(
         sidebarPanel(
           width = 3,
           uiOutput("TSA_CCI_DATASET_CHOICE"),
-          selectInput(
-            inputId = "TSA_CCI_DETAILS_CHOICE",
-            label = "Choose between Table or Plots",
-            choices = c(
-              "CCI Table",
-              "Volcano Plot",
-              "Score Plot",
-              "LRI-FC Plot"
-            )
-          ),
           hr(),
           downloadButton("TSA_DOWNLOAD_TABLE", "Download Table"),
           hr(),
@@ -41,28 +31,10 @@ tab_tissue_specific <- tabPanel(
             label = "Filter by Ligand-Receptor Interactions",
             choices = NULL,
             multiple = TRUE
-            ),
-          sliderInput(
-            inputId = "TSA_SLIDER_PVALUE",
-            label = "Filter by Adj. p-value",
-            min = 0,
-            max = 1,
-            value = 1
-          ),
-          uiOutput("TSA_SLIDER_LOG2FC")
+            )
         ),
         mainPanel(
-          fluidRow(
-            column(
-              width = 12,
-              uiOutput("TSA_CCI_DETAILS"),
-              style = "padding:50px"
-            ),
-            column(
-              width = 12,
-              uiOutput("TSA_CCI_TEXTOUTPUT")
-            )
-          )
+          uiOutput("TSA_CCI_DETAILS")
         )
       ),
       value = "TSA_INTERACTION_ANALYSIS"
@@ -73,38 +45,30 @@ tab_tissue_specific <- tabPanel(
         sidebarPanel(
           width = 3,
           uiOutput("TSA_ORA_DATASET_CHOICE"),
+          hr(),
+          uiOutput("TSA_ORA_CATEGORY_CHOICE"),
           selectInput(
-            inputId = "TSA_ORA_DETAILS_CHOICE",
-            label = "Choose between Table or Plot",
-            choices = c("ORA Table", "ORA Score Plot", "ORA Network")
+            inputId = "TSA_ORA_TYPE_CHOICE",
+            label = "Age Regulation",
+            choices = list("Up", "Down", "Flat")
           ),
           conditionalPanel(
-            condition = "input.TSA_ORA_DETAILS_CHOICE != 'ORA Network'",
-            uiOutput("TSA_ORA_CATEGORY_CHOICE"),
+            condition = "input.TSA_ORA_CATEGORY_CHOICE == 'GO Terms'",
+            hr(),
             selectInput(
-              inputId = "TSA_ORA_TYPE_CHOICE",
-              label = "Age Regulation",
-              choices = list("Up", "Down", "Flat")
+              inputId = "TSA_ORA_GO_ASPECT_CHOICE",
+              label = "GO Aspect",
+              choices = c("Biological Process", "Molecular Function", "Cellular Component")
             )
           )
         ),
         mainPanel(
-          fluidRow(
-            column(
-              width = 12,
-              uiOutput("TSA_ORA_DETAILS"),
-              style = "padding:50px"
-            ),
-            column(
-              width = 12,
-              htmlOutput("TSA_ORA_INTRO"),
-              style = "padding:50px"
-            )
-          )
+          uiOutput("TSA_ORA_DETAILS")
         )
       ),
       value = "TSA_ORA"
     ),
     id = "active_TSA_panel"
-  )
+  ),
+  value = "TSA_navbar"
 )

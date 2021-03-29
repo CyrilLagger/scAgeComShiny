@@ -62,19 +62,38 @@ get_intro_lri_table <- function(
   input
 ) {
   DT::renderDataTable({
-    req(input$LRI_DATABASE)
-    dt <- scAgeCom_data$LRI_mouse_curated[
-      apply(
-        sapply(
-          input$LRI_DATABASE,
-          function(i) {
-            grepl(i, `Database of Origin`)
-          }
-        ),
-        MARGIN = 1,
-        any
-      )
-    ]
+    req(
+      input$LRI_DATABASE,
+      input$INTRO_LRI_SPECIES_CHOICE
+    )
+    if (input$INTRO_LRI_SPECIES_CHOICE == "Mouse") {
+      dt <- scAgeCom_data$LRI_mouse_curated[
+        apply(
+          sapply(
+            input$LRI_DATABASE,
+            function(i) {
+              grepl(i, `Database of Origin`)
+            }
+          ),
+          MARGIN = 1,
+          any
+        )
+      ]
+    }
+    if (input$INTRO_LRI_SPECIES_CHOICE == "Human") {
+      dt <- scAgeCom_data$LRI_human_curated[
+        apply(
+          sapply(
+            input$LRI_DATABASE,
+            function(i) {
+              grepl(i, `Database of Origin`)
+            }
+          ),
+          MARGIN = 1,
+          any
+        )
+      ]
+    }
     options_LRI <- list(
       pageLength = 10,
       columnDefs = list(
@@ -102,10 +121,18 @@ plot_intro_lri_upset <- function(
   input
 ) {
   renderPlot({
-    scAgeCom_data$plot_lri_upset(
-      LRI_table = scAgeCom_data$LRI_mouse_curated,
-      groups = colnames(scAgeCom_data$LRI_mouse_curated)[9:16]
-    )
+    req(input$INTRO_LRI_SPECIES_CHOICE)
+    if (input$INTRO_LRI_SPECIES_CHOICE == "Mouse") {
+      scAgeCom_data$plot_lri_upset(
+        LRI_table = scAgeCom_data$LRI_mouse_curated,
+        groups = colnames(scAgeCom_data$LRI_mouse_curated)[9:16]
+      )
+    } else if (input$INTRO_LRI_SPECIES_CHOICE == "Human") {
+      scAgeCom_data$plot_lri_upset(
+        LRI_table = scAgeCom_data$LRI_human_curated,
+        groups = colnames(scAgeCom_data$LRI_human_curated)[9:16]
+      )
+    }
   })
 }
 

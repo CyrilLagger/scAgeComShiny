@@ -50,7 +50,11 @@ tab_combined_analysis <- tabPanel(
         ),
         mainPanel(
           fluidRow(
-            column(width = 12, plotly::plotlyOutput("TCA_KEYWORD_SUMMARY",  height = "600px"), style = "padding:50px")
+            column(
+              width = 12,
+              plotly::plotlyOutput("TCA_KEYWORD_SUMMARY",  height = "600px"),
+              style = "padding:50px"
+            )
           )
         )
       ),
