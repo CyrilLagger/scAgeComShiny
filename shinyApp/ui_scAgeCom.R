@@ -12,12 +12,18 @@ ui_scAgeCom <- fluidPage(
   ),
   tags$head(
     tags$style(HTML("hr {border-top: 1px solid #000000;}")),
-    tags$script(src = "https://kit.fontawesome.com/8deb5c53bb.js",
-                crossorigin = "anonymous"),
-    tags$script(src = "scAgeCom.js"),
-    tags$link(rel = "stylesheet",
-              type = "text/css",
-              href = "scAgeCom.css")
+    tags$script(
+      src = "https://kit.fontawesome.com/8deb5c53bb.js",
+      crossorigin = "anonymous"
+    ),
+    tags$script(
+      src = "scAgeCom.js"
+    ),
+    tags$link(
+      rel = "stylesheet",
+      type = "text/css",
+      href = "scAgeCom.css"
+    )
   ),
   navbarPage(
     title = "scAgeCom",

@@ -1,71 +1,170 @@
+output$TCA_TOP_VIEW <- renderUI({
+  fluidRow(
+    column(
+      width = 6,
+      titlePanel(htmlOutput("TCA_TITLE")),
+      offset = 3
+    ),
+  )
+})
 
-## TCA overall ####
+output$TCA_TITLE <- renderUI({
+  tags$p(
+    div(style="display: inline-block;", "Choose a title for here: ")
+  )
+})
 
-get_TCA_title <- function(
-  input
-) {
-  renderUI({
-      tags$p(
-        div(style="display: inline-block;", "Choose a title for here: ")
-      )
-    })
-}
+output$TCA_PANEL_VIEW <- renderUI({
+  tabsetPanel(
+    type = "tabs",
+    tabPanel(
+      title = "Summary Table",
+      sidebarLayout(
+        sidebarPanel(
+          width = 3,
+          uiOutput("TCA_GLOBAL_TABLE_CHOICE"),
+          uiOutput("TCA_GLOBAL_ORA_REGULATION_CHOICE")
+        ),
+        mainPanel(
+          uiOutput("TCA_GLOBAL_DETAILS")
+        )
+      ),
+      value = "TCA_SUMMARY_TABLE"
+    ),
+    tabPanel(
+      title = "Keyword summary",
+      sidebarLayout(
+        sidebarPanel(
+          width = 3,
+          uiOutput("TCA_KEYWORD_CATEGORY_CHOICE"),
+          uiOutput("TCA_KEYWORD_VALUE_CHOICE")
+        ),
+        mainPanel(
+          fluidRow(
+            column(
+              width = 12,
+              plotly::plotlyOutput("TCA_KEYWORD_SUMMARY",  height = "600px"),
+              style = "padding:50px"
+            )
+          )
+        )
+      ),
+      value = "TCA_KEYWORD_SUMMARY"
+    ),
+    id = "active_TCA_panel"
+  )
+})
 
-## TCA GlOBAL mainpanel ####
+output$TCA_GLOBAL_TABLE_CHOICE <- renderUI({
+  selectInput(
+    inputId = "TCA_GLOBAL_TABLE_CHOICE",
+    label = "Category",
+    choices = scAgeCom_data$ALL_GLOBAL_CATEGORIES
+  )
+})
 
-get_TCA_global_details <- function(
-  input
-) {
-  renderUI({
-    DT::dataTableOutput("TCA_GLOBAL_TABLE")
-  })
-}
+output$TCA_GLOBAL_ORA_REGULATION_CHOICE <- renderUI({
+  selectInput(
+    inputId = "TCA_GLOBAL_ORA_REGULATION_CHOICE",
+    label = "ORA Regulation",
+    choices = scAgeCom_data$ALL_ORA_TYPES
+  )
+})
 
-get_TCA_global_table <- function(
-  input
-) {
-  DT::renderDT({
-    req(input$TCA_GLOBAL_TABLE_CHOICE, input$TCA_GLOBAL_ORA_REGULATION_CHOICE)
-    dt <- scAgeCom_data$ORA_KEYWORD_COUNTS[
-      TYPE == input$TCA_GLOBAL_TABLE_CHOICE &
-        REGULATION == input$TCA_GLOBAL_ORA_REGULATION_CHOICE
-    ][order(-`Overall (union)`)]
-    cols_to_keep <-  c(
-      "VALUE",
-      "Overall (union)",
-      "TMS FACS (male)", "TMS FACS (female)",
-      "TMS Droplet (male)", "TMS Droplet (female)",
-      "Calico2019"
+output$TCA_GLOBAL_DETAILS <- renderUI({
+  fluidRow(
+    column(
+      width = 12,
+      DT::dataTableOutput("TCA_GLOBAL_TABLE"),
+      style = "padding:50px"
     )
-    scAgeCom_data$show_DT(
-      dt,
-      cols_to_show = cols_to_keep,
-      cols_to_keep[-1],
-      table_title = paste0(
-        "Summary over-representation for ",
-        input$TCA_GLOBAL_ORA_REGULATION_CHOICE,
-        " by tissue and dataset.")
-    )
-  })
-}
+  )
+})
 
-## TCA KEYWORD mainpanel ####
-
-get_TCA_keyword_summary <- function(
-  input
-) {
-  plotly::renderPlotly({
-    req(
-      input$TCA_KEYWORD_CATEGORY_CHOICE,
-      input$TCA_KEYWORD_VALUE_CHOICE
-      )
-    #print(input$TCA_KEYWORD_CATEGORY_CHOICE)
-    #print(input$TCA_KEYWORD_VALUE_CHOICE)
-    scAgeCom_data$plot_keyword_tissue_vs_dataset(
-      scAgeCom_data$ORA_KEYWORD_SUMMARY_UNIQUE,
-      scAgeCom_data$ORA_KEYWORD_TEMPLATE,
-      input$TCA_KEYWORD_CATEGORY_CHOICE,
-      input$TCA_KEYWORD_VALUE_CHOICE
+output$TCA_GLOBAL_TABLE <- DT::renderDT({
+  req(
+    input$TCA_GLOBAL_TABLE_CHOICE,
+    input$TCA_GLOBAL_ORA_REGULATION_CHOICE
     )
-  })
-}
+  scAgeCom_data$build_GLOBAL_display(
+    ORA_KEYWORD_COUNTS = scAgeCom_data$ORA_KEYWORD_COUNTS,
+    global_category = input$TCA_GLOBAL_TABLE_CHOICE,
+    global_type = input$TCA_GLOBAL_ORA_REGULATION_CHOICE
+  )
+})
+
+output$TCA_KEYWORD_CATEGORY_CHOICE <- renderUI({
+  selectInput(
+    inputId = "TCA_KEYWORD_CATEGORY_CHOICE",
+    label = "Category",
+    choices = scAgeCom_data$ALL_GLOBAL_CATEGORIES
+  )
+})
+
+output$TCA_KEYWORD_VALUE_CHOICE <- renderUI({
+  selectizeInput(
+    inputId = "TCA_KEYWORD_VALUE_CHOICE",
+    label = "Choose a term of interest",
+    choices = NULL,
+    multiple = FALSE
+  )
+})
+
+output$TCA_KEYWORD_SUMMARY <- plotly::renderPlotly({
+  req(
+    input$TCA_KEYWORD_CATEGORY_CHOICE,
+    input$TCA_KEYWORD_VALUE_CHOICE
+  )
+  #print(input$TCA_KEYWORD_CATEGORY_CHOICE)
+  #print(input$TCA_KEYWORD_VALUE_CHOICE)
+  scAgeCom_data$plot_keyword_tissue_vs_dataset(
+    scAgeCom_data$ORA_KEYWORD_SUMMARY_UNIQUE,
+    scAgeCom_data$ORA_KEYWORD_TEMPLATE,
+    input$TCA_KEYWORD_CATEGORY_CHOICE,
+    input$TCA_KEYWORD_VALUE_CHOICE
+  )
+})
+
+observeEvent(
+  input$TCA_KEYWORD_CATEGORY_CHOICE,
+  {
+    req(input$TCA_KEYWORD_CATEGORY_CHOICE)
+    updateSelectInput(
+      session = session,
+      'TCA_KEYWORD_CATEGORY_CHOICE',
+      selected = input$TCA_KEYWORD_CATEGORY_CHOICE
+    )
+    choices <- sort(unique(scAgeCom_data$ORA_KEYWORD_COUNTS[
+      TYPE == input$TCA_KEYWORD_CATEGORY_CHOICE
+    ]$VALUE))
+    updateSelectizeInput(
+      session = session,
+      "TCA_KEYWORD_VALUE_CHOICE",
+      choices = choices,
+      options = list(
+        maxOptions = length(choices)
+      ),
+      server = TRUE
+    )
+  },
+  ignoreNULL = FALSE,
+  ignoreInit = FALSE
+)
+
+# Separate handling of JS triggered event
+observeEvent(
+  input$TCA_KEYWORD_VALUE_CHOICE_JS_TRIGGERED,
+  {
+    updateSelectizeInput(
+      session = session,
+      "TCA_KEYWORD_VALUE_CHOICE",
+      selected = input$TCA_KEYWORD_VALUE_CHOICE_JS_TRIGGERED,
+    )
+  }
+)
+
+
+
+
+
+
