@@ -6,7 +6,6 @@ library(htmlwidgets)
 library(shinyWidgets)
 library(DT)
 library(plotly)
-library(latex2exp)
 
 library(data.table)
 library(ggplot2)
