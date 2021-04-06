@@ -126,6 +126,7 @@ server_scAgeCom <- function(
   # output$TCA_KEYWORD_VALUE_CHOICE <- get_TCA_keyword_value_choice(input)
   observeEvent(input$TCA_KEYWORD_CATEGORY_CHOICE, {
     req(input$TCA_KEYWORD_CATEGORY_CHOICE)
+    freezeReactiveValue(input, "TCA_KEYWORD_VALUE_CHOICE")
     updateSelectInput(
       session = session,
       'TCA_KEYWORD_CATEGORY_CHOICE',
@@ -154,6 +155,9 @@ server_scAgeCom <- function(
   })
   ## TCA KEYWORD mainpanel ####
   output$TCA_KEYWORD_SUMMARY <- get_TCA_keyword_summary(input)
+  ## TCA ERI FAMILY Tab ####
+  output$TCA_ERI_FAMILY_NETWORK <- get_TCA_eri_family_network(input)
+  
   ## HELP overall ####
   source("utils_help.R", local = TRUE)
   output$HELP = get_HELP(input)

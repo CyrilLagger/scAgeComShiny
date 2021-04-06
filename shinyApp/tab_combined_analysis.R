@@ -60,6 +60,27 @@ tab_combined_analysis <- tabPanel(
       ),
       value = "TCA_KEYWORD_SUMMARY"
     ),
+    tabPanel(
+      title = 'Celltype families',
+      sidebarLayout(
+        sidebarPanel(
+          width = 3,
+          selectInput(
+            inputId = "TCA_ERI_FAMILY_REGULATION_CHOICE",
+            label = "Regulation",
+            choices = c("UP", "DOWN", "FLAT")
+          ),
+          sliderInput(
+            inputId = "TCA_ERI_FAMILY_NUM_TISS_THRESHOLD",
+            label = "Minimum number of tissues",
+            min = 0, max = 15, value = 0
+          )
+        ),
+        mainPanel(
+          visNetwork::visNetworkOutput("TCA_ERI_FAMILY_NETWORK", height='600px')
+        )
+      )
+    ),
     id = "active_TCA_panel"
   )
 )
