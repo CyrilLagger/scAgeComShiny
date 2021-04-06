@@ -1,9 +1,9 @@
 // Add help icons
 const ICON_ELEMENT = '<i class="fas fa-question-circle" id="question_mark_icon"></i>';
 const ICON_ELEMENT_SELECTOR = "i#question_mark_icon";
-const TSA_TAB_SELECTOR = "a[data-value='Tissue-Specific Analysis']";
+const TSA_TAB_SELECTOR = "a[data-value='TSA_navbar']";
 const TSA_ORAPANEL_SELECTOR = "a[data-value='TSA_ORA']";
-const TAB_HELP_SELECTOR = "a[data-value='tab-help']";
+const TAB_HELP_SELECTOR = "a[data-value='HELP_navbar']";
 
 $(document).ready(() => {
   $(TSA_TAB_SELECTOR).one("click", () => {
@@ -23,7 +23,7 @@ $(document).ready(() => {
 //    #### TCA_GLOBAL_TABLE events ####
 // https://stackoverflow.com/questions/38797646/hyperlink-from-one-datatable-to-another-in-shiny
 
-const TCA_GLOBAL_TABLE_term_selector = "div[data-value='Global Analysis'] #TCA_GLOBAL_TABLE tr td:nth-child(2)";
+const TCA_GLOBAL_TABLE_term_selector = "div[data-value='TCA_SUMMARY_TABLE'] #TCA_GLOBAL_TABLE tr td:nth-child(2)";
 const TCA_KEYWORD_SUMMARY_selector = "a[data-value='TCA_KEYWORD_SUMMARY']";
 const TCA_GLOBAL_TABLE_CATEGORY_CHOICE_selector = "input#TCA_GLOBAL_TABLE_CHOICE-selectized";
 const TCA_KEYWORD_SUMMARY_CATEGORY_CHOICE_selector = "input#TCA_KEYWORD_CATEGORY_CHOICE-selectized";
@@ -65,7 +65,6 @@ $(document).on("mouseenter", TCA_GLOBAL_TABLE_term_selector, () => {
   console.log('mouseleave');
 }); */
 
-
 // Heatmap to TSA redirection
 const TCA_KEYWORD_HEATMAP_selector = "#TCA_KEYWORD_SUMMARY";
 
@@ -78,7 +77,5 @@ $(TCA_KEYWORD_SUMMARY_selector).once(() => {
     console.log(dataset, tissue);
   });
 });
-
-
 
 //    #################################

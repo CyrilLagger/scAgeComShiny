@@ -6,18 +6,17 @@ library(htmlwidgets)
 library(shinyWidgets)
 library(DT)
 library(plotly)
-library(latex2exp)
 
 library(data.table)
 library(ggplot2)
 library(ComplexUpset)
-library(scDiffCom)
 
-library(ggExtra)
 library(igraph)
 library(RColorBrewer)
 library(purrr)
 library(visNetwork)
+
+library(scDiffCom)
 
 
 ## Load data and functions ####
