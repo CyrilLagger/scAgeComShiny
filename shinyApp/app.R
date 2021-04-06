@@ -2,7 +2,7 @@
 ##
 ## Project: scAgeComShiny
 ##
-## Last update - March 2021
+## Last update - April 2021
 ##
 ## cyril.lagger@liverpool.ac.uk
 ## ursu_eugen@hotmail.com

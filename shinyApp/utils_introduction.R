@@ -124,52 +124,14 @@ output$INTRO_LRI_TABLE <- DT::renderDataTable({
     input$INTRO_LRI_SPECIES_CHOICE
   )
   if (input$INTRO_LRI_SPECIES_CHOICE == "Mouse") {
-    dt <- scAgeCom_data$LRI_mouse_curated[
-      apply(
-        sapply(
-          input$LRI_DATABASE,
-          function(i) {
-            grepl(i, `Database of Origin`)
-          }
-        ),
-        MARGIN = 1,
-        any
-      )
-    ]
+    dt <- scAgeCom_data$LRI_mouse_curated
   }
   if (input$INTRO_LRI_SPECIES_CHOICE == "Human") {
-    dt <- scAgeCom_data$LRI_human_curated[
-      apply(
-        sapply(
-          input$LRI_DATABASE,
-          function(i) {
-            grepl(i, `Database of Origin`)
-          }
-        ),
-        MARGIN = 1,
-        any
-      )
-    ]
+    dt <- scAgeCom_data$LRI_human_curated
   }
-  options_LRI <- list(
-    pageLength = 10,
-    columnDefs = list(
-      list(
-        targets = c(6,7),
-        render = htmlwidgets::JS(
-          "function(data, type, row, meta) {",
-          "return type === 'display' && data.length > 20 ?",
-          "'<span title=\"' + data + '\">' + data.substr(0, 20) + '...</span>' : data;",
-          "}")
-      )
-    )
-  )
-  scAgeCom_data$show_DT(
-    data = dt,
-    cols_to_show = colnames(dt)[1:7],
-    cols_numeric = NULL,
-    table_title = "Table of Ligand-Receptor Interactions",
-    options = options_LRI
+  scAgeCom_data$build_LRI_display(
+    LRI_table = dt,
+    LRI_database = input$LRI_DATABASE
   )
 })
 

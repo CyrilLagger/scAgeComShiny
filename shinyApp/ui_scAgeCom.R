@@ -44,7 +44,7 @@ ui_scAgeCom <- fluidPage(
     tabPanel(
       title = "Help",
       htmlOutput("HELP"),
-      value = 'tab-help'
+      value = "HELP_navbar"
     )
   )
 )
