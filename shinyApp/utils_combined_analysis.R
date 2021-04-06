@@ -43,7 +43,7 @@ output$TCA_PANEL_VIEW <- renderUI({
           fluidRow(
             column(
               width = 12,
-              plotly::plotlyOutput("TCA_KEYWORD_SUMMARY",  height = "600px"),
+              plotly::plotlyOutput("TCA_KEYWORD_SUMMARY",  height = "800px"),
               style = "padding:50px"
             )
           )
