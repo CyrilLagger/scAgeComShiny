@@ -51,6 +51,27 @@ output$TCA_PANEL_VIEW <- renderUI({
       ),
       value = "TCA_KEYWORD_SUMMARY"
     ),
+    tabPanel(
+      title = 'Celltype families',
+      sidebarLayout(
+        sidebarPanel(
+          width = 3,
+          selectInput(
+            inputId = "TCA_ERI_FAMILY_REGULATION_CHOICE",
+            label = "Regulation",
+            choices = c("UP", "DOWN", "FLAT")
+          ),
+          sliderInput(
+            inputId = "TCA_ERI_FAMILY_NUM_TISS_THRESHOLD",
+            label = "Minimum number of tissues",
+            min = 0, max = 15, value = 0
+          )
+        ),
+        mainPanel(
+          visNetwork::visNetworkOutput("TCA_ERI_FAMILY_NETWORK", height='600px')
+        )
+      )
+    ),
     id = "active_TCA_panel"
   )
 })
@@ -125,10 +146,75 @@ output$TCA_KEYWORD_SUMMARY <- plotly::renderPlotly({
   )
 })
 
+output$TCA_ERI_FAMILY_NETWORK <- visNetwork::renderVisNetwork({
+  req(input$TCA_ERI_FAMILY_REGULATION_CHOICE, input$TCA_ERI_FAMILY_NUM_TISS_THRESHOLD)
+  REGULATION_CHOICE = input$TCA_ERI_FAMILY_REGULATION_CHOICE
+  NUM_TISSUE_THRESHOLD = input$TCA_ERI_FAMILY_NUM_TISS_THRESHOLD
+  
+  graph_config = scDiffCom:::setup_graph_config()
+  edge_color = ifelse(
+    REGULATION_CHOICE == 'UP',
+    graph_config$EDGE_COLORING$ORA_COLOR_UP, 
+    graph_config$EDGE_COLORING$ORA_COLOR_DOWN
+  )
+  
+  TYPE <- REGULATION <- VALUE <- from <- to <- NULL
+  edges = scAgeCom_data$ORA_KEYWORD_COUNTS[
+    TYPE == 'ERI Family' &
+      REGULATION == REGULATION_CHOICE &
+      `Overall (union)` >= NUM_TISSUE_THRESHOLD,
+    c('VALUE', 'Overall (union)')
+  ]
+  edges[, "from" := sapply(strsplit(edges[, VALUE], "_"), function(v) v[1])]
+  edges[, "to" := sapply(strsplit(edges[, VALUE], "_"), function(v) v[2])]
+  edges[, "value" := list(`Overall (union)`)]
+  edges[, "label" := value]
+  edges[, "color" := edge_color]
+  
+  nodes_set = union(edges[, from], edges[, to])
+  nodes = data.table::data.table(id = nodes_set, label = nodes_set)
+  nodes[
+    ,
+    c("color.background", "color.border",
+      "color.highlight.background", "color.highlight.border",
+      "color.hover.background", "color.hover.border",
+      "shadow"
+    ) := list(
+      graph_config$NODE_COLORING$BACKGROUND,
+      graph_config$NODE_COLORING$BORDER,
+      graph_config$NODE_COLORING$HIGHLIGHT$BACKGROUND,
+      graph_config$NODE_COLORING$HIGHLIGHT$BORDER,
+      graph_config$NODE_COLORING$HOVER$BACKGROUND,
+      graph_config$NODE_COLORING$HOVER$BORDER,
+      TRUE
+    )
+  ]
+  
+  visNetwork::visNetwork(
+    nodes = nodes,
+    edges = edges,
+    # width = 100,
+    # height = 100,
+    main = "Cell families",
+    # submain = sprintf("%s", object_name),
+    # footer = sprintf("Network type: %s", layout_type),
+    # background = config$VISNETWORK$BACKGROUND
+  ) %>% visNetwork::visNodes(
+    shape = "dot",
+    physics = FALSE,
+    font = list(size = 18, align = "left")
+  ) %>% visNetwork::visEdges(
+    shadow = TRUE,
+    arrows = "middle",
+    smooth = list(enabled = TRUE, roundness = 0.75)
+  )
+}) # get_TCA_eri_family_network(input)
+
 observeEvent(
   input$TCA_KEYWORD_CATEGORY_CHOICE,
   {
     req(input$TCA_KEYWORD_CATEGORY_CHOICE)
+    freezeReactiveValue(input, "TCA_KEYWORD_VALUE_CHOICE")
     updateSelectInput(
       session = session,
       'TCA_KEYWORD_CATEGORY_CHOICE',
@@ -163,8 +249,71 @@ observeEvent(
   }
 )
 
-
-
-
-
-
+## TCA CELL FAMILIES Tab ##
+# get_TCA_eri_family_network <- function(
+#   input
+# ) {
+#   visNetwork::renderVisNetwork({
+#     req(input$TCA_ERI_FAMILY_REGULATION_CHOICE, input$TCA_ERI_FAMILY_NUM_TISS_THRESHOLD)
+#     REGULATION_CHOICE = input$TCA_ERI_FAMILY_REGULATION_CHOICE
+#     NUM_TISSUE_THRESHOLD = input$TCA_ERI_FAMILY_NUM_TISS_THRESHOLD
+#     
+#     graph_config = scDiffCom:::setup_graph_config()
+#     edge_color = ifelse(
+#       REGULATION_CHOICE == 'UP',
+#       graph_config$EDGE_COLORING$ORA_COLOR_UP, 
+#       graph_config$EDGE_COLORING$ORA_COLOR_DOWN
+#     )
+#     
+#     TYPE <- REGULATION <- VALUE <- from <- to <- NULL
+#     edges = scAgeCom_data$ORA_KEYWORD_COUNTS[
+#       TYPE == 'ERI Family' &
+#         REGULATION == REGULATION_CHOICE &
+#         `Overall (union)` >= NUM_TISSUE_THRESHOLD,
+#       c('VALUE', 'Overall (union)')
+#     ]
+#     edges[, "from" := sapply(strsplit(edges[, VALUE], "_"), function(v) v[1])]
+#     edges[, "to" := sapply(strsplit(edges[, VALUE], "_"), function(v) v[2])]
+#     edges[, "value" := list(`Overall (union)`)]
+#     edges[, "label" := value]
+#     edges[, "color" := edge_color]
+#     
+#     nodes_set = union(edges[, from], edges[, to])
+#     nodes = data.table::data.table(id = nodes_set, label = nodes_set)
+#     nodes[
+#       ,
+#       c("color.background", "color.border",
+#         "color.highlight.background", "color.highlight.border",
+#         "color.hover.background", "color.hover.border",
+#         "shadow"
+#       ) := list(
+#         graph_config$NODE_COLORING$BACKGROUND,
+#         graph_config$NODE_COLORING$BORDER,
+#         graph_config$NODE_COLORING$HIGHLIGHT$BACKGROUND,
+#         graph_config$NODE_COLORING$HIGHLIGHT$BORDER,
+#         graph_config$NODE_COLORING$HOVER$BACKGROUND,
+#         graph_config$NODE_COLORING$HOVER$BORDER,
+#         TRUE
+#       )
+#     ]
+#     
+#     visNetwork::visNetwork(
+#       nodes = nodes,
+#       edges = edges,
+#       # width = 100,
+#       # height = 100,
+#       main = "Cell families",
+#       # submain = sprintf("%s", object_name),
+#       # footer = sprintf("Network type: %s", layout_type),
+#       # background = config$VISNETWORK$BACKGROUND
+#     ) %>% visNetwork::visNodes(
+#       shape = "dot",
+#       physics = FALSE,
+#       font = list(size = 18, align = "left")
+#     ) %>% visNetwork::visEdges(
+#       shadow = TRUE,
+#       arrows = "middle",
+#       smooth = list(enabled = TRUE, roundness = 0.75)
+#     )
+#   })
+# }

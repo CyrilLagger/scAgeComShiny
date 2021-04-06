@@ -1,0 +1,86 @@
+tab_combined_analysis <- tabPanel(
+  title = "Global Analysis",
+  fluidRow(
+    column(width = 6, titlePanel(htmlOutput("TCA_TITLE")), offset = 3),
+  ),
+  tabsetPanel(
+    type = "tabs",
+    tabPanel(
+      title = "Summary Table",
+      sidebarLayout(
+        sidebarPanel(
+          width = 3,
+          selectInput(
+            inputId = "TCA_GLOBAL_TABLE_CHOICE",
+            label = "Category",
+            choices = c("LRI", "GO Terms", "KEGG Pathways", "ERI Family")
+          ),
+          selectInput(
+            inputId = "TCA_GLOBAL_ORA_REGULATION_CHOICE",
+            label = "ORA Regulation",
+            choices = c("UP", "DOWN", "FLAT")
+          )
+        ),
+        mainPanel(
+          fluidRow(
+            column(width = 12, uiOutput("TCA_GLOBAL_DETAILS"), style = "padding:50px")
+          )
+        )
+      ),
+      value = "TCA_SUMMARY_TABLE"
+    ),
+    tabPanel(
+      title = "Keyword summary",
+      sidebarLayout(
+        sidebarPanel(
+          width = 3,
+          # uiOutput("TCA_KEYWORD_CATEGORY_CHOICE"),
+          # uiOutput("TCA_KEYWORD_VALUE_CHOICE")
+          selectInput(
+            inputId = "TCA_KEYWORD_CATEGORY_CHOICE",
+            label = "Category",
+            choices = c("LRI", "GO Terms", "KEGG Pathways", "ERI Family")
+          ),
+          selectizeInput(
+            inputId = "TCA_KEYWORD_VALUE_CHOICE",
+            label = "Choose a term of interest",
+            choices = NULL,
+            multiple = FALSE
+          )
+        ),
+        mainPanel(
+          fluidRow(
+            column(
+              width = 12,
+              plotly::plotlyOutput("TCA_KEYWORD_SUMMARY",  height = "600px"),
+              style = "padding:50px"
+            )
+          )
+        )
+      ),
+      value = "TCA_KEYWORD_SUMMARY"
+    ),
+    tabPanel(
+      title = 'Celltype families',
+      sidebarLayout(
+        sidebarPanel(
+          width = 3,
+          selectInput(
+            inputId = "TCA_ERI_FAMILY_REGULATION_CHOICE",
+            label = "Regulation",
+            choices = c("UP", "DOWN", "FLAT")
+          ),
+          sliderInput(
+            inputId = "TCA_ERI_FAMILY_NUM_TISS_THRESHOLD",
+            label = "Minimum number of tissues",
+            min = 0, max = 15, value = 0
+          )
+        ),
+        mainPanel(
+          visNetwork::visNetworkOutput("TCA_ERI_FAMILY_NETWORK", height='600px')
+        )
+      )
+    ),
+    id = "active_TCA_panel"
+  )
+)
