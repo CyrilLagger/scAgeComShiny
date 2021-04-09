@@ -129,7 +129,7 @@ output$TSA_PANEL_VIEW <- renderUI({
           uiOutput("TSA_ORA_CATEGORY_CHOICE"),
           uiOutput("TSA_ORA_TYPE_CHOICE"),
           conditionalPanel(
-            condition = "input.TSA_ORA_CATEGORY_CHOICE == 'GO Terms'",
+            condition = "input.TSA_ORA_CATEGORY_CHOICE == 'By GO/KEGG'",
             hr(),
             uiOutput("TSA_ORA_GO_ASPECT_CHOICE")
           )
@@ -400,7 +400,7 @@ output$TSA_DOWNLOAD_TABLE <- downloadHandler(
 )
 
 output$TSA_ORA_CATEGORY_CHOICE <- renderUI({
-  choices <- scAgeCom_data$ALL_ORA_CATEGORIES
+  choices <- scAgeCom_data$ALL_ORA_CATEGORIES_SPECIFIC
   pickerInput(
     inputId = "TSA_ORA_CATEGORY_CHOICE",
     label = "Category",
@@ -430,7 +430,7 @@ output$TSA_ORA_GO_ASPECT_CHOICE <- renderUI({
 
 output$TSA_ORA_DETAILS <-  renderUI({
   req(input$TSA_ORA_CATEGORY_CHOICE)
-  if (input$TSA_ORA_CATEGORY_CHOICE == "Cell Types") {
+  if (input$TSA_ORA_CATEGORY_CHOICE == "By Cell Types") {
     fluidRow(
       column(
         width = 12,
@@ -439,32 +439,75 @@ output$TSA_ORA_DETAILS <-  renderUI({
       ),
       column(
         width = 12,
-        dataTableOutput("TSA_ORA_TABLE"),
+        dataTableOutput("TSA_ORA_TABLE_CELLFAMILY"),
         style = "padding:50px"
       ),
       column(
         width = 12,
-        #plotOutput("TSA_ORA_PLOT", height = "800px"),
+        plotOutput("TSA_ORA_PLOT_CELLFAMILY", height = "800px"),
         style = "padding:50px"
       )
     )
-  } else {
+  } else if (input$TSA_ORA_CATEGORY_CHOICE == "By Genes") {
     fluidRow(
       column(
         width = 12,
-        dataTableOutput("TSA_ORA_TABLE"),
+        dataTableOutput("TSA_ORA_TABLE_LRI"),
         style = "padding:50px"
       ),
       column(
         width = 12,
-        #plotOutput("TSA_ORA_PLOT", height = "800px"),
+        plotOutput("TSA_ORA_PLOT_LRI", height = "800px"),
+        style = "padding:50px"
+      ),
+      column(
+        width = 12,
+        dataTableOutput("TSA_ORA_TABLE_LIGAND"),
+        style = "padding:50px"
+      ),
+      column(
+        width = 12,
+        plotOutput("TSA_ORA_PLOT_LIGAND", height = "800px"),
+        style = "padding:50px"
+      ),
+      column(
+        width = 12,
+        dataTableOutput("TSA_ORA_TABLE_RECEPTOR"),
+        style = "padding:50px"
+      ),
+      column(
+        width = 12,
+        plotOutput("TSA_ORA_PLOT_RECEPTOR", height = "800px"),
+        style = "padding:50px"
+      )
+    )
+  } else if (input$TSA_ORA_CATEGORY_CHOICE == "By GO/KEGG") {
+    fluidRow(
+      column(
+        width = 12,
+        dataTableOutput("TSA_ORA_TABLE_GO"),
+        style = "padding:50px"
+      ),
+      column(
+        width = 12,
+        plotOutput("TSA_ORA_PLOT_GO", height = "800px"),
+        style = "padding:50px"
+      ),
+      column(
+        width = 12,
+        dataTableOutput("TSA_ORA_TABLE_KEGG"),
+        style = "padding:50px"
+      ),
+      column(
+        width = 12,
+        plotOutput("TSA_ORA_PLOT_KEGG", height = "800px"),
         style = "padding:50px"
       )
     )
   }
 })
 
-output$TSA_ORA_TABLE <- DT::renderDataTable({
+output$TSA_ORA_TABLE_LRI <- DT::renderDataTable({
   req(
     input$TSA_DATASET_CHOICE,
     input$TSA_TISSUE_CHOICE,
@@ -476,23 +519,220 @@ output$TSA_ORA_TABLE <- DT::renderDataTable({
     dataset_choice = input$TSA_DATASET_CHOICE,
     tissue_choice = input$TSA_TISSUE_CHOICE
   )
-  if (input$TSA_ORA_CATEGORY_CHOICE == "GO Terms") {
-    req(input$TSA_ORA_GO_ASPECT_CHOICE)
-    DT <- scAgeCom_data$build_ORA_display(
+  scAgeCom_data$build_ORA_display(
       ORA_table = dt,
-      category_choice = input$TSA_ORA_CATEGORY_CHOICE,
-      go_aspect_choice = input$TSA_ORA_GO_ASPECT_CHOICE,
-      type_choice = input$TSA_ORA_TYPE_CHOICE
-    )
-  } else {
-    DT <- scAgeCom_data$build_ORA_display(
-      ORA_table = dt,
-      category_choice = input$TSA_ORA_CATEGORY_CHOICE,
+      category_choice = "LRIs",
       go_aspect_choice = NULL,
       type_choice = input$TSA_ORA_TYPE_CHOICE
     )
-  }
-  DT
+})
+
+output$TSA_ORA_TABLE_LIGAND <- DT::renderDataTable({
+  req(
+    input$TSA_DATASET_CHOICE,
+    input$TSA_TISSUE_CHOICE,
+    input$TSA_ORA_CATEGORY_CHOICE,
+    input$TSA_ORA_TYPE_CHOICE
+  )
+  dt <- scAgeCom_data$subset_ORA_table(
+    ORA_table = scAgeCom_data$ORA_table,
+    dataset_choice = input$TSA_DATASET_CHOICE,
+    tissue_choice = input$TSA_TISSUE_CHOICE
+  )
+  scAgeCom_data$build_ORA_display(
+    ORA_table = dt,
+    category_choice = "Ligand Gene(s)",
+    go_aspect_choice = NULL,
+    type_choice = input$TSA_ORA_TYPE_CHOICE
+  )
+})
+
+output$TSA_ORA_TABLE_RECEPTOR <- DT::renderDataTable({
+  req(
+    input$TSA_DATASET_CHOICE,
+    input$TSA_TISSUE_CHOICE,
+    input$TSA_ORA_CATEGORY_CHOICE,
+    input$TSA_ORA_TYPE_CHOICE
+  )
+  dt <- scAgeCom_data$subset_ORA_table(
+    ORA_table = scAgeCom_data$ORA_table,
+    dataset_choice = input$TSA_DATASET_CHOICE,
+    tissue_choice = input$TSA_TISSUE_CHOICE
+  )
+  scAgeCom_data$build_ORA_display(
+    ORA_table = dt,
+    category_choice = "Receptor Gene(s)",
+    go_aspect_choice = NULL,
+    type_choice = input$TSA_ORA_TYPE_CHOICE
+  )
+})
+
+output$TSA_ORA_TABLE_GO <- DT::renderDataTable({
+  req(
+    input$TSA_DATASET_CHOICE,
+    input$TSA_TISSUE_CHOICE,
+    input$TSA_ORA_CATEGORY_CHOICE,
+    input$TSA_ORA_TYPE_CHOICE,
+    input$TSA_ORA_GO_ASPECT_CHOICE
+  )
+  dt <- scAgeCom_data$subset_ORA_table(
+    ORA_table = scAgeCom_data$ORA_table,
+    dataset_choice = input$TSA_DATASET_CHOICE,
+    tissue_choice = input$TSA_TISSUE_CHOICE
+  )
+  scAgeCom_data$build_ORA_display(
+    ORA_table = dt,
+    category_choice = "GO Terms",
+    go_aspect_choice = input$TSA_ORA_GO_ASPECT_CHOICE,
+    type_choice = input$TSA_ORA_TYPE_CHOICE
+  )
+})
+
+output$TSA_ORA_TABLE_KEGG <- DT::renderDataTable({
+  req(
+    input$TSA_DATASET_CHOICE,
+    input$TSA_TISSUE_CHOICE,
+    input$TSA_ORA_CATEGORY_CHOICE,
+    input$TSA_ORA_TYPE_CHOICE
+  )
+  dt <- scAgeCom_data$subset_ORA_table(
+    ORA_table = scAgeCom_data$ORA_table,
+    dataset_choice = input$TSA_DATASET_CHOICE,
+    tissue_choice = input$TSA_TISSUE_CHOICE
+  )
+  scAgeCom_data$build_ORA_display(
+    ORA_table = dt,
+    category_choice = "KEGG Pathways",
+    go_aspect_choice = NULL,
+    type_choice = input$TSA_ORA_TYPE_CHOICE
+  )
+})
+
+output$TSA_ORA_TABLE_CELLFAMILY <- DT::renderDataTable({
+  req(
+    input$TSA_DATASET_CHOICE,
+    input$TSA_TISSUE_CHOICE,
+    input$TSA_ORA_CATEGORY_CHOICE,
+    input$TSA_ORA_TYPE_CHOICE
+  )
+  dt <- scAgeCom_data$subset_ORA_table(
+    ORA_table = scAgeCom_data$ORA_table,
+    dataset_choice = input$TSA_DATASET_CHOICE,
+    tissue_choice = input$TSA_TISSUE_CHOICE
+  )
+  scAgeCom_data$build_ORA_display(
+    ORA_table = dt,
+    category_choice = "Cell Families",
+    go_aspect_choice = NULL,
+    type_choice = input$TSA_ORA_TYPE_CHOICE
+  )
+})
+
+output$TSA_ORA_PLOT_LRI <- renderPlot({
+  req(
+    input$TSA_DATASET_CHOICE,
+    input$TSA_TISSUE_CHOICE,
+    input$TSA_ORA_CATEGORY_CHOICE,
+    input$TSA_ORA_TYPE_CHOICE
+  )
+  scAgeCom_data$build_ORA_plot(
+    ORA_table = scAgeCom_data$ORA_table,
+    tissue_choice = input$TSA_TISSUE_CHOICE,
+    dataset_choice = input$TSA_DATASET_CHOICE,
+    category_choice = "LRI",
+    type_choice = input$TSA_ORA_TYPE_CHOICE
+  )
+})
+
+output$TSA_ORA_PLOT_LIGAND <- renderPlot({
+  req(
+    input$TSA_DATASET_CHOICE,
+    input$TSA_TISSUE_CHOICE,
+    input$TSA_ORA_CATEGORY_CHOICE,
+    input$TSA_ORA_TYPE_CHOICE
+  )
+  scAgeCom_data$build_ORA_plot(
+    ORA_table = scAgeCom_data$ORA_table,
+    tissue_choice = input$TSA_TISSUE_CHOICE,
+    dataset_choice = input$TSA_DATASET_CHOICE,
+    category_choice = "LIGAND_COMPLEX",
+    type_choice = input$TSA_ORA_TYPE_CHOICE
+  )
+})
+
+output$TSA_ORA_PLOT_RECEPTOR <- renderPlot({
+  req(
+    input$TSA_DATASET_CHOICE,
+    input$TSA_TISSUE_CHOICE,
+    input$TSA_ORA_CATEGORY_CHOICE,
+    input$TSA_ORA_TYPE_CHOICE
+  )
+  scAgeCom_data$build_ORA_plot(
+    ORA_table = scAgeCom_data$ORA_table,
+    tissue_choice = input$TSA_TISSUE_CHOICE,
+    dataset_choice = input$TSA_DATASET_CHOICE,
+    category_choice = "RECEPTOR_COMPLEX",
+    type_choice = input$TSA_ORA_TYPE_CHOICE
+  )
+})
+
+output$TSA_ORA_PLOT_GO <- renderPlot({
+  req(
+    input$TSA_DATASET_CHOICE,
+    input$TSA_TISSUE_CHOICE,
+    input$TSA_ORA_CATEGORY_CHOICE,
+    input$TSA_ORA_TYPE_CHOICE,
+    input$TSA_ORA_GO_ASPECT_CHOICE
+  )
+  go_aspect <- ifelse(
+    input$TSA_ORA_GO_ASPECT_CHOICE == "Biological Process",
+    "biological_process",
+    ifelse(
+      input$TSA_ORA_GO_ASPECT_CHOICE == "Molecular Function",
+      "molecular_function",
+      "cellular_component"
+    )
+  )
+  scAgeCom_data$build_ORA_plot(
+    ORA_table = scAgeCom_data$ORA_table,
+    tissue_choice = input$TSA_TISSUE_CHOICE,
+    dataset_choice = input$TSA_DATASET_CHOICE,
+    category_choice = "GO_TERMS",
+    type_choice = input$TSA_ORA_TYPE_CHOICE,
+    go_aspect_choice = go_aspect
+  )
+})
+
+output$TSA_ORA_PLOT_KEGG <- renderPlot({
+  req(
+    input$TSA_DATASET_CHOICE,
+    input$TSA_TISSUE_CHOICE,
+    input$TSA_ORA_CATEGORY_CHOICE,
+    input$TSA_ORA_TYPE_CHOICE
+  )
+  scAgeCom_data$build_ORA_plot(
+    ORA_table = scAgeCom_data$ORA_table,
+    tissue_choice = input$TSA_TISSUE_CHOICE,
+    dataset_choice = input$TSA_DATASET_CHOICE,
+    category_choice = "KEGG_PWS",
+    type_choice = input$TSA_ORA_TYPE_CHOICE
+  )
+})
+
+output$TSA_ORA_PLOT_CELLFAMILY <- renderPlot({
+  req(
+    input$TSA_DATASET_CHOICE,
+    input$TSA_TISSUE_CHOICE,
+    input$TSA_ORA_CATEGORY_CHOICE,
+    input$TSA_ORA_TYPE_CHOICE
+  )
+  scAgeCom_data$build_ORA_plot(
+    ORA_table = scAgeCom_data$ORA_table,
+    tissue_choice = input$TSA_TISSUE_CHOICE,
+    dataset_choice = input$TSA_DATASET_CHOICE,
+    category_choice = "ER_CELLFAMILIES",
+    type_choice = input$TSA_ORA_TYPE_CHOICE
+  )
 })
 
 output$TSA_ORA_NETWORK_PLOT <- renderVisNetwork({
@@ -500,59 +740,17 @@ output$TSA_ORA_NETWORK_PLOT <- renderVisNetwork({
     input$TSA_DATASET_CHOICE,
     input$TSA_TISSUE_CHOICE
   )
-  #abbr <- scAgeCom_data$ABBR_CELLTYPE[[input$TSA_DATASET_CHOICE]]
-  #abbr <- unique(abbr[ORIGINAL_CELLTYPE %in% obj@cci_table_detected[ID == input$TSA_TISSUE_CHOICE][["EMITTER_CELLTYPE"]]])
   scAgeCom_data$build_ORA_visnetwork(
     CCI_table = scAgeCom_data$CCI_table,
     ORA_table = scAgeCom_data$ORA_table,
     tissue_choice = input$TSA_TISSUE_CHOICE,
-    dataset_choice = input$TSA_DATASET_CHOICE
+    dataset_choice = input$TSA_DATASET_CHOICE,
+    abbr_celltype = scAgeCom_data$ABBR_CELLTYPE
   )
 })
 
-# output$TSA_ORA_PLOT <- renderPlot({
-#   req(input$TSA_DATASET_CHOICE, input$TSA_TISSUE_CHOICE, input$TSA_ORA_CATEGORY_CHOICE, input$TSA_ORA_TYPE_CHOICE)
-#   replacement <- data.table(
-#     VALUE_OLD = c("KEGG_PWS", "GO_TERMS", "LRI", "ER_CELLTYPES", "ER_CELLFAMILIES"),
-#     VALUE_NEW = c("KEGG Pathways", "GO Terms", "LRIs", "Cell Types", "Cell Families")
-#   )
-#   replacement <- replacement[VALUE_NEW == input$TSA_ORA_CATEGORY_CHOICE ][["VALUE_OLD"]]
-#   if (input$TSA_ORA_TYPE_CHOICE == "Up") {
-#     reg <- "UP"
-#   } else if (input$TSA_ORA_TYPE_CHOICE == "Down") {
-#     reg <- "DOWN"
-#   } else if ( input$TSA_ORA_TYPE_CHOICE == "Flat") {
-#     reg <- "FLAT"
-#   }
-#   obj <- scAgeCom_data$DATASETS_COMBINED[[input$TSA_DATASET_CHOICE]]
-#   req(obj)
-#   p <- PlotORA(
-#     object = obj,
-#     subID = input$TSA_TISSUE_CHOICE,
-#     category = replacement,
-#     regulation = reg,
-#     max_terms_show = 20,
-#     OR_threshold = 1,
-#     p_value_threshold = 0.05,
-#     stringent = FALSE
-#   )
-#   if (is.character(p)) {
-#     return(p)
-#   }
-#   p <- p + ggtitle(
-#     paste0(
-#       "Top-20 ",
-#       input$TSA_ORA_CATEGORY_CHOICE,
-#       " over-represented among ",
-#       input$TSA_ORA_TYPE_CHOICE,
-#       "-regulated CCIs"
-#     )
-#   ) +
-#     ylab("") +
-#     theme(text=element_text(size=20)) +
-#     theme(plot.title = element_text(hjust = 0.5, size = 16))
-#   return(p)
-# })
-#
+
+
+
 
 

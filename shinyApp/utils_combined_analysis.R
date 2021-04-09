@@ -23,7 +23,12 @@ output$TCA_PANEL_VIEW <- renderUI({
         sidebarPanel(
           width = 3,
           uiOutput("TCA_GLOBAL_TABLE_CHOICE"),
-          uiOutput("TCA_GLOBAL_ORA_REGULATION_CHOICE")
+          uiOutput("TCA_GLOBAL_ORA_REGULATION_CHOICE"),
+          conditionalPanel(
+            condition = "input.TCA_GLOBAL_TABLE_CHOICE == 'By GO/KEGG'",
+            hr(),
+            uiOutput("TCA_ORA_GO_ASPECT_CHOICE")
+          )
         ),
         mainPanel(
           uiOutput("TCA_GLOBAL_DETAILS")
@@ -80,7 +85,7 @@ output$TCA_GLOBAL_TABLE_CHOICE <- renderUI({
   selectInput(
     inputId = "TCA_GLOBAL_TABLE_CHOICE",
     label = "Category",
-    choices = scAgeCom_data$ALL_GLOBAL_CATEGORIES
+    choices = scAgeCom_data$ALL_ORA_CATEGORIES_GLOBAL
   )
 })
 
@@ -92,24 +97,130 @@ output$TCA_GLOBAL_ORA_REGULATION_CHOICE <- renderUI({
   )
 })
 
-output$TCA_GLOBAL_DETAILS <- renderUI({
-  fluidRow(
-    column(
-      width = 12,
-      DT::dataTableOutput("TCA_GLOBAL_TABLE"),
-      style = "padding:50px"
-    )
+output$TCA_ORA_GO_ASPECT_CHOICE <- renderUI({
+  choices <- scAgeCom_data$ALL_ORA_GO_ASPECTS
+  selectInput(
+    inputId = "TCA_ORA_GO_ASPECT_CHOICE",
+    label = "GO Aspect",
+    choices = choices
   )
 })
 
-output$TCA_GLOBAL_TABLE <- DT::renderDT({
+output$TCA_GLOBAL_DETAILS <- renderUI({
+  req(input$TCA_GLOBAL_TABLE_CHOICE)
+  if (input$TCA_GLOBAL_TABLE_CHOICE == "By Genes") {
+    fluidRow(
+      column(
+        width = 12,
+        DT::dataTableOutput("TCA_GLOBAL_TABLE_LRI"),
+        style = "padding:50px"
+      ),
+      column(
+        width = 12,
+        DT::dataTableOutput("TCA_GLOBAL_TABLE_LIGAND"),
+        style = "padding:50px"
+      ),
+      column(
+        width = 12,
+        DT::dataTableOutput("TCA_GLOBAL_TABLE_RECEPTOR"),
+        style = "padding:50px"
+      )
+    )
+  } else if (input$TCA_GLOBAL_TABLE_CHOICE == "By GO/KEGG") {
+    fluidRow(
+      column(
+        width = 12,
+        DT::dataTableOutput("TCA_GLOBAL_TABLE_GO"),
+        style = "padding:50px"
+      ),
+      column(
+        width = 12,
+        DT::dataTableOutput("TCA_GLOBAL_TABLE_KEGG"),
+        style = "padding:50px"
+      )
+    )
+  } else {
+    fluidRow(
+      column(
+        width = 12,
+        DT::dataTableOutput("TCA_GLOBAL_TABLE_CELLFAMILY"),
+        style = "padding:50px"
+      )
+    )
+  }
+})
+
+
+output$TCA_GLOBAL_TABLE_LRI <- DT::renderDT({
+  req(
+    input$TCA_GLOBAL_TABLE_CHOICE,
+    input$TCA_GLOBAL_ORA_REGULATION_CHOICE
+  )
+  scAgeCom_data$build_GLOBAL_display(
+    ORA_KEYWORD_COUNTS = scAgeCom_data$ORA_KEYWORD_COUNTS,
+    global_category = "LRI",
+    global_type = input$TCA_GLOBAL_ORA_REGULATION_CHOICE
+  )
+})
+
+output$TCA_GLOBAL_TABLE_LIGAND <- DT::renderDT({
+  req(
+    input$TCA_GLOBAL_TABLE_CHOICE,
+    input$TCA_GLOBAL_ORA_REGULATION_CHOICE
+  )
+  scAgeCom_data$build_GLOBAL_display(
+    ORA_KEYWORD_COUNTS = scAgeCom_data$ORA_KEYWORD_COUNTS,
+    global_category = "Ligand Gene(s)",
+    global_type = input$TCA_GLOBAL_ORA_REGULATION_CHOICE
+  )
+})
+
+output$TCA_GLOBAL_TABLE_RECEPTOR <- DT::renderDT({
+  req(
+    input$TCA_GLOBAL_TABLE_CHOICE,
+    input$TCA_GLOBAL_ORA_REGULATION_CHOICE
+  )
+  scAgeCom_data$build_GLOBAL_display(
+    ORA_KEYWORD_COUNTS = scAgeCom_data$ORA_KEYWORD_COUNTS,
+    global_category = "Receptor Gene(s)",
+    global_type = input$TCA_GLOBAL_ORA_REGULATION_CHOICE
+  )
+})
+
+output$TCA_GLOBAL_TABLE_GO <- DT::renderDT({
+  req(
+    input$TCA_GLOBAL_TABLE_CHOICE,
+    input$TCA_GLOBAL_ORA_REGULATION_CHOICE,
+    input$TCA_ORA_GO_ASPECT_CHOICE
+  )
+  scAgeCom_data$build_GLOBAL_display(
+    ORA_KEYWORD_COUNTS = scAgeCom_data$ORA_KEYWORD_COUNTS,
+    global_category = "GO Terms",
+    global_type = input$TCA_GLOBAL_ORA_REGULATION_CHOICE,
+    go_aspect = input$TCA_ORA_GO_ASPECT_CHOICE
+  )
+})
+
+output$TCA_GLOBAL_TABLE_KEGG <- DT::renderDT({
+  req(
+    input$TCA_GLOBAL_TABLE_CHOICE,
+    input$TCA_GLOBAL_ORA_REGULATION_CHOICE
+  )
+  scAgeCom_data$build_GLOBAL_display(
+    ORA_KEYWORD_COUNTS = scAgeCom_data$ORA_KEYWORD_COUNTS,
+    global_category = "KEGG Pathways",
+    global_type = input$TCA_GLOBAL_ORA_REGULATION_CHOICE
+  )
+})
+
+output$TCA_GLOBAL_TABLE_CELLFAMILY <- DT::renderDT({
   req(
     input$TCA_GLOBAL_TABLE_CHOICE,
     input$TCA_GLOBAL_ORA_REGULATION_CHOICE
     )
   scAgeCom_data$build_GLOBAL_display(
     ORA_KEYWORD_COUNTS = scAgeCom_data$ORA_KEYWORD_COUNTS,
-    global_category = input$TCA_GLOBAL_TABLE_CHOICE,
+    global_category = "Cell Families",
     global_type = input$TCA_GLOBAL_ORA_REGULATION_CHOICE
   )
 })
@@ -141,6 +252,7 @@ output$TCA_KEYWORD_SUMMARY <- plotly::renderPlotly({
   scAgeCom_data$plot_keyword_tissue_vs_dataset(
     scAgeCom_data$ORA_KEYWORD_SUMMARY_UNIQUE,
     scAgeCom_data$ORA_KEYWORD_TEMPLATE,
+    scAgeCom_data$ORA_table,
     input$TCA_KEYWORD_CATEGORY_CHOICE,
     input$TCA_KEYWORD_VALUE_CHOICE
   )
@@ -150,14 +262,14 @@ output$TCA_ERI_FAMILY_NETWORK <- visNetwork::renderVisNetwork({
   req(input$TCA_ERI_FAMILY_REGULATION_CHOICE, input$TCA_ERI_FAMILY_NUM_TISS_THRESHOLD)
   REGULATION_CHOICE = input$TCA_ERI_FAMILY_REGULATION_CHOICE
   NUM_TISSUE_THRESHOLD = input$TCA_ERI_FAMILY_NUM_TISS_THRESHOLD
-  
+
   graph_config = scDiffCom:::setup_graph_config()
   edge_color = ifelse(
     REGULATION_CHOICE == 'UP',
-    graph_config$EDGE_COLORING$ORA_COLOR_UP, 
+    graph_config$EDGE_COLORING$ORA_COLOR_UP,
     graph_config$EDGE_COLORING$ORA_COLOR_DOWN
   )
-  
+
   TYPE <- REGULATION <- VALUE <- from <- to <- NULL
   edges = scAgeCom_data$ORA_KEYWORD_COUNTS[
     TYPE == 'ERI Family' &
@@ -170,7 +282,7 @@ output$TCA_ERI_FAMILY_NETWORK <- visNetwork::renderVisNetwork({
   edges[, "value" := list(`Overall (union)`)]
   edges[, "label" := value]
   edges[, "color" := edge_color]
-  
+
   nodes_set = union(edges[, from], edges[, to])
   nodes = data.table::data.table(id = nodes_set, label = nodes_set)
   nodes[
@@ -189,7 +301,7 @@ output$TCA_ERI_FAMILY_NETWORK <- visNetwork::renderVisNetwork({
       TRUE
     )
   ]
-  
+
   visNetwork::visNetwork(
     nodes = nodes,
     edges = edges,
@@ -257,14 +369,14 @@ observeEvent(
 #     req(input$TCA_ERI_FAMILY_REGULATION_CHOICE, input$TCA_ERI_FAMILY_NUM_TISS_THRESHOLD)
 #     REGULATION_CHOICE = input$TCA_ERI_FAMILY_REGULATION_CHOICE
 #     NUM_TISSUE_THRESHOLD = input$TCA_ERI_FAMILY_NUM_TISS_THRESHOLD
-#     
+#
 #     graph_config = scDiffCom:::setup_graph_config()
 #     edge_color = ifelse(
 #       REGULATION_CHOICE == 'UP',
-#       graph_config$EDGE_COLORING$ORA_COLOR_UP, 
+#       graph_config$EDGE_COLORING$ORA_COLOR_UP,
 #       graph_config$EDGE_COLORING$ORA_COLOR_DOWN
 #     )
-#     
+#
 #     TYPE <- REGULATION <- VALUE <- from <- to <- NULL
 #     edges = scAgeCom_data$ORA_KEYWORD_COUNTS[
 #       TYPE == 'ERI Family' &
@@ -277,7 +389,7 @@ observeEvent(
 #     edges[, "value" := list(`Overall (union)`)]
 #     edges[, "label" := value]
 #     edges[, "color" := edge_color]
-#     
+#
 #     nodes_set = union(edges[, from], edges[, to])
 #     nodes = data.table::data.table(id = nodes_set, label = nodes_set)
 #     nodes[
@@ -296,7 +408,7 @@ observeEvent(
 #         TRUE
 #       )
 #     ]
-#     
+#
 #     visNetwork::visNetwork(
 #       nodes = nodes,
 #       edges = edges,

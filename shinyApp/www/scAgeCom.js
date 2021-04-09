@@ -23,7 +23,8 @@ $(document).ready(() => {
 //    #### TCA_GLOBAL_TABLE events ####
 // https://stackoverflow.com/questions/38797646/hyperlink-from-one-datatable-to-another-in-shiny
 
-const TCA_GLOBAL_TABLE_term_selector = "div[data-value='TCA_SUMMARY_TABLE'] #TCA_GLOBAL_TABLE tr td:nth-child(2)";
+const TCA_GLOBAL_TABLE_term_selector = "div[data-value='TCA_SUMMARY_TABLE'] #TCA_GLOBAL_TABLE_GO tr td:nth-child(2)";
+//const TCA_GLOBAL_TABLE_term_selector = "div[data-value='TCA_SUMMARY_TABLE'] #TCA_GLOBAL_TABLE tr td:nth-child(2)";
 const TCA_KEYWORD_SUMMARY_selector = "a[data-value='TCA_KEYWORD_SUMMARY']";
 const TCA_GLOBAL_TABLE_CATEGORY_CHOICE_selector = "input#TCA_GLOBAL_TABLE_CHOICE-selectized";
 const TCA_KEYWORD_SUMMARY_CATEGORY_CHOICE_selector = "input#TCA_KEYWORD_CATEGORY_CHOICE-selectized";
@@ -38,7 +39,7 @@ function TCA_GLOBAL_TABLE_term_click_handler() {
   let category = $(TCA_GLOBAL_TABLE_CATEGORY_CHOICE_selector).siblings('div').text();
 
   $(TCA_KEYWORD_SUMMARY_selector).trigger('click');
-  
+
   let category_in_TCA_KEYWORD = $(TCA_KEYWORD_SUMMARY_CATEGORY_CHOICE_selector).siblings('div').text();
   if (category != category_in_TCA_KEYWORD) {
       Shiny.setInputValue(TCA_KEYWORD_VALUE_CATEGORY_SERVER_INPUT_ID, category, {priority: "event"});
