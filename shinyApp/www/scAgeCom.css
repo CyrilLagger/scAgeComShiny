@@ -9,7 +9,7 @@ a { cursor: pointer; }
   margin-left: 5px;
 }
 
-div#TCA_GLOBAL_TABLE td:nth-child(2) {
+div#TCA_GLOBAL_DETAILS td:nth-child(2) {
   width: auto;
   height: auto;
   display: block;
@@ -25,7 +25,7 @@ div#TCA_GLOBAL_TABLE td:nth-child(2) {
   cursor: pointer;
   border-radius: 4px;
 }
-div#TCA_GLOBAL_TABLE td:nth-child(2):hover {
+div#TCA_GLOBAL_DETAILS td:nth-child(2):hover {
   background-color: #555555;
   color: white;
 }

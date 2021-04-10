@@ -150,7 +150,6 @@ output$TCA_GLOBAL_DETAILS <- renderUI({
   }
 })
 
-
 output$TCA_GLOBAL_TABLE_LRI <- DT::renderDT({
   req(
     input$TCA_GLOBAL_TABLE_CHOICE,
