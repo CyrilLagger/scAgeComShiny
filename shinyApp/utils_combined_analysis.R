@@ -10,7 +10,10 @@ output$TCA_TOP_VIEW <- renderUI({
 
 output$TCA_TITLE <- renderUI({
   tags$p(
-    div(style="display: inline-block;", "Choose a title for here: ")
+    div(
+      style = "display: inline-block; text-align: center",
+      "Overview of the signals shared accross Tissues and Datasets"
+      )
   )
 })
 
@@ -18,7 +21,7 @@ output$TCA_PANEL_VIEW <- renderUI({
   tabsetPanel(
     type = "tabs",
     tabPanel(
-      title = "Summary Table",
+      title = "Counts Across Tissues",
       sidebarLayout(
         sidebarPanel(
           width = 3,
@@ -37,7 +40,7 @@ output$TCA_PANEL_VIEW <- renderUI({
       value = "TCA_SUMMARY_TABLE"
     ),
     tabPanel(
-      title = "Keyword summary",
+      title = "Keyword Summary",
       sidebarLayout(
         sidebarPanel(
           width = 3,
@@ -143,7 +146,17 @@ output$TCA_GLOBAL_DETAILS <- renderUI({
     fluidRow(
       column(
         width = 12,
-        DT::dataTableOutput("TCA_GLOBAL_TABLE_CELLFAMILY"),
+        DT::dataTableOutput("TCA_GLOBAL_TABLE_ER_CELLFAMILY"),
+        style = "padding:50px"
+      ),
+      column(
+        width = 12,
+        DT::dataTableOutput("TCA_GLOBAL_TABLE_EMITTER_CELLFAMILY"),
+        style = "padding:50px"
+      ),
+      column(
+        width = 12,
+        DT::dataTableOutput("TCA_GLOBAL_TABLE_RECEIVER_CELLFAMILY"),
         style = "padding:50px"
       )
     )
@@ -155,10 +168,10 @@ output$TCA_GLOBAL_TABLE_LRI <- DT::renderDT({
     input$TCA_GLOBAL_TABLE_CHOICE,
     input$TCA_GLOBAL_ORA_REGULATION_CHOICE
   )
-  scAgeCom_data$build_GLOBAL_display(
-    ORA_KEYWORD_COUNTS = scAgeCom_data$ORA_KEYWORD_COUNTS,
-    global_category = "LRI",
-    global_type = input$TCA_GLOBAL_ORA_REGULATION_CHOICE
+  scAgeCom_data$build_KEYWORD_COUNTS_display(
+    ora_keyword_counts = scAgeCom_data$ORA_KEYWORD_COUNTS,
+    category = "LRIs",
+    regulation = input$TCA_GLOBAL_ORA_REGULATION_CHOICE
   )
 })
 
@@ -167,10 +180,10 @@ output$TCA_GLOBAL_TABLE_LIGAND <- DT::renderDT({
     input$TCA_GLOBAL_TABLE_CHOICE,
     input$TCA_GLOBAL_ORA_REGULATION_CHOICE
   )
-  scAgeCom_data$build_GLOBAL_display(
-    ORA_KEYWORD_COUNTS = scAgeCom_data$ORA_KEYWORD_COUNTS,
-    global_category = "Ligand Gene(s)",
-    global_type = input$TCA_GLOBAL_ORA_REGULATION_CHOICE
+  scAgeCom_data$build_KEYWORD_COUNTS_display(
+    ora_keyword_counts = scAgeCom_data$ORA_KEYWORD_COUNTS,
+    category = "Ligand Gene(s)",
+    regulation = input$TCA_GLOBAL_ORA_REGULATION_CHOICE
   )
 })
 
@@ -179,10 +192,10 @@ output$TCA_GLOBAL_TABLE_RECEPTOR <- DT::renderDT({
     input$TCA_GLOBAL_TABLE_CHOICE,
     input$TCA_GLOBAL_ORA_REGULATION_CHOICE
   )
-  scAgeCom_data$build_GLOBAL_display(
-    ORA_KEYWORD_COUNTS = scAgeCom_data$ORA_KEYWORD_COUNTS,
-    global_category = "Receptor Gene(s)",
-    global_type = input$TCA_GLOBAL_ORA_REGULATION_CHOICE
+  scAgeCom_data$build_KEYWORD_COUNTS_display(
+    ora_keyword_counts = scAgeCom_data$ORA_KEYWORD_COUNTS,
+    category = "Receptor Gene(s)",
+    regulation = input$TCA_GLOBAL_ORA_REGULATION_CHOICE
   )
 })
 
@@ -192,10 +205,10 @@ output$TCA_GLOBAL_TABLE_GO <- DT::renderDT({
     input$TCA_GLOBAL_ORA_REGULATION_CHOICE,
     input$TCA_ORA_GO_ASPECT_CHOICE
   )
-  scAgeCom_data$build_GLOBAL_display(
-    ORA_KEYWORD_COUNTS = scAgeCom_data$ORA_KEYWORD_COUNTS,
-    global_category = "GO Terms",
-    global_type = input$TCA_GLOBAL_ORA_REGULATION_CHOICE,
+  scAgeCom_data$build_KEYWORD_COUNTS_display(
+    ora_keyword_counts = scAgeCom_data$ORA_KEYWORD_COUNTS,
+    category = "GO Terms",
+    regulation = input$TCA_GLOBAL_ORA_REGULATION_CHOICE,
     go_aspect = input$TCA_ORA_GO_ASPECT_CHOICE
   )
 })
@@ -205,22 +218,46 @@ output$TCA_GLOBAL_TABLE_KEGG <- DT::renderDT({
     input$TCA_GLOBAL_TABLE_CHOICE,
     input$TCA_GLOBAL_ORA_REGULATION_CHOICE
   )
-  scAgeCom_data$build_GLOBAL_display(
-    ORA_KEYWORD_COUNTS = scAgeCom_data$ORA_KEYWORD_COUNTS,
-    global_category = "KEGG Pathways",
-    global_type = input$TCA_GLOBAL_ORA_REGULATION_CHOICE
+  scAgeCom_data$build_KEYWORD_COUNTS_display(
+    ora_keyword_counts = scAgeCom_data$ORA_KEYWORD_COUNTS,
+    category = "KEGG Pathways",
+    regulation = input$TCA_GLOBAL_ORA_REGULATION_CHOICE
   )
 })
 
-output$TCA_GLOBAL_TABLE_CELLFAMILY <- DT::renderDT({
+output$TCA_GLOBAL_TABLE_ER_CELLFAMILY <- DT::renderDT({
   req(
     input$TCA_GLOBAL_TABLE_CHOICE,
     input$TCA_GLOBAL_ORA_REGULATION_CHOICE
     )
-  scAgeCom_data$build_GLOBAL_display(
-    ORA_KEYWORD_COUNTS = scAgeCom_data$ORA_KEYWORD_COUNTS,
-    global_category = "Cell Families",
-    global_type = input$TCA_GLOBAL_ORA_REGULATION_CHOICE
+  scAgeCom_data$build_KEYWORD_COUNTS_display(
+    ora_keyword_counts = scAgeCom_data$ORA_KEYWORD_COUNTS,
+    category = "ER Cell Families",
+    regulation = input$TCA_GLOBAL_ORA_REGULATION_CHOICE
+  )
+})
+
+output$TCA_GLOBAL_TABLE_EMITTER_CELLFAMILY <- DT::renderDT({
+  req(
+    input$TCA_GLOBAL_TABLE_CHOICE,
+    input$TCA_GLOBAL_ORA_REGULATION_CHOICE
+  )
+  scAgeCom_data$build_KEYWORD_COUNTS_display(
+    ora_keyword_counts = scAgeCom_data$ORA_KEYWORD_COUNTS,
+    category = "Emitter Cell Families",
+    regulation = input$TCA_GLOBAL_ORA_REGULATION_CHOICE
+  )
+})
+
+output$TCA_GLOBAL_TABLE_RECEIVER_CELLFAMILY <- DT::renderDT({
+  req(
+    input$TCA_GLOBAL_TABLE_CHOICE,
+    input$TCA_GLOBAL_ORA_REGULATION_CHOICE
+  )
+  scAgeCom_data$build_KEYWORD_COUNTS_display(
+    ora_keyword_counts = scAgeCom_data$ORA_KEYWORD_COUNTS,
+    category = "Receiver Cell Families",
+    regulation = input$TCA_GLOBAL_ORA_REGULATION_CHOICE
   )
 })
 
@@ -228,7 +265,7 @@ output$TCA_KEYWORD_CATEGORY_CHOICE <- renderUI({
   selectInput(
     inputId = "TCA_KEYWORD_CATEGORY_CHOICE",
     label = "Category",
-    choices = scAgeCom_data$ALL_GLOBAL_CATEGORIES
+    choices = scAgeCom_data$ALL_ORA_CATEGORIES
   )
 })
 
@@ -246,14 +283,11 @@ output$TCA_KEYWORD_SUMMARY <- plotly::renderPlotly({
     input$TCA_KEYWORD_CATEGORY_CHOICE,
     input$TCA_KEYWORD_VALUE_CHOICE
   )
-  #print(input$TCA_KEYWORD_CATEGORY_CHOICE)
-  #print(input$TCA_KEYWORD_VALUE_CHOICE)
-  scAgeCom_data$plot_keyword_tissue_vs_dataset(
-    scAgeCom_data$ORA_KEYWORD_SUMMARY_UNIQUE,
-    scAgeCom_data$ORA_KEYWORD_TEMPLATE,
-    scAgeCom_data$ORA_table,
-    input$TCA_KEYWORD_CATEGORY_CHOICE,
-    input$TCA_KEYWORD_VALUE_CHOICE
+  scAgeCom_data$plot_KEYWORD_SUMMARY(
+    ora_keyword_summary = scAgeCom_data$ORA_KEYWORD_SUMMARY,
+    ora_keyword_template = scAgeCom_data$ORA_KEYWORD_TEMPLATE,
+    category = input$TCA_KEYWORD_CATEGORY_CHOICE,
+    keyword = input$TCA_KEYWORD_VALUE_CHOICE
   )
 })
 
@@ -268,17 +302,16 @@ output$TCA_ERI_FAMILY_NETWORK <- visNetwork::renderVisNetwork({
     graph_config$EDGE_COLORING$ORA_COLOR_UP,
     graph_config$EDGE_COLORING$ORA_COLOR_DOWN
   )
-
-  TYPE <- REGULATION <- VALUE <- from <- to <- NULL
+  ORA_CATEGORY <- REGULATION <- VALUE <- from <- to <- NULL
   edges = scAgeCom_data$ORA_KEYWORD_COUNTS[
-    TYPE == 'ERI Family' &
+    ORA_CATEGORY == 'ERI Family' &
       REGULATION == REGULATION_CHOICE &
-      `Overall (union)` >= NUM_TISSUE_THRESHOLD,
-    c('VALUE', 'Overall (union)')
+      `Overall (Union)` >= NUM_TISSUE_THRESHOLD,
+    c('VALUE', 'Overall (Union)')
   ]
   edges[, "from" := sapply(strsplit(edges[, VALUE], "_"), function(v) v[1])]
   edges[, "to" := sapply(strsplit(edges[, VALUE], "_"), function(v) v[2])]
-  edges[, "value" := list(`Overall (union)`)]
+  edges[, "value" := list(`Overall (Union)`)]
   edges[, "label" := value]
   edges[, "color" := edge_color]
 
@@ -332,7 +365,7 @@ observeEvent(
       selected = input$TCA_KEYWORD_CATEGORY_CHOICE
     )
     choices <- sort(unique(scAgeCom_data$ORA_KEYWORD_COUNTS[
-      TYPE == input$TCA_KEYWORD_CATEGORY_CHOICE
+      ORA_CATEGORY == input$TCA_KEYWORD_CATEGORY_CHOICE
     ]$VALUE))
     updateSelectizeInput(
       session = session,
@@ -376,16 +409,16 @@ observeEvent(
 #       graph_config$EDGE_COLORING$ORA_COLOR_DOWN
 #     )
 #
-#     TYPE <- REGULATION <- VALUE <- from <- to <- NULL
+#     ORA_CATEGORY <- REGULATION <- VALUE <- from <- to <- NULL
 #     edges = scAgeCom_data$ORA_KEYWORD_COUNTS[
-#       TYPE == 'ERI Family' &
+#       ORA_CATEGORY == 'ERI Family' &
 #         REGULATION == REGULATION_CHOICE &
-#         `Overall (union)` >= NUM_TISSUE_THRESHOLD,
-#       c('VALUE', 'Overall (union)')
+#         `Overall (Union)` >= NUM_TISSUE_THRESHOLD,
+#       c('VALUE', 'Overall (Union)')
 #     ]
 #     edges[, "from" := sapply(strsplit(edges[, VALUE], "_"), function(v) v[1])]
 #     edges[, "to" := sapply(strsplit(edges[, VALUE], "_"), function(v) v[2])]
-#     edges[, "value" := list(`Overall (union)`)]
+#     edges[, "value" := list(`Overall (Union)`)]
 #     edges[, "label" := value]
 #     edges[, "color" := edge_color]
 #

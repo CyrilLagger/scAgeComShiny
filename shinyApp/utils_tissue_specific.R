@@ -35,7 +35,7 @@ output$TSA_TISSUE_CHOICE <- renderUI({
           label = NULL,
           choices = choices,
           options = list(
-            placeholder = 'Please select an option below',
+            placeholder = 'Please select an option',
             onInitialize = I('function() { this.setValue(""); }')
           )
         )
@@ -61,7 +61,7 @@ output$TSA_DATASET_CHOICE <- renderUI({
     tags$p(
       div(
         style = "display: inline-block;",
-        "Please choose a dataset: "
+        "Please select a dataset: "
       ),
       div(
         style = "display: inline-block;margin-top: 25px;",
@@ -70,7 +70,7 @@ output$TSA_DATASET_CHOICE <- renderUI({
           label = NULL,
           choices = sort(unique(dt$Dataset)),
           options = list(
-            placeholder = 'Please select an option below',
+            placeholder = 'Please select an option',
             onInitialize = I('function() { this.setValue(""); }')
           )
         )
@@ -87,7 +87,7 @@ output$TSA_PANEL_VIEW <- renderUI({
   tabsetPanel(
     type = "tabs",
     tabPanel(
-      title = "Cell-Cell Interactions",
+      title = "Detailed Interactions",
       sidebarLayout(
         sidebarPanel(
           width = 3,
@@ -96,12 +96,18 @@ output$TSA_PANEL_VIEW <- renderUI({
             "Download Full CCI Table"
           ),
           hr(),
-          h3("Filtering Options:"),
+          h3("Filtering Options"),
           uiOutput("TSA_EMITTER_CHOICE"),
           uiOutput("TSA_RECEIVER_CHOICE"),
           selectizeInput(
             inputId = "TSA_LRI_CHOICE",
             label = "Ligand-Receptor Interactions",
+            choices = NULL,
+            multiple = TRUE
+          ),
+          selectizeInput(
+            inputId = "TSA_GENE_CHOICE",
+            label = "Single Genes",
             choices = NULL,
             multiple = TRUE
           ),
@@ -127,7 +133,11 @@ output$TSA_PANEL_VIEW <- renderUI({
         sidebarPanel(
           width = 3,
           uiOutput("TSA_ORA_CATEGORY_CHOICE"),
-          uiOutput("TSA_ORA_TYPE_CHOICE"),
+          conditionalPanel(
+            condition = "input.TSA_ORA_CATEGORY_CHOICE != 'By Cell Types'",
+            hr(),
+            uiOutput("TSA_ORA_TYPE_CHOICE")
+          ),
           conditionalPanel(
             condition = "input.TSA_ORA_CATEGORY_CHOICE == 'By GO/KEGG'",
             hr(),
@@ -135,6 +145,7 @@ output$TSA_PANEL_VIEW <- renderUI({
           )
         ),
         mainPanel(
+          uiOutput("TSA_ORA_TITLE"),
           uiOutput("TSA_ORA_DETAILS")
         )
       ),
@@ -213,6 +224,36 @@ observe({
   )
 })
 
+observe({
+  req(
+    input$TSA_DATASET_CHOICE,
+    input$TSA_TISSUE_CHOICE
+  )
+  ALL_GENE_LABEL = 'All Genes'
+  choices <-
+    c(
+      ALL_GENE_LABEL,
+      sort(
+        scAgeCom_data$ALL_GENES[
+          Dataset == input$TSA_DATASET_CHOICE &
+            Tissue == input$TSA_TISSUE_CHOICE
+        ][["GENE"]]
+      )
+    )
+  updateSelectizeInput(
+    session = session,
+    "TSA_GENE_CHOICE",
+    choices = choices,
+    selected = ALL_GENE_LABEL,
+    options = list(
+      allowEmptyOption = TRUE,
+      placeholder = 'Type Genes',
+      maxOptions = length(choices)
+    ),
+    server = TRUE
+  )
+})
+
 filter_values <- reactiveValues(
   do_filtering = FALSE,
   emitter_choice = NULL,
@@ -227,6 +268,7 @@ observeEvent(
     filter_values$emitter_choice <- input$TSA_EMITTER_CHOICE
     filter_values$receiver_choice <- input$TSA_RECEIVER_CHOICE
     filter_values$LRI_choice <- input$TSA_LRI_CHOICE
+    filter_values$GENE_choice <- input$TSA_GENE_CHOICE
   }
 )
 
@@ -237,6 +279,7 @@ observeEvent(
     filter_values$emitter_choice <- NULL
     filter_values$receiver_choice <- NULL
     filter_values$LRI_choice <- NULL
+    filter_values$GENE_choice <- NULL
     choices <- sort(scAgeCom_data$ALL_CELLTYPES[
       Dataset == input$TSA_DATASET_CHOICE &
         Tissue == input$TSA_TISSUE_CHOICE
@@ -252,7 +295,7 @@ observeEvent(
       inputId = "TSA_RECEIVER_CHOICE",
       choices = choices,
       selected = choices
-      )
+    )
     ALL_LRI_LABEL = 'All LRIs'
     choices_lri <-
       c(
@@ -276,6 +319,29 @@ observeEvent(
       ),
       server = TRUE
     )
+    ALL_GENE_LABEL = 'All Genes'
+    choices <-
+      c(
+        ALL_GENE_LABEL,
+        sort(
+          scAgeCom_data$ALL_GENES[
+            Dataset == input$TSA_DATASET_CHOICE &
+              Tissue == input$TSA_TISSUE_CHOICE
+          ][["GENE"]]
+        )
+      )
+    updateSelectizeInput(
+      session = session,
+      "TSA_GENE_CHOICE",
+      choices = choices,
+      selected = ALL_GENE_LABEL,
+      options = list(
+        allowEmptyOption = TRUE,
+        placeholder = 'Type Genes',
+        maxOptions = length(choices)
+      ),
+      server = TRUE
+    )
   }
 )
 
@@ -290,11 +356,15 @@ output$TSA_CCI_TITLE <- renderUI({
       titlePanel(
         tags$p(
           div(
-            style = "display: inline-block;",
-            paste0(
-              "Results for the ",
-              input$TSA_TISSUE_CHOICE,
-              " from ",
+            style = "display: inline-block; text-align: center",
+            "Interaction Table and Plots for the ",
+            span(
+              style = "color: #030bfc",
+              input$TSA_TISSUE_CHOICE
+            ),
+            " from ",
+            span(
+              style = "color: #030bfc",
               input$TSA_DATASET_CHOICE
             )
           )
@@ -315,17 +385,18 @@ CCI_table <- reactive({
       Tissue == input$TSA_TISSUE_CHOICE
   ][["CELLTYPE"]])
   if (filter_values$do_filtering) {
-    CCI_table <- scAgeCom_data$subset_cci_table(
+    CCI_table <- scAgeCom_data$subset_CCI_table(
       CCI_table = scAgeCom_data$CCI_table,
       dataset_choice = input$TSA_DATASET_CHOICE,
       tissue_choice = input$TSA_TISSUE_CHOICE,
       emitter_choice = filter_values$emitter_choice,
       receiver_choice = filter_values$receiver_choice,
       LRI_choice = filter_values$LRI_choice,
+      GENE_choice = filter_values$GENE_choice,
       filter = TRUE
     )
   } else {
-    CCI_table <- scAgeCom_data$subset_cci_table(
+    CCI_table <- scAgeCom_data$subset_CCI_table(
       CCI_table = scAgeCom_data$CCI_table,
       dataset_choice = input$TSA_DATASET_CHOICE,
       tissue_choice = input$TSA_TISSUE_CHOICE,
@@ -399,6 +470,36 @@ output$TSA_DOWNLOAD_TABLE <- downloadHandler(
   }
 )
 
+output$TSA_ORA_TITLE <- renderUI({
+  req(
+    input$TSA_DATASET_CHOICE,
+    input$TSA_TISSUE_CHOICE
+  )
+  fluidRow(
+    column(
+      width = 12,
+      titlePanel(
+        tags$p(
+          div(
+            style = "display: inline-block; text-align: center",
+            "Over-representation Results for the ",
+            span(
+              style = "color: #030bfc",
+              input$TSA_TISSUE_CHOICE
+            ),
+            " from ",
+            span(
+              style = "color: #030bfc",
+              input$TSA_DATASET_CHOICE
+            )
+          )
+        )
+      ),
+      style = "padding:50px"
+    )
+  )
+})
+
 output$TSA_ORA_CATEGORY_CHOICE <- renderUI({
   choices <- scAgeCom_data$ALL_ORA_CATEGORIES_SPECIFIC
   pickerInput(
@@ -436,17 +537,17 @@ output$TSA_ORA_DETAILS <-  renderUI({
         width = 12,
         visNetworkOutput("TSA_ORA_NETWORK_PLOT", height = "800px"),
         style = "padding:50px"
-      ),
-      column(
-        width = 12,
-        dataTableOutput("TSA_ORA_TABLE_CELLFAMILY"),
-        style = "padding:50px"
-      ),
-      column(
-        width = 12,
-        plotOutput("TSA_ORA_PLOT_CELLFAMILY", height = "800px"),
-        style = "padding:50px"
-      )
+      )#,
+      # column(
+      #   width = 12,
+      #   dataTableOutput("TSA_ORA_TABLE_CELLFAMILY"),
+      #   style = "padding:50px"
+      # ),
+      # column(
+      #   width = 12,
+      #   plotOutput("TSA_ORA_PLOT_CELLFAMILY", height = "800px"),
+      #   style = "padding:50px"
+      # )
     )
   } else if (input$TSA_ORA_CATEGORY_CHOICE == "By Genes") {
     fluidRow(
@@ -520,11 +621,11 @@ output$TSA_ORA_TABLE_LRI <- DT::renderDataTable({
     tissue_choice = input$TSA_TISSUE_CHOICE
   )
   scAgeCom_data$build_ORA_display(
-      ORA_table = dt,
-      category_choice = "LRIs",
-      go_aspect_choice = NULL,
-      type_choice = input$TSA_ORA_TYPE_CHOICE
-    )
+    ORA_table = dt,
+    category_choice = "LRIs",
+    go_aspect_choice = NULL,
+    type_choice = input$TSA_ORA_TYPE_CHOICE
+  )
 })
 
 output$TSA_ORA_TABLE_LIGAND <- DT::renderDataTable({
@@ -748,9 +849,3 @@ output$TSA_ORA_NETWORK_PLOT <- renderVisNetwork({
     abbr_celltype = scAgeCom_data$ABBR_CELLTYPE
   )
 })
-
-
-
-
-
-
