@@ -32,61 +32,19 @@ ui_scAgeCom <- fluidPage(
       value = "INTRO_navbar"
     ),
     tabPanel(
-      title = "Tissue-Specific Analysis",
+      title = "Tissue Specific Results",
       uiOutput("TSA_TOP_VIEW"),
       uiOutput("TSA_PANEL_VIEW"),
       value = "TSA_navbar"
     ),
     tabPanel(
-      title = "Global Analysis",
+      title = "Results Across Tissues",
       uiOutput("TCA_TOP_VIEW"),
       uiOutput("TCA_PANEL_VIEW"),
       value = "TCA_navbar"
     ),
-    # tabPanel(
-    #   title = "Ligand-Receptor Interaction Database",
-    #   sidebarLayout(
-    #     sidebarPanel(
-    #       width = 3,
-    #       selectInput(
-    #         inputId = "INTRO_LRI_DETAILS_CHOICE",
-    #         label = "Choose information to display",
-    #         choices = c(
-    #           "LRI Table",
-    #           "Upset Plot by Source",
-    #           "References"
-    #         )
-    #       ),
-    #       conditionalPanel(
-    #         condition = "input.INTRO_LRI_DETAILS_CHOICE != 'References'",
-    #         selectInput(
-    #           inputId = "INTRO_LRI_SPECIES_CHOICE",
-    #           label = "Choose a Species",
-    #           choices = c(
-    #             "Mouse",
-    #             "Human"
-    #           )
-    #         )
-    #       ),
-    #       conditionalPanel(
-    #         condition = "input.INTRO_LRI_DETAILS_CHOICE == 'LRI Table'",
-    #         uiOutput("INTRO_LRI_DATABASE_CHOICE")
-    #       )
-    #     ),
-    #     mainPanel(
-    #       fluidRow(
-    #         column(
-    #           width = 12,
-    #           uiOutput("INTRO_LRI_DETAILS"),
-    #           style = "padding:50px"
-    #         )
-    #       )
-    #     )
-    #   ),
-    #   value = "INTRO_LRI_DATABASE_TAB"
-    # ),
     tabPanel(
-      title = "Help",
+      title = "Glossary",
       htmlOutput("HELP"),
       value = "HELP_navbar"
     )
