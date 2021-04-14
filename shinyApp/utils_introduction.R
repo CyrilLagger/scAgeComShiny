@@ -11,11 +11,6 @@ output$INTRO_PAGE_VIEW <- renderUI({
       htmlOutput("INTRO_OVERVIEW"),
       style = "padding:50px"
     ),
-    # column(
-    #   width = 12,
-    #   htmlOutput("INTRO_METHOD_TITLE"),
-    #   style = "padding:50px"
-    # ),
     column(
       width = 8,
       offset = 2,
@@ -49,10 +44,6 @@ output$INTRO_OVERVIEW <- renderUI({
   scAgeCom_data$shiny_html_content$intro_overview
 })
 
-# output$INTRO_METHOD_TITLE <- renderUI({
-#   scAgeCom_data$shiny_html_content$intro_method_title
-# })
-
 output$INTRO_CODE_TITLE<- renderUI({
   scAgeCom_data$shiny_html_content$intro_code_title
 })
@@ -75,9 +66,6 @@ output$INTRO_LRI_TITLE <- renderUI({
 
 output$INTRO_LRI_TEXT <- renderUI({
   fluidRow(
-    # htmlOutput("INTRO_LRI_HTML"),
-    # DT::dataTableOutput("INTRO_LRI_TABLE"),
-    # plotOutput("INTRO_LRI_UPSET_PLOT", height = "600px")
     column(
       width = 12,
       htmlOutput("INTRO_LRI_HTML"),
@@ -109,16 +97,6 @@ output$INTRO_LRI_HTML <- renderUI({
 })
 
 output$INTRO_LRI_TABLE <- DT::renderDataTable({
-  # req(
-  #   input$LRI_DATABASE,
-  #   input$INTRO_LRI_SPECIES_CHOICE
-  # )
-  # if (input$INTRO_LRI_SPECIES_CHOICE == "Mouse") {
-  #   dt <- scAgeCom_data$LRI_mouse_curated
-  # }
-  # if (input$INTRO_LRI_SPECIES_CHOICE == "Human") {
-  #   dt <- scAgeCom_data$LRI_human_curated
-  # }
   scAgeCom_data$build_LRI_display(
     LRI_table = scAgeCom_data$LRI_mouse_curated,
     LRI_database = scAgeCom_data$LRI_DATABASES
@@ -126,32 +104,10 @@ output$INTRO_LRI_TABLE <- DT::renderDataTable({
 })
 
 output$INTRO_LRI_UPSET_PLOT <- renderPlot({
-  #req(input$INTRO_LRI_SPECIES_CHOICE)
-  # if (input$INTRO_LRI_SPECIES_CHOICE == "Mouse") {
-  #   scAgeCom_data$plot_lri_upset(
-  #     LRI_table = scAgeCom_data$LRI_mouse_curated,
-  #     groups = colnames(scAgeCom_data$LRI_mouse_curated)[9:16]
-  #   )
-  # } else if (input$INTRO_LRI_SPECIES_CHOICE == "Human") {
-  #   scAgeCom_data$plot_lri_upset(
-  #     LRI_table = scAgeCom_data$LRI_human_curated,
-  #     groups = colnames(scAgeCom_data$LRI_human_curated)[9:16]
-  #   )
-  # }
   scAgeCom_data$plot_lri_upset(
     LRI_table = scAgeCom_data$LRI_mouse_curated,
-    groups = colnames(scAgeCom_data$LRI_mouse_curated)[9:16]
+    groups = colnames(scAgeCom_data$LRI_mouse_curated)[9:16],
+    min_size = 40
   )
 })
-
-# output$INTRO_LRI_DATABASE_CHOICE <- renderUI({
-#   pickerInput(
-#     inputId = "LRI_DATABASE",
-#     label = "Databases",
-#     choices = scAgeCom_data$LRI_DATABASES,
-#     selected = scAgeCom_data$LRI_DATABASES,
-#     options = list(`actions-box` = TRUE),
-#     multiple = TRUE
-#   )
-# })
 
