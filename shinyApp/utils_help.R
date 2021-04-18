@@ -1,8 +1,14 @@
 
 output$HELP <- renderUI({
-  tags$div(
-    tags$h1('Ligand-Receptor Databases'),
-    tags$h1('Overrepresentation analysis'),
-    tags$h1('Downloads')
+  fluidPage(
+    fluidRow(
+      column(
+        width = 10,
+        offset = 1,
+        scAgeCom_data$shiny_bsplus_glossary,
+        style = "padding:10px"
+      )
+    )
   )
 })
+
