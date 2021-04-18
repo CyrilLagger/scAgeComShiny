@@ -11,9 +11,9 @@ output$TCA_TOP_VIEW <- renderUI({
 output$TCA_TITLE <- renderUI({
   tags$p(
     div(
-      style = "display: inline-block; text-align: center",
-      "Overview of the signals shared accross Tissues and Datasets"
-      )
+      style = "display: inline-block; text-align: center; font-size: 24px",
+      "Over-represented Signals shared accross Tissues and Datasets"
+    )
   )
 })
 
@@ -21,10 +21,10 @@ output$TCA_PANEL_VIEW <- renderUI({
   tabsetPanel(
     type = "tabs",
     tabPanel(
-      title = "Counts Across Tissues",
+      title = "Table of Counts",
       sidebarLayout(
         sidebarPanel(
-          width = 3,
+          width = 2,
           uiOutput("TCA_GLOBAL_TABLE_CHOICE"),
           uiOutput("TCA_GLOBAL_ORA_REGULATION_CHOICE"),
           conditionalPanel(
@@ -34,25 +34,30 @@ output$TCA_PANEL_VIEW <- renderUI({
           )
         ),
         mainPanel(
+          width = 10,
           uiOutput("TCA_GLOBAL_DETAILS")
         )
       ),
       value = "TCA_SUMMARY_TABLE"
     ),
     tabPanel(
-      title = "Keyword Summary",
+      title = "Tissue Summary by Keywords",
       sidebarLayout(
         sidebarPanel(
-          width = 3,
+          width = 2,
           uiOutput("TCA_KEYWORD_CATEGORY_CHOICE"),
           uiOutput("TCA_KEYWORD_VALUE_CHOICE")
         ),
         mainPanel(
+          width = 10,
           fluidRow(
             column(
               width = 12,
-              plotly::plotlyOutput("TCA_KEYWORD_SUMMARY",  height = "800px"),
-              style = "padding:50px"
+              plotly::plotlyOutput(
+                "TCA_KEYWORD_SUMMARY_PLOT",
+                height = "800px"
+              ),
+              style = "padding:10px"
             )
           )
         )
@@ -63,7 +68,7 @@ output$TCA_PANEL_VIEW <- renderUI({
       title = 'Celltype families',
       sidebarLayout(
         sidebarPanel(
-          width = 3,
+          width = 2,
           selectInput(
             inputId = "TCA_ERI_FAMILY_REGULATION_CHOICE",
             label = "Regulation",
@@ -76,7 +81,17 @@ output$TCA_PANEL_VIEW <- renderUI({
           )
         ),
         mainPanel(
-          visNetwork::visNetworkOutput("TCA_ERI_FAMILY_NETWORK", height='600px')
+          width = 10,
+          fluidRow(
+            column(
+              width = 12,
+              visNetwork::visNetworkOutput(
+                "TCA_ERI_FAMILY_NETWORK",
+                height='600px'
+              ),
+              style = "padding:10px"
+            )
+          )
         )
       )
     ),
@@ -95,7 +110,7 @@ output$TCA_GLOBAL_TABLE_CHOICE <- renderUI({
 output$TCA_GLOBAL_ORA_REGULATION_CHOICE <- renderUI({
   selectInput(
     inputId = "TCA_GLOBAL_ORA_REGULATION_CHOICE",
-    label = "ORA Regulation",
+    label = "Age Regulation",
     choices = scAgeCom_data$ALL_ORA_TYPES
   )
 })
@@ -112,52 +127,73 @@ output$TCA_ORA_GO_ASPECT_CHOICE <- renderUI({
 output$TCA_GLOBAL_DETAILS <- renderUI({
   req(input$TCA_GLOBAL_TABLE_CHOICE)
   if (input$TCA_GLOBAL_TABLE_CHOICE == "By Genes") {
-    fluidRow(
-      column(
-        width = 12,
-        DT::dataTableOutput("TCA_GLOBAL_TABLE_LRI"),
-        style = "padding:50px"
+    fluidPage(
+      fluidRow(
+        column(
+          width = 12,
+          #offset = 2,
+          DT::dataTableOutput("TCA_GLOBAL_TABLE_LRI")
+        )
       ),
-      column(
-        width = 12,
-        DT::dataTableOutput("TCA_GLOBAL_TABLE_LIGAND"),
-        style = "padding:50px"
+      fluidRow(
+        column(
+          width = 12,
+          #offset = 2,
+          DT::dataTableOutput("TCA_GLOBAL_TABLE_LIGAND")
+        )
       ),
-      column(
-        width = 12,
-        DT::dataTableOutput("TCA_GLOBAL_TABLE_RECEPTOR"),
-        style = "padding:50px"
+      fluidRow(
+        column(
+          width = 12,
+          #offset = 2,
+          DT::dataTableOutput("TCA_GLOBAL_TABLE_RECEPTOR")
+        )
       )
     )
   } else if (input$TCA_GLOBAL_TABLE_CHOICE == "By GO/KEGG") {
-    fluidRow(
-      column(
-        width = 12,
-        DT::dataTableOutput("TCA_GLOBAL_TABLE_GO"),
-        style = "padding:50px"
+    fluidPage(
+      fluidRow(
+        column(
+          width = 12,
+          #offset = 2,
+          DT::dataTableOutput("TCA_GLOBAL_TABLE_GO"),
+          style = "padding:10px"
+        )
       ),
-      column(
-        width = 12,
-        DT::dataTableOutput("TCA_GLOBAL_TABLE_KEGG"),
-        style = "padding:50px"
+      fluidRow(
+        column(
+          width = 12,
+          #offset = 2,
+          DT::dataTableOutput("TCA_GLOBAL_TABLE_KEGG"),
+          style = "padding:10px"
+        )
       )
     )
   } else {
-    fluidRow(
-      column(
-        width = 12,
-        DT::dataTableOutput("TCA_GLOBAL_TABLE_ER_CELLFAMILY"),
-        style = "padding:50px"
+    fluidPage(
+      fluidRow(
+        column(
+          width = 12,
+          #offset = 2,
+          DT::dataTableOutput("TCA_GLOBAL_TABLE_ER_CELLFAMILY"),
+          style = "padding:10px"
+        )
       ),
-      column(
-        width = 12,
-        DT::dataTableOutput("TCA_GLOBAL_TABLE_EMITTER_CELLFAMILY"),
-        style = "padding:50px"
+      fluidRow(
+        column(
+          width = 12,
+          #offset = 2,
+          DT::dataTableOutput("TCA_GLOBAL_TABLE_EMITTER_CELLFAMILY"),
+          style = "padding:10px"
+        )
       ),
-      column(
-        width = 12,
-        DT::dataTableOutput("TCA_GLOBAL_TABLE_RECEIVER_CELLFAMILY"),
-        style = "padding:50px"
+      fluidRow(
+        column(
+          width = 12,
+          #offset = 2,
+          DT::dataTableOutput("TCA_GLOBAL_TABLE_RECEIVER_CELLFAMILY"),
+          style = "padding:10px"
+        )
       )
     )
   }
@@ -229,7 +265,7 @@ output$TCA_GLOBAL_TABLE_ER_CELLFAMILY <- DT::renderDT({
   req(
     input$TCA_GLOBAL_TABLE_CHOICE,
     input$TCA_GLOBAL_ORA_REGULATION_CHOICE
-    )
+  )
   scAgeCom_data$build_KEYWORD_COUNTS_display(
     ora_keyword_counts = scAgeCom_data$ORA_KEYWORD_COUNTS,
     category = "ER Cell Families",
@@ -265,7 +301,7 @@ output$TCA_KEYWORD_CATEGORY_CHOICE <- renderUI({
   selectInput(
     inputId = "TCA_KEYWORD_CATEGORY_CHOICE",
     label = "Category",
-    choices = scAgeCom_data$ALL_ORA_CATEGORIES
+    choices = scAgeCom_data$ALL_ORA_CATEGORIES_KEYWORD
   )
 })
 
@@ -278,7 +314,7 @@ output$TCA_KEYWORD_VALUE_CHOICE <- renderUI({
   )
 })
 
-output$TCA_KEYWORD_SUMMARY <- plotly::renderPlotly({
+output$TCA_KEYWORD_SUMMARY_PLOT <- plotly::renderPlotly({
   req(
     input$TCA_KEYWORD_CATEGORY_CHOICE,
     input$TCA_KEYWORD_VALUE_CHOICE
@@ -292,29 +328,33 @@ output$TCA_KEYWORD_SUMMARY <- plotly::renderPlotly({
 })
 
 output$TCA_ERI_FAMILY_NETWORK <- visNetwork::renderVisNetwork({
-  req(input$TCA_ERI_FAMILY_REGULATION_CHOICE, input$TCA_ERI_FAMILY_NUM_TISS_THRESHOLD)
+  req(
+    input$TCA_ERI_FAMILY_REGULATION_CHOICE,
+    input$TCA_ERI_FAMILY_NUM_TISS_THRESHOLD
+  )
   REGULATION_CHOICE = input$TCA_ERI_FAMILY_REGULATION_CHOICE
   NUM_TISSUE_THRESHOLD = input$TCA_ERI_FAMILY_NUM_TISS_THRESHOLD
-
   graph_config = scDiffCom:::setup_graph_config()
   edge_color = ifelse(
     REGULATION_CHOICE == 'UP',
     graph_config$EDGE_COLORING$ORA_COLOR_UP,
-    graph_config$EDGE_COLORING$ORA_COLOR_DOWN
+    ifelse(
+      REGULATION_CHOICE == 'DOWN',
+      graph_config$EDGE_COLORING$ORA_COLOR_DOWN,
+      graph_config$EDGE_COLORING$ORA_COLOR_FLAT
+    )
   )
-  ORA_CATEGORY <- REGULATION <- VALUE <- from <- to <- NULL
-  edges = scAgeCom_data$ORA_KEYWORD_COUNTS[
-    ORA_CATEGORY == 'ERI Family' &
-      REGULATION == REGULATION_CHOICE &
-      `Overall (Union)` >= NUM_TISSUE_THRESHOLD,
+  edges = copy(scAgeCom_data$ORA_KEYWORD_COUNTS)[
+    ORA_CATEGORY == 'ER Cell Families' &
+      ORA_REGULATION == REGULATION_CHOICE &
+      as.integer(gsub("/23", "", `Overall (Union)`)) >= NUM_TISSUE_THRESHOLD,
     c('VALUE', 'Overall (Union)')
   ]
   edges[, "from" := sapply(strsplit(edges[, VALUE], "_"), function(v) v[1])]
   edges[, "to" := sapply(strsplit(edges[, VALUE], "_"), function(v) v[2])]
-  edges[, "value" := list(`Overall (Union)`)]
+  edges[, "value" := list(as.integer(gsub("/23", "", `Overall (Union)`)))]
   edges[, "label" := value]
   edges[, "color" := edge_color]
-
   nodes_set = union(edges[, from], edges[, to])
   nodes = data.table::data.table(id = nodes_set, label = nodes_set)
   nodes[
@@ -333,7 +373,6 @@ output$TCA_ERI_FAMILY_NETWORK <- visNetwork::renderVisNetwork({
       TRUE
     )
   ]
-
   visNetwork::visNetwork(
     nodes = nodes,
     edges = edges,
@@ -352,7 +391,7 @@ output$TCA_ERI_FAMILY_NETWORK <- visNetwork::renderVisNetwork({
     arrows = "middle",
     smooth = list(enabled = TRUE, roundness = 0.75)
   )
-}) # get_TCA_eri_family_network(input)
+})
 
 observeEvent(
   input$TCA_KEYWORD_CATEGORY_CHOICE,
