@@ -1,48 +1,86 @@
 
 output$TSA_TOP_VIEW <- renderUI({
-  fluidRow(
-    column(
-      width = 6,
-      uiOutput("TSA_TISSUE_CHOICE"),
-      offset = 3
+  fluidPage(
+    fluidRow(
+      column(
+        width = 6,
+        #align = "center",
+        uiOutput("TSA_TISSUE_CHOICE"),
+        offset = 3
+      )
     ),
-    column(
-      width = 6,
-      DT::dataTableOutput("TSA_OVERVIEW_TABLE"),
-      style = "padding-bottom: 50px",
-      offset = 3
+    fluidRow(
+      column(
+        width = 6,
+        align = "center",
+        DT::dataTableOutput("TSA_OVERVIEW_TABLE"),
+        offset = 3
+      )
     ),
-    column(
-      width = 6,
-      uiOutput("TSA_DATASET_CHOICE"),
-      offset = 3
+    fluidRow(
+      column(
+        width = 6,
+        #align = "center",
+        uiOutput("TSA_DATASET_CHOICE"),
+        offset = 3
+      )
     )
   )
 })
 
 output$TSA_TISSUE_CHOICE <- renderUI({
   choices <- scAgeCom_data$ALL_TISSUES
-  titlePanel(
-    tags$p(
-      div(
-        style = "display: inline-block;",
-        "Please choose a tissue: "
-      ),
-      div(
-        style = "display: inline-block;margin-top: 25px;",
-        selectizeInput(
-          inputId = "TSA_TISSUE_CHOICE",
-          label = NULL,
-          choices = choices,
-          options = list(
-            placeholder = 'Please select an option',
-            onInitialize = I('function() { this.setValue(""); }')
+  tags$table(
+    style = "margin-top: 10px; margin-left: auto; margin-right:auto;",
+    tags$tbody(
+      tags$tr(
+        tags$td(
+          style = "vertical-align: top; padding-right: 10px;",
+          tags$h2(
+            style = "margin-top: 4px; font-size: 20px;",
+            "Please choose a tissue: "
+          )
+        ),
+        tags$td(
+          selectizeInput(
+            inputId = "TSA_TISSUE_CHOICE",
+            label = NULL,
+            choices = choices,
+            width = "200px",
+            options = list(
+              placeholder = 'Please select an option',
+              onInitialize = I('function() { this.setValue(""); }')
+            )
           )
         )
       )
     )
   )
 })
+
+# output$TSA_TISSUE_CHOICE <- renderUI({
+#   choices <- scAgeCom_data$ALL_TISSUES
+#   tags$h2(
+#     style = "text-align: center; margin-top: 10px;",
+#     div(
+#       style = "display: inline-block; font-size: 20px;",
+#       "Please choose a tissue: "
+#     ),
+#     div(
+#       style = "display: inline-block; text-align: left",
+#       selectizeInput(
+#         inputId = "TSA_TISSUE_CHOICE",
+#         label = NULL,
+#         choices = choices,
+#         width = "200px",
+#         options = list(
+#           placeholder = 'Please select an option',
+#           onInitialize = I('function() { this.setValue(""); }')
+#         )
+#       )
+#     )
+#   )
+# })
 
 output$TSA_OVERVIEW_TABLE <- DT::renderDT({
   req(input$TSA_TISSUE_CHOICE)
@@ -57,27 +95,60 @@ output$TSA_DATASET_CHOICE <- renderUI({
   dt <- scAgeCom_data$TISSUE_COUNTS_SUMMARY[
     Tissue == input$TSA_TISSUE_CHOICE
   ]
-  titlePanel(
-    tags$p(
-      div(
-        style = "display: inline-block;",
-        "Please select a dataset: "
-      ),
-      div(
-        style = "display: inline-block;margin-top: 25px;",
-        selectizeInput(
-          inputId = "TSA_DATASET_CHOICE",
-          label = NULL,
-          choices = sort(unique(dt$Dataset)),
-          options = list(
-            placeholder = 'Please select an option',
-            onInitialize = I('function() { this.setValue(""); }')
+  tags$table(
+    style = "margin-top: 25px; margin-left: auto; margin-right:auto;",
+    tags$tbody(
+      tags$tr(
+        tags$td(
+          style = "vertical-align: top; padding-right: 10px;",
+          tags$h2(
+            style = "margin-top: 4px; font-size: 20px;",
+            "Please select a dataset: "
+          )
+        ),
+        tags$td(
+          selectizeInput(
+            inputId = "TSA_DATASET_CHOICE",
+            label = NULL,
+            width = "200px",
+            choices = sort(unique(dt$Dataset)),
+            options = list(
+              placeholder = 'Please select an option',
+              onInitialize = I('function() { this.setValue(""); }')
+            )
           )
         )
       )
     )
   )
 })
+
+# output$TSA_DATASET_CHOICE <- renderUI({
+#   req(input$TSA_TISSUE_CHOICE)
+#   dt <- scAgeCom_data$TISSUE_COUNTS_SUMMARY[
+#     Tissue == input$TSA_TISSUE_CHOICE
+#   ]
+#   tags$h2(
+#     style = "text-align: center; margin-top: 20px;",
+#     div(
+#       style = "display: inline-block; font-size: 20px;",
+#       "Please select a dataset: "
+#     ),
+#     div(
+#       style = "display: inline-block; text-align: left",
+#       selectizeInput(
+#         inputId = "TSA_DATASET_CHOICE",
+#         label = NULL,
+#         width = "200px",
+#         choices = sort(unique(dt$Dataset)),
+#         options = list(
+#           placeholder = 'Please select an option',
+#           onInitialize = I('function() { this.setValue(""); }')
+#         )
+#       )
+#     )
+#   )
+# })
 
 output$TSA_PANEL_VIEW <- renderUI({
   req(
@@ -87,16 +158,16 @@ output$TSA_PANEL_VIEW <- renderUI({
   tabsetPanel(
     type = "tabs",
     tabPanel(
-      title = "Detailed Interactions",
+      title = "Table of Interactions",
       sidebarLayout(
         sidebarPanel(
-          width = 3,
+          width = 2,
           downloadButton(
             "TSA_DOWNLOAD_TABLE",
-            "Download Full CCI Table"
+            "Download Full Table"
           ),
           hr(),
-          h3("Filtering Options"),
+          h4("Filtering Options"),
           uiOutput("TSA_EMITTER_CHOICE"),
           uiOutput("TSA_RECEIVER_CHOICE"),
           selectizeInput(
@@ -111,6 +182,18 @@ output$TSA_PANEL_VIEW <- renderUI({
             choices = NULL,
             multiple = TRUE
           ),
+          selectizeInput(
+            inputId = "TSA_GO_CHOICE",
+            label = "GO Terms",
+            choices = NULL,
+            multiple = TRUE
+          ),
+          selectizeInput(
+            inputId = "TSA_KEGG_CHOICE",
+            label = "KEGG Pathways",
+            choices = NULL,
+            multiple = TRUE
+          ),
           actionButton(
             inputId = "TSA_FILTER_BUTTON",
             label = "Filter"
@@ -121,6 +204,7 @@ output$TSA_PANEL_VIEW <- renderUI({
           )
         ),
         mainPanel(
+          width = 10,
           uiOutput("TSA_CCI_TITLE"),
           uiOutput("TSA_CCI_DETAILS")
         )
@@ -131,7 +215,7 @@ output$TSA_PANEL_VIEW <- renderUI({
       title = "Over-Representation Analysis",
       sidebarLayout(
         sidebarPanel(
-          width = 3,
+          width = 2,
           uiOutput("TSA_ORA_CATEGORY_CHOICE"),
           conditionalPanel(
             condition = "input.TSA_ORA_CATEGORY_CHOICE != 'By Cell Types'",
@@ -145,6 +229,7 @@ output$TSA_PANEL_VIEW <- renderUI({
           )
         ),
         mainPanel(
+          width = 10,
           uiOutput("TSA_ORA_TITLE"),
           uiOutput("TSA_ORA_DETAILS")
         )
@@ -153,7 +238,6 @@ output$TSA_PANEL_VIEW <- renderUI({
     ),
     id = "active_TSA_panel"
   )
-
 })
 
 output$TSA_EMITTER_CHOICE <- renderUI({
@@ -254,11 +338,74 @@ observe({
   )
 })
 
+observe({
+  req(
+    input$TSA_DATASET_CHOICE,
+    input$TSA_TISSUE_CHOICE
+  )
+  ALL_GO_LABEL = 'All GO Terms'
+  choices <-
+    c(
+      ALL_GO_LABEL,
+      sort(
+        scAgeCom_data$ALL_GO_TERMS[
+          Dataset == input$TSA_DATASET_CHOICE &
+            Tissue == input$TSA_TISSUE_CHOICE
+        ][["GO_NAMES"]]
+      )
+    )
+  updateSelectizeInput(
+    session = session,
+    "TSA_GO_CHOICE",
+    choices = choices,
+    selected = ALL_GO_LABEL,
+    options = list(
+      allowEmptyOption = TRUE,
+      placeholder = 'Type GO Terms',
+      maxOptions = length(choices)
+    ),
+    server = TRUE
+  )
+})
+
+observe({
+  req(
+    input$TSA_DATASET_CHOICE,
+    input$TSA_TISSUE_CHOICE
+  )
+  ALL_KEGG_LABEL = 'All KEGG Pathways'
+  choices <-
+    c(
+      ALL_KEGG_LABEL,
+      sort(
+        scAgeCom_data$ALL_KEGG_PWS[
+          Dataset == input$TSA_DATASET_CHOICE &
+            Tissue == input$TSA_TISSUE_CHOICE
+        ][["KEGG_NAMES"]]
+      )
+    )
+  updateSelectizeInput(
+    session = session,
+    "TSA_KEGG_CHOICE",
+    choices = choices,
+    selected = ALL_KEGG_LABEL,
+    options = list(
+      allowEmptyOption = TRUE,
+      placeholder = 'Type KEGG Pathways',
+      maxOptions = length(choices)
+    ),
+    server = TRUE
+  )
+})
+
 filter_values <- reactiveValues(
   do_filtering = FALSE,
   emitter_choice = NULL,
   receiver_choice = NULL,
-  LRI_choice = NULL
+  LRI_choice = NULL,
+  GENE_choice = NULL,
+  GO_choice = NULL,
+  KEGG_choice = NULL
 )
 
 observeEvent(
@@ -269,6 +416,8 @@ observeEvent(
     filter_values$receiver_choice <- input$TSA_RECEIVER_CHOICE
     filter_values$LRI_choice <- input$TSA_LRI_CHOICE
     filter_values$GENE_choice <- input$TSA_GENE_CHOICE
+    filter_values$GO_choice <- input$TSA_GO_CHOICE
+    filter_values$KEGG_choice <- input$TSA_KEGG_CHOICE
   }
 )
 
@@ -280,6 +429,8 @@ observeEvent(
     filter_values$receiver_choice <- NULL
     filter_values$LRI_choice <- NULL
     filter_values$GENE_choice <- NULL
+    filter_values$GO_choice <- NULL
+    filter_values$KEGG_choice <- NULL
     choices <- sort(scAgeCom_data$ALL_CELLTYPES[
       Dataset == input$TSA_DATASET_CHOICE &
         Tissue == input$TSA_TISSUE_CHOICE
@@ -342,6 +493,52 @@ observeEvent(
       ),
       server = TRUE
     )
+    ALL_GO_LABEL = 'All GO Terms'
+    choices <-
+      c(
+        ALL_GO_LABEL,
+        sort(
+          scAgeCom_data$ALL_GO_TERMS[
+            Dataset == input$TSA_DATASET_CHOICE &
+              Tissue == input$TSA_TISSUE_CHOICE
+          ][["GO_NAMES"]]
+        )
+      )
+    updateSelectizeInput(
+      session = session,
+      "TSA_GO_CHOICE",
+      choices = choices,
+      selected = ALL_GO_LABEL,
+      options = list(
+        allowEmptyOption = TRUE,
+        placeholder = 'Type GO Terms',
+        maxOptions = length(choices)
+      ),
+      server = TRUE
+    )
+    ALL_KEGG_LABEL = 'All KEGG Pathways'
+    choices <-
+      c(
+        ALL_KEGG_LABEL,
+        sort(
+          scAgeCom_data$ALL_KEGG_PWS[
+            Dataset == input$TSA_DATASET_CHOICE &
+              Tissue == input$TSA_TISSUE_CHOICE
+          ][["KEGG_NAMES"]]
+        )
+      )
+    updateSelectizeInput(
+      session = session,
+      "TSA_KEGG_CHOICE",
+      choices = choices,
+      selected = ALL_KEGG_LABEL,
+      options = list(
+        allowEmptyOption = TRUE,
+        placeholder = 'Type KEGG Pathways',
+        maxOptions = length(choices)
+      ),
+      server = TRUE
+    )
   }
 )
 
@@ -350,27 +547,33 @@ output$TSA_CCI_TITLE <- renderUI({
     input$TSA_DATASET_CHOICE,
     input$TSA_TISSUE_CHOICE
   )
-  fluidRow(
-    column(
-      width = 12,
-      titlePanel(
-        tags$p(
-          div(
-            style = "display: inline-block; text-align: center",
-            "Interaction Table and Plots for the ",
-            span(
-              style = "color: #030bfc",
-              input$TSA_TISSUE_CHOICE
-            ),
-            " from ",
-            span(
-              style = "color: #030bfc",
-              input$TSA_DATASET_CHOICE
+  fluidPage(
+    fluidRow(
+      column(
+        width = 12,
+        titlePanel(
+          tags$p(
+            div(
+              style = paste(
+                "width: 80%;",
+                "margin:auto;",
+                "font-size: 20px;",
+                "text-align: center;"
+              ),
+              "Plots and Table for the ",
+              span(
+                style = "font-weight: bold",
+                input$TSA_TISSUE_CHOICE
+              ),
+              " from ",
+              span(
+                style = "font-weight: bold",
+                input$TSA_DATASET_CHOICE
+              )
             )
           )
         )
-      ),
-      style = "padding:50px"
+      )
     )
   )
 })
@@ -380,10 +583,6 @@ CCI_table <- reactive({
     input$TSA_DATASET_CHOICE,
     input$TSA_TISSUE_CHOICE
   )
-  celltype_choice <- sort(scAgeCom_data$ALL_CELLTYPES[
-    Dataset == input$TSA_DATASET_CHOICE &
-      Tissue == input$TSA_TISSUE_CHOICE
-  ][["CELLTYPE"]])
   if (filter_values$do_filtering) {
     CCI_table <- scAgeCom_data$subset_CCI_table(
       CCI_table = scAgeCom_data$CCI_table,
@@ -393,6 +592,8 @@ CCI_table <- reactive({
       receiver_choice = filter_values$receiver_choice,
       LRI_choice = filter_values$LRI_choice,
       GENE_choice = filter_values$GENE_choice,
+      GO_choice = filter_values$GO_choice,
+      KEGG_choice = filter_values$KEGG_choice,
       filter = TRUE
     )
   } else {
@@ -403,6 +604,7 @@ CCI_table <- reactive({
       filter = FALSE
     )
   }
+  CCI_table
 })
 
 CCI_display <- reactive({
@@ -420,37 +622,44 @@ output$TSA_PLOTLY_SCORE <- renderPlotly({CCI_display()$CCI_SCORE_PLOT})
 output$TSA_PLOTLY_LRFC <- renderPlotly({CCI_display()$CCI_LRFC_PLOT})
 
 output$TSA_CCI_DETAILS <- renderUI({
-  fluidRow(
-    column(
-      width = 12,
-      DTOutput(
-        outputId = "TSA_CCI_DT"
+  fluidPage(
+    fluidRow(
+      column(
+        style = "padding: 10px;",
+        width = 6,
+        plotlyOutput(
+          outputId = "TSA_PLOTLY_VOLCANO",
+          height = "520px"
+        )
       ),
-      style = "padding:50px"
+      column(
+        style = "padding: 10px;",
+        width = 6,
+        plotlyOutput(
+          outputId = "TSA_PLOTLY_SCORE",
+          height = "520px"
+        )
+      )
     ),
-    column(
-      width = 12,
-      plotlyOutput(
-        outputId = "TSA_PLOTLY_VOLCANO",
-        height = "600px"
-      ),
-      style = "padding:50px"
+    fluidRow(
+      column(
+        style = "padding: 10px;",
+        width = 6,
+        offset = 3,
+        plotlyOutput(
+          outputId = "TSA_PLOTLY_LRFC",
+          height = "520px"
+        )
+      )
     ),
-    column(
-      width = 12,
-      plotlyOutput(
-        outputId = "TSA_PLOTLY_SCORE",
-        height = "600px"
-      ),
-      style = "padding:50px"
-    ),
-    column(
-      width = 12,
-      plotlyOutput(
-        outputId = "TSA_PLOTLY_LRFC",
-        height = "600px"
-      ),
-      style = "padding:50px"
+    fluidRow(
+      column(
+        width = 10,
+        offset = 1,
+        DTOutput(
+          outputId = "TSA_CCI_DT"
+        )
+      )
     )
   )
 })
@@ -475,27 +684,33 @@ output$TSA_ORA_TITLE <- renderUI({
     input$TSA_DATASET_CHOICE,
     input$TSA_TISSUE_CHOICE
   )
-  fluidRow(
-    column(
-      width = 12,
-      titlePanel(
-        tags$p(
-          div(
-            style = "display: inline-block; text-align: center",
-            "Over-representation Results for the ",
-            span(
-              style = "color: #030bfc",
-              input$TSA_TISSUE_CHOICE
-            ),
-            " from ",
-            span(
-              style = "color: #030bfc",
-              input$TSA_DATASET_CHOICE
+  fluidPage(
+    fluidRow(
+      column(
+        width = 12,
+        titlePanel(
+          tags$p(
+            div(
+              style = paste(
+                "width: 80%;",
+                "margin:auto;",
+                "font-size: 20px;",
+                "text-align: center;"
+              ),
+              "Over-representation Results for the ",
+              span(
+                style = "font-weight: bold",
+                input$TSA_TISSUE_CHOICE
+              ),
+              " from ",
+              span(
+                style = "font-weight: bold",
+                input$TSA_DATASET_CHOICE
+              )
             )
           )
         )
-      ),
-      style = "padding:50px"
+      )
     )
   )
 })
@@ -532,77 +747,82 @@ output$TSA_ORA_GO_ASPECT_CHOICE <- renderUI({
 output$TSA_ORA_DETAILS <-  renderUI({
   req(input$TSA_ORA_CATEGORY_CHOICE)
   if (input$TSA_ORA_CATEGORY_CHOICE == "By Cell Types") {
-    fluidRow(
-      column(
-        width = 12,
-        visNetworkOutput("TSA_ORA_NETWORK_PLOT", height = "800px"),
-        style = "padding:50px"
-      )#,
-      # column(
-      #   width = 12,
-      #   dataTableOutput("TSA_ORA_TABLE_CELLFAMILY"),
-      #   style = "padding:50px"
-      # ),
-      # column(
-      #   width = 12,
-      #   plotOutput("TSA_ORA_PLOT_CELLFAMILY", height = "800px"),
-      #   style = "padding:50px"
-      # )
+    fluidPage(
+      fluidRow(
+        column(
+          width = 12,
+          visNetworkOutput("TSA_ORA_NETWORK_PLOT", height = "800px")
+        )
+      )
     )
   } else if (input$TSA_ORA_CATEGORY_CHOICE == "By Genes") {
-    fluidRow(
-      column(
-        width = 12,
-        dataTableOutput("TSA_ORA_TABLE_LRI"),
-        style = "padding:50px"
+    fluidPage(
+      fluidRow(
+        column(
+          width = 4,
+          plotOutput("TSA_ORA_PLOT_LRI", height = "500px")
+        ),
+        column(
+          width = 4,
+          plotOutput("TSA_ORA_PLOT_LIGAND", height = "500px")
+        ),
+        column(
+          width = 4,
+          plotOutput("TSA_ORA_PLOT_RECEPTOR", height = "500px")
+        )
       ),
-      column(
-        width = 12,
-        plotOutput("TSA_ORA_PLOT_LRI", height = "800px"),
-        style = "padding:50px"
+      fluidRow(
+        column(
+          style = "padding: 10px;",
+          width = 8,
+          offset = 2,
+          dataTableOutput("TSA_ORA_TABLE_LRI")
+        )
       ),
-      column(
-        width = 12,
-        dataTableOutput("TSA_ORA_TABLE_LIGAND"),
-        style = "padding:50px"
+      fluidRow(
+        column(
+          style = "padding: 10px;",
+          width = 8,
+          offset = 2,
+          dataTableOutput("TSA_ORA_TABLE_LIGAND")
+        )
       ),
-      column(
-        width = 12,
-        plotOutput("TSA_ORA_PLOT_LIGAND", height = "800px"),
-        style = "padding:50px"
-      ),
-      column(
-        width = 12,
-        dataTableOutput("TSA_ORA_TABLE_RECEPTOR"),
-        style = "padding:50px"
-      ),
-      column(
-        width = 12,
-        plotOutput("TSA_ORA_PLOT_RECEPTOR", height = "800px"),
-        style = "padding:50px"
+      fluidRow(
+        column(
+          style = "padding: 10px;",
+          width = 8,
+          offset = 2,
+          dataTableOutput("TSA_ORA_TABLE_RECEPTOR")
+        )
       )
     )
   } else if (input$TSA_ORA_CATEGORY_CHOICE == "By GO/KEGG") {
-    fluidRow(
-      column(
-        width = 12,
-        dataTableOutput("TSA_ORA_TABLE_GO"),
-        style = "padding:50px"
+    fluidPage(
+      fluidRow(
+        column(
+          width = 6,
+          plotOutput("TSA_ORA_PLOT_GO", height = "600px")
+        ),
+        column(
+          width = 6,
+          plotOutput("TSA_ORA_PLOT_KEGG", height = "600px")
+        )
       ),
-      column(
-        width = 12,
-        plotOutput("TSA_ORA_PLOT_GO", height = "800px"),
-        style = "padding:50px"
+      fluidRow(
+        column(
+          style = "padding: 10px;",
+          width = 8,
+          offset = 2,
+          dataTableOutput("TSA_ORA_TABLE_GO")
+        )
       ),
-      column(
-        width = 12,
-        dataTableOutput("TSA_ORA_TABLE_KEGG"),
-        style = "padding:50px"
-      ),
-      column(
-        width = 12,
-        plotOutput("TSA_ORA_PLOT_KEGG", height = "800px"),
-        style = "padding:50px"
+      fluidRow(
+        column(
+          style = "padding: 10px;",
+          width = 8,
+          offset = 2,
+          dataTableOutput("TSA_ORA_TABLE_KEGG")
+        )
       )
     )
   }
