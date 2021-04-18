@@ -12,7 +12,7 @@ output$TCA_TITLE <- renderUI({
   tags$p(
     div(
       style = "display: inline-block; text-align: center; font-size: 24px",
-      "Over-represented Signals shared accross Tissues and Datasets"
+      "Over-represented signals shared accross Tissues and Datasets"
     )
   )
 })
@@ -21,7 +21,7 @@ output$TCA_PANEL_VIEW <- renderUI({
   tabsetPanel(
     type = "tabs",
     tabPanel(
-      title = "Table of Counts",
+      title = "Table of Results",
       sidebarLayout(
         sidebarPanel(
           width = 2,
@@ -41,7 +41,7 @@ output$TCA_PANEL_VIEW <- renderUI({
       value = "TCA_SUMMARY_TABLE"
     ),
     tabPanel(
-      title = "Tissue Summary by Keywords",
+      title = "Summary by Keywords",
       sidebarLayout(
         sidebarPanel(
           width = 2,
@@ -52,49 +52,49 @@ output$TCA_PANEL_VIEW <- renderUI({
           width = 10,
           fluidRow(
             column(
-              width = 12,
+              width = 10,
+              offset = 1,
               plotly::plotlyOutput(
                 "TCA_KEYWORD_SUMMARY_PLOT",
-                height = "800px"
-              ),
-              style = "padding:10px"
+                height = "600px"
+              )
             )
           )
         )
       ),
       value = "TCA_KEYWORD_SUMMARY"
     ),
-    tabPanel(
-      title = 'Celltype families',
-      sidebarLayout(
-        sidebarPanel(
-          width = 2,
-          selectInput(
-            inputId = "TCA_ERI_FAMILY_REGULATION_CHOICE",
-            label = "Regulation",
-            choices = c("UP", "DOWN", "FLAT")
-          ),
-          sliderInput(
-            inputId = "TCA_ERI_FAMILY_NUM_TISS_THRESHOLD",
-            label = "Minimum number of tissues",
-            min = 0, max = 15, value = 0
-          )
-        ),
-        mainPanel(
-          width = 10,
-          fluidRow(
-            column(
-              width = 12,
-              visNetwork::visNetworkOutput(
-                "TCA_ERI_FAMILY_NETWORK",
-                height='600px'
-              ),
-              style = "padding:10px"
-            )
-          )
-        )
-      )
-    ),
+    # tabPanel(
+    #   title = "Cell type families",
+    #   sidebarLayout(
+    #     sidebarPanel(
+    #       width = 2,
+    #       selectInput(
+    #         inputId = "TCA_ERI_FAMILY_REGULATION_CHOICE",
+    #         label = "Regulation",
+    #         choices = c("UP", "DOWN", "FLAT")
+    #       ),
+    #       sliderInput(
+    #         inputId = "TCA_ERI_FAMILY_NUM_TISS_THRESHOLD",
+    #         label = "Minimum number of tissues",
+    #         min = 0, max = 15, value = 0
+    #       )
+    #     ),
+    #     mainPanel(
+    #       width = 10,
+    #       fluidRow(
+    #         column(
+    #           width = 12,
+    #           visNetwork::visNetworkOutput(
+    #             "TCA_ERI_FAMILY_NETWORK",
+    #             height='600px'
+    #           ),
+    #           style = "padding:10px"
+    #         )
+    #       )
+    #     )
+    #   )
+    # ),
     id = "active_TCA_panel"
   )
 })
@@ -132,21 +132,24 @@ output$TCA_GLOBAL_DETAILS <- renderUI({
         column(
           width = 12,
           #offset = 2,
-          DT::dataTableOutput("TCA_GLOBAL_TABLE_LRI")
+          DT::dataTableOutput("TCA_GLOBAL_TABLE_LRI"),
+          style = "padding:10px"
         )
       ),
       fluidRow(
         column(
           width = 12,
           #offset = 2,
-          DT::dataTableOutput("TCA_GLOBAL_TABLE_LIGAND")
+          DT::dataTableOutput("TCA_GLOBAL_TABLE_LIGAND"),
+          style = "padding:10px"
         )
       ),
       fluidRow(
         column(
           width = 12,
           #offset = 2,
-          DT::dataTableOutput("TCA_GLOBAL_TABLE_RECEPTOR")
+          DT::dataTableOutput("TCA_GLOBAL_TABLE_RECEPTOR"),
+          style = "padding:10px"
         )
       )
     )
@@ -206,7 +209,7 @@ output$TCA_GLOBAL_TABLE_LRI <- DT::renderDT({
   )
   scAgeCom_data$build_KEYWORD_COUNTS_display(
     ora_keyword_counts = scAgeCom_data$ORA_KEYWORD_COUNTS,
-    category = "LRIs",
+    category = "Ligand-Receptor Interaction",
     regulation = input$TCA_GLOBAL_ORA_REGULATION_CHOICE
   )
 })
@@ -218,7 +221,7 @@ output$TCA_GLOBAL_TABLE_LIGAND <- DT::renderDT({
   )
   scAgeCom_data$build_KEYWORD_COUNTS_display(
     ora_keyword_counts = scAgeCom_data$ORA_KEYWORD_COUNTS,
-    category = "Ligand Gene(s)",
+    category = "Ligand",
     regulation = input$TCA_GLOBAL_ORA_REGULATION_CHOICE
   )
 })
@@ -230,7 +233,7 @@ output$TCA_GLOBAL_TABLE_RECEPTOR <- DT::renderDT({
   )
   scAgeCom_data$build_KEYWORD_COUNTS_display(
     ora_keyword_counts = scAgeCom_data$ORA_KEYWORD_COUNTS,
-    category = "Receptor Gene(s)",
+    category = "Receptor",
     regulation = input$TCA_GLOBAL_ORA_REGULATION_CHOICE
   )
 })
@@ -243,7 +246,7 @@ output$TCA_GLOBAL_TABLE_GO <- DT::renderDT({
   )
   scAgeCom_data$build_KEYWORD_COUNTS_display(
     ora_keyword_counts = scAgeCom_data$ORA_KEYWORD_COUNTS,
-    category = "GO Terms",
+    category = "GO Term",
     regulation = input$TCA_GLOBAL_ORA_REGULATION_CHOICE,
     go_aspect = input$TCA_ORA_GO_ASPECT_CHOICE
   )
@@ -256,7 +259,7 @@ output$TCA_GLOBAL_TABLE_KEGG <- DT::renderDT({
   )
   scAgeCom_data$build_KEYWORD_COUNTS_display(
     ora_keyword_counts = scAgeCom_data$ORA_KEYWORD_COUNTS,
-    category = "KEGG Pathways",
+    category = "KEGG Pathway",
     regulation = input$TCA_GLOBAL_ORA_REGULATION_CHOICE
   )
 })
@@ -268,7 +271,7 @@ output$TCA_GLOBAL_TABLE_ER_CELLFAMILY <- DT::renderDT({
   )
   scAgeCom_data$build_KEYWORD_COUNTS_display(
     ora_keyword_counts = scAgeCom_data$ORA_KEYWORD_COUNTS,
-    category = "ER Cell Families",
+    category = "Emitter-Receiver Cell Type Family",
     regulation = input$TCA_GLOBAL_ORA_REGULATION_CHOICE
   )
 })
@@ -280,7 +283,7 @@ output$TCA_GLOBAL_TABLE_EMITTER_CELLFAMILY <- DT::renderDT({
   )
   scAgeCom_data$build_KEYWORD_COUNTS_display(
     ora_keyword_counts = scAgeCom_data$ORA_KEYWORD_COUNTS,
-    category = "Emitter Cell Families",
+    category = "Emitter Cell Type Family",
     regulation = input$TCA_GLOBAL_ORA_REGULATION_CHOICE
   )
 })
@@ -292,7 +295,7 @@ output$TCA_GLOBAL_TABLE_RECEIVER_CELLFAMILY <- DT::renderDT({
   )
   scAgeCom_data$build_KEYWORD_COUNTS_display(
     ora_keyword_counts = scAgeCom_data$ORA_KEYWORD_COUNTS,
-    category = "Receiver Cell Families",
+    category = "Receiver Cell Type Family",
     regulation = input$TCA_GLOBAL_ORA_REGULATION_CHOICE
   )
 })
