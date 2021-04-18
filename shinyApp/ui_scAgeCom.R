@@ -2,7 +2,7 @@
 ui_scAgeCom <- fluidPage(
   theme = shinytheme("cerulean"),
   titlePanel(
-    title = textOutput("MAIN_TITLE", inline = TRUE),
+    title = htmlOutput("MAIN_TITLE"),
     windowTitle = "scAgeCom"
   ),
   tags$head(
@@ -38,7 +38,7 @@ ui_scAgeCom <- fluidPage(
       value = "TSA_navbar"
     ),
     tabPanel(
-      title = "Results Across Tissues",
+      title = "Global Comparison",
       uiOutput("TCA_TOP_VIEW"),
       uiOutput("TCA_PANEL_VIEW"),
       value = "TCA_navbar"
