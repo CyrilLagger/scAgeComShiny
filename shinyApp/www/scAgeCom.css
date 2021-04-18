@@ -9,9 +9,12 @@ a { cursor: pointer; }
   margin-left: 5px;
 }
 
-div#TCA_GLOBAL_DETAILS td:nth-child(2) {
-  width: auto;
+div thead tr:nth-child(2) td input {
   height: auto;
+  padding: 4px 12px;
+}
+
+div#TCA_GLOBAL_DETAILS tbody td:nth-child(2) {
   display: block;
   background-color: white;
   color: black;
@@ -20,12 +23,13 @@ div#TCA_GLOBAL_DETAILS td:nth-child(2) {
   text-align: center;
   text-decoration: none;
   font-size: 14px;
-  margin: 5px 5px;
+/*   margin: 5px 5px; */
   transition-duration: 0.4s;
   cursor: pointer;
   border-radius: 4px;
 }
-div#TCA_GLOBAL_DETAILS td:nth-child(2):hover {
+
+div#TCA_GLOBAL_DETAILS tbody td:nth-child(2):hover {
   background-color: #555555;
   color: white;
 }
