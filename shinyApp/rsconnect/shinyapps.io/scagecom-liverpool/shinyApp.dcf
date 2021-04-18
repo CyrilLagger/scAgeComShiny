@@ -5,8 +5,8 @@ account: scagecom-liverpool
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 2596458
-bundleId: 4484240
+bundleId: 4486155
 url: https://scagecom-liverpool.shinyapps.io/shinyApp/
-when: 1618679550.41126
+when: 1618738461.88417
 asMultiple: FALSE
 asStatic: FALSE
