@@ -1,37 +1,44 @@
 
 output$INTRO_PAGE_VIEW <- renderUI({
-  fluidRow(
-    column(
-      width = 6,
-      titlePanel(htmlOutput("INTRO_TITLE")),
-      offset = 3
+  fluidPage(
+    fluidRow(
+      column(
+        width = 6,
+        titlePanel(htmlOutput("INTRO_TITLE")),
+        offset = 3
+      )
     ),
-    column(
-      width = 12,
-      htmlOutput("INTRO_OVERVIEW"),
-      style = "padding:50px"
+    fluidRow(
+      column(
+        width = 8,
+        offset = 2,
+        htmlOutput("INTRO_OVERVIEW")#,
+        #style = "padding:50px 100px 10px 100px"
+      )
     ),
-    column(
-      width = 8,
-      offset = 2,
-      bs_accordion(id = "INTRO_METHOD_DETAIL") %>%
-        bs_append(
-          title = htmlOutput("INTRO_CODE_TITLE"),
-          content = htmlOutput("INTRO_CODE_TEXT")
+    fluidRow(
+      column(
+        width = 8,
+        offset = 2,
+        bs_accordion(id = "INTRO_METHOD_DETAIL") %>%
+          bs_append(
+            title = htmlOutput("INTRO_CODE_TITLE"),
+            content = htmlOutput("INTRO_CODE_TEXT")
           ) %>%
-        bs_append(
-          title = htmlOutput("INTRO_SCRNA_TITLE"),
-          content = htmlOutput("INTRO_SCRNA_TEXT")
+          bs_append(
+            title = htmlOutput("INTRO_SCRNA_TITLE"),
+            content = htmlOutput("INTRO_SCRNA_TEXT")
           ) %>%
-        bs_append(
-          title = htmlOutput("INTRO_LRI_TITLE"),
-          content = htmlOutput("INTRO_LRI_TEXT")
+          bs_append(
+            title = htmlOutput("INTRO_LRI_TITLE"),
+            content = uiOutput("INTRO_LRI_TEXT")
           ) %>%
-        bs_append(
-          title = htmlOutput("INTRO_CONTACT_TITLE"),
-          content = htmlOutput("INTRO_CONTACT_TEXT")
-        ),
-      style = "padding:50px"
+          bs_append(
+            title = htmlOutput("INTRO_CONTACT_TITLE"),
+            content = htmlOutput("INTRO_CONTACT_TEXT")
+          ),
+        style = "padding:10px"
+      )
     )
   )
 })
@@ -65,21 +72,29 @@ output$INTRO_LRI_TITLE <- renderUI({
 })
 
 output$INTRO_LRI_TEXT <- renderUI({
-  fluidRow(
-    column(
-      width = 12,
-      htmlOutput("INTRO_LRI_HTML"),
-      style = "padding:30px"
+  fluidPage(
+    fluidRow(
+      column(
+        width = 6,
+        htmlOutput("INTRO_LRI_HTML_TEXT")
+      ),
+      column(
+        width = 6,
+        htmlOutput("INTRO_LRI_HTML_DB_LIST")
+      )
     ),
-    column(
-      width = 12,
-      DT::dataTableOutput("INTRO_LRI_TABLE"),
-      style = "padding:30px"
+    fluidRow(
+      column(
+        width = 12,
+        DT::dataTableOutput("INTRO_LRI_TABLE")
+      )
     ),
-    column(
-      width = 12,
-      plotOutput("INTRO_LRI_UPSET_PLOT", height = "600px"),
-      style = "padding:30px"
+    fluidRow(
+      column(
+        width = 10,
+        offset = 1,
+        plotOutput("INTRO_LRI_UPSET_PLOT", height = "500px")
+      )
     )
   )
 })
@@ -92,8 +107,12 @@ output$INTRO_CONTACT_TEXT <- renderUI({
   scAgeCom_data$shiny_html_content$intro_contact_text
 })
 
-output$INTRO_LRI_HTML <- renderUI({
+output$INTRO_LRI_HTML_TEXT <- renderUI({
   scAgeCom_data$shiny_html_content$intro_lri_text
+})
+
+output$INTRO_LRI_HTML_DB_LIST <- renderUI({
+  scAgeCom_data$shiny_html_content$intro_lri_db_list
 })
 
 output$INTRO_LRI_TABLE <- DT::renderDataTable({
