@@ -15,7 +15,9 @@ library(ComplexUpset)
 library(igraph)
 library(RColorBrewer)
 library(purrr)
+library(kableExtra)
 library(visNetwork)
+library(stringr)
 
 library(scDiffCom)
 
