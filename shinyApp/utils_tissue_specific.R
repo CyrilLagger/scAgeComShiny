@@ -178,7 +178,7 @@ output$TSA_PANEL_VIEW <- renderUI({
           ),
           selectizeInput(
             inputId = "TSA_GENE_CHOICE",
-            label = "Single Genes",
+            label = "Individual Genes",
             choices = NULL,
             multiple = TRUE
           ),
@@ -750,7 +750,8 @@ output$TSA_ORA_DETAILS <-  renderUI({
     fluidPage(
       fluidRow(
         column(
-          width = 12,
+          width = 9,
+          offset = 2,
           visNetworkOutput("TSA_ORA_NETWORK_PLOT", height = "800px")
         )
       )
@@ -842,7 +843,7 @@ output$TSA_ORA_TABLE_LRI <- DT::renderDataTable({
   )
   scAgeCom_data$build_ORA_display(
     ORA_table = dt,
-    category_choice = "LRIs",
+    category_choice = "Ligand-Receptor Interaction",
     go_aspect_choice = NULL,
     type_choice = input$TSA_ORA_TYPE_CHOICE
   )
@@ -862,7 +863,7 @@ output$TSA_ORA_TABLE_LIGAND <- DT::renderDataTable({
   )
   scAgeCom_data$build_ORA_display(
     ORA_table = dt,
-    category_choice = "Ligand Gene(s)",
+    category_choice = "Ligand",
     go_aspect_choice = NULL,
     type_choice = input$TSA_ORA_TYPE_CHOICE
   )
@@ -882,7 +883,7 @@ output$TSA_ORA_TABLE_RECEPTOR <- DT::renderDataTable({
   )
   scAgeCom_data$build_ORA_display(
     ORA_table = dt,
-    category_choice = "Receptor Gene(s)",
+    category_choice = "Receptor",
     go_aspect_choice = NULL,
     type_choice = input$TSA_ORA_TYPE_CHOICE
   )
@@ -903,7 +904,7 @@ output$TSA_ORA_TABLE_GO <- DT::renderDataTable({
   )
   scAgeCom_data$build_ORA_display(
     ORA_table = dt,
-    category_choice = "GO Terms",
+    category_choice = "GO Term",
     go_aspect_choice = input$TSA_ORA_GO_ASPECT_CHOICE,
     type_choice = input$TSA_ORA_TYPE_CHOICE
   )
@@ -923,27 +924,7 @@ output$TSA_ORA_TABLE_KEGG <- DT::renderDataTable({
   )
   scAgeCom_data$build_ORA_display(
     ORA_table = dt,
-    category_choice = "KEGG Pathways",
-    go_aspect_choice = NULL,
-    type_choice = input$TSA_ORA_TYPE_CHOICE
-  )
-})
-
-output$TSA_ORA_TABLE_CELLFAMILY <- DT::renderDataTable({
-  req(
-    input$TSA_DATASET_CHOICE,
-    input$TSA_TISSUE_CHOICE,
-    input$TSA_ORA_CATEGORY_CHOICE,
-    input$TSA_ORA_TYPE_CHOICE
-  )
-  dt <- scAgeCom_data$subset_ORA_table(
-    ORA_table = scAgeCom_data$ORA_table,
-    dataset_choice = input$TSA_DATASET_CHOICE,
-    tissue_choice = input$TSA_TISSUE_CHOICE
-  )
-  scAgeCom_data$build_ORA_display(
-    ORA_table = dt,
-    category_choice = "Cell Families",
+    category_choice = "KEGG Pathway",
     go_aspect_choice = NULL,
     type_choice = input$TSA_ORA_TYPE_CHOICE
   )
