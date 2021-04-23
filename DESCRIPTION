@@ -26,6 +26,7 @@ Imports:
     htmlwidgets,
     igraph,
     kableExtra,
+    magrittr,
     pkgload,
     plotly,
     processx,
@@ -35,6 +36,7 @@ Imports:
     shiny (>= 1.6.0),
     shinythemes,
     shinyWidgets,
+    stats,
     stringr,
     visNetwork
 Encoding: UTF-8
