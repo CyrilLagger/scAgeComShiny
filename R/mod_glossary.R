@@ -9,8 +9,15 @@
 #' @importFrom shiny NS tagList 
 mod_glossary_ui <- function(id){
   ns <- NS(id)
-  tagList(
-    htmlOutput(ns("HELP"))
+  fluidPage(
+    fluidRow(
+      column(
+        width = 10,
+        offset = 1,
+        uiOutput(ns("GLOSSARY_ACCORDION")),
+        style = "padding:10px"
+      )
+    )
   )
 }
     
@@ -21,24 +28,34 @@ mod_glossary_server <- function(id){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
     
-    output$HELP <- renderUI({
-      fluidPage(
-        fluidRow(
-          column(
-            width = 10,
-            offset = 1,
-            scAgeCom_data$shiny_bsplus_glossary,
-            style = "padding:10px"
+    output$GLOSSARY_ACCORDION <- renderUI({
+      bsplus::bs_accordion(
+        id = "HELP_GLOSSARY"
+      ) %>%
+        bsplus::bs_append(
+          title = "LRI: Ligand-Receptor Interaction",
+          content = paste(
+            "TODO"
+          )
+        ) %>%
+        bsplus::bs_append(
+          title = "CCI: Cell-Cell Interaction",
+          content = paste(
+            "TODO"
+          )
+        ) %>%
+        bsplus::bs_append(
+          title = "ORA Score",
+          content = paste(
+            "TODO"
+          )
+        ) %>%
+        bsplus::bs_append(
+          title = "TODO",
+          content = paste(
+            "TODO"
           )
         )
-      )
     })
- 
   })
 }
-    
-## To be copied in the UI
-# mod_glossary_ui("glossary_ui_1")
-    
-## To be copied in the server
-# mod_glossary_server("glossary_ui_1")

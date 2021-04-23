@@ -463,15 +463,15 @@ mod_introduction_server <- function(id) {
       
       output$INTRO_LRI_TABLE <- DT::renderDataTable({
         display_LRI_table(
-          LRI_table = scAgeCom_data$LRI_mouse_curated,
-          LRI_database = scAgeCom_data$LRI_DATABASES
+          LRI_table = scAgeComShiny::scAgeCom_data$LRI_mouse_curated,
+          LRI_database = scAgeComShiny::scAgeCom_data$LRI_DATABASES
         )
       })
       
       output$INTRO_LRI_UPSET_PLOT <- renderPlot({
         plot_upset_LRI(
-          LRI_table = scAgeCom_data$LRI_mouse_curated,
-          groups = colnames(scAgeCom_data$LRI_mouse_curated)[9:16],
+          LRI_table = scAgeComShiny::scAgeCom_data$LRI_mouse_curated,
+          groups = colnames(scAgeComShiny::scAgeCom_data$LRI_mouse_curated)[9:16],
           min_size = 40
         )
       })
@@ -499,6 +499,7 @@ display_LRI_table <- function(
   LRI_table,
   LRI_database
 ) {
+  `Database(s) of Origin` <- NULL
   dt <- LRI_table[
     apply(
       sapply(
@@ -546,6 +547,7 @@ plot_upset_LRI <- function(
   groups,
   min_size
 ) {
+  COMPLEX <- NULL
   p <- ComplexUpset::upset(
     as.data.frame(LRI_table),
     groups,

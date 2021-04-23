@@ -53,7 +53,7 @@ mod_tsa_server <- function(id){
 
       output$TSA_TISSUE_CHOICE <- renderUI({
         #print("coucou2")
-        choices <- scAgeCom_data$ALL_TISSUES
+        choices <- scAgeComShiny::scAgeCom_data$ALL_TISSUES
         tags$table(
           style = "margin-top: 10px; margin-left: auto; margin-right:auto;",
           tags$tbody(
@@ -86,7 +86,8 @@ mod_tsa_server <- function(id){
         #print("coucou3a")
         req(input$TSA_TISSUE_CHOICE)
         #print("coucou3b")
-        dt <- scAgeCom_data$TISSUE_COUNTS_SUMMARY[
+        Tissue <- NULL
+        dt <- scAgeComShiny::scAgeCom_data$TISSUE_COUNTS_SUMMARY[
           Tissue == input$TSA_TISSUE_CHOICE
         ]
         display_tissue_counts(
@@ -98,7 +99,7 @@ mod_tsa_server <- function(id){
         #print("coucou4a")
         req(input$TSA_TISSUE_CHOICE)
         #print("coucou4b")
-        dt <- scAgeCom_data$TISSUE_COUNTS_SUMMARY[
+        dt <- scAgeComShiny::scAgeCom_data$TISSUE_COUNTS_SUMMARY[
           Tissue == input$TSA_TISSUE_CHOICE
         ]
         tags$table(

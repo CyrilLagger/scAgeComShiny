@@ -132,7 +132,7 @@ mod_tca_server <- function(id){
         selectInput(
           inputId = ns("TCA_GLOBAL_TABLE_CHOICE"),
           label = "Category",
-          choices = scAgeCom_data$ALL_ORA_CATEGORIES_GLOBAL
+          choices = scAgeComShiny::scAgeCom_data$ALL_ORA_CATEGORIES_GLOBAL
         )
       })
       
@@ -140,12 +140,12 @@ mod_tca_server <- function(id){
         selectInput(
           inputId = ns("TCA_GLOBAL_ORA_REGULATION_CHOICE"),
           label = "Age Regulation",
-          choices = scAgeCom_data$ALL_ORA_TYPES
+          choices = scAgeComShiny::scAgeCom_data$ALL_ORA_TYPES
         )
       })
       
       output$TCA_ORA_GO_ASPECT_CHOICE <- renderUI({
-        choices <- scAgeCom_data$ALL_ORA_GO_ASPECTS
+        choices <- scAgeComShiny::scAgeCom_data$ALL_ORA_GO_ASPECTS
         selectInput(
           inputId = ns("TCA_ORA_GO_ASPECT_CHOICE"),
           label = "GO Aspect",
@@ -237,7 +237,7 @@ mod_tca_server <- function(id){
           input$TCA_GLOBAL_ORA_REGULATION_CHOICE
         )
         display_KEYWORD_counts(
-          ora_keyword_counts = scAgeCom_data$ORA_KEYWORD_COUNTS,
+          ora_keyword_counts = scAgeComShiny::scAgeCom_data$ORA_KEYWORD_COUNTS,
           category = "Ligand-Receptor Interaction",
           regulation = input$TCA_GLOBAL_ORA_REGULATION_CHOICE
         )
@@ -249,7 +249,7 @@ mod_tca_server <- function(id){
           input$TCA_GLOBAL_ORA_REGULATION_CHOICE
         )
         display_KEYWORD_counts(
-          ora_keyword_counts = scAgeCom_data$ORA_KEYWORD_COUNTS,
+          ora_keyword_counts = scAgeComShiny::scAgeCom_data$ORA_KEYWORD_COUNTS,
           category = "Ligand",
           regulation = input$TCA_GLOBAL_ORA_REGULATION_CHOICE
         )
@@ -261,7 +261,7 @@ mod_tca_server <- function(id){
           input$TCA_GLOBAL_ORA_REGULATION_CHOICE
         )
         display_KEYWORD_counts(
-          ora_keyword_counts = scAgeCom_data$ORA_KEYWORD_COUNTS,
+          ora_keyword_counts = scAgeComShiny::scAgeCom_data$ORA_KEYWORD_COUNTS,
           category = "Receptor",
           regulation = input$TCA_GLOBAL_ORA_REGULATION_CHOICE
         )
@@ -274,7 +274,7 @@ mod_tca_server <- function(id){
           input$TCA_ORA_GO_ASPECT_CHOICE
         )
         display_KEYWORD_counts(
-          ora_keyword_counts = scAgeCom_data$ORA_KEYWORD_COUNTS,
+          ora_keyword_counts = scAgeComShiny::scAgeCom_data$ORA_KEYWORD_COUNTS,
           category = "GO Term",
           regulation = input$TCA_GLOBAL_ORA_REGULATION_CHOICE,
           go_aspect = input$TCA_ORA_GO_ASPECT_CHOICE
@@ -287,7 +287,7 @@ mod_tca_server <- function(id){
           input$TCA_GLOBAL_ORA_REGULATION_CHOICE
         )
         display_KEYWORD_counts(
-          ora_keyword_counts = scAgeCom_data$ORA_KEYWORD_COUNTS,
+          ora_keyword_counts = scAgeComShiny::scAgeCom_data$ORA_KEYWORD_COUNTS,
           category = "KEGG Pathway",
           regulation = input$TCA_GLOBAL_ORA_REGULATION_CHOICE
         )
@@ -299,7 +299,7 @@ mod_tca_server <- function(id){
           input$TCA_GLOBAL_ORA_REGULATION_CHOICE
         )
         display_KEYWORD_counts(
-          ora_keyword_counts = scAgeCom_data$ORA_KEYWORD_COUNTS,
+          ora_keyword_counts = scAgeComShiny::scAgeCom_data$ORA_KEYWORD_COUNTS,
           category = "Emitter-Receiver Cell Type Family",
           regulation = input$TCA_GLOBAL_ORA_REGULATION_CHOICE
         )
@@ -311,7 +311,7 @@ mod_tca_server <- function(id){
           input$TCA_GLOBAL_ORA_REGULATION_CHOICE
         )
         display_KEYWORD_counts(
-          ora_keyword_counts = scAgeCom_data$ORA_KEYWORD_COUNTS,
+          ora_keyword_counts = scAgeComShiny::scAgeCom_data$ORA_KEYWORD_COUNTS,
           category = "Emitter Cell Type Family",
           regulation = input$TCA_GLOBAL_ORA_REGULATION_CHOICE
         )
@@ -323,7 +323,7 @@ mod_tca_server <- function(id){
           input$TCA_GLOBAL_ORA_REGULATION_CHOICE
         )
         display_KEYWORD_counts(
-          ora_keyword_counts = scAgeCom_data$ORA_KEYWORD_COUNTS,
+          ora_keyword_counts = scAgeComShiny::scAgeCom_data$ORA_KEYWORD_COUNTS,
           category = "Receiver Cell Type Family",
           regulation = input$TCA_GLOBAL_ORA_REGULATION_CHOICE
         )
@@ -333,7 +333,7 @@ mod_tca_server <- function(id){
         selectInput(
           inputId = ns("TCA_KEYWORD_CATEGORY_CHOICE"),
           label = "Category",
-          choices = scAgeCom_data$ALL_ORA_CATEGORIES_KEYWORD
+          choices = scAgeComShiny::scAgeCom_data$ALL_ORA_CATEGORIES_KEYWORD
         )
       })
       
@@ -352,90 +352,91 @@ mod_tca_server <- function(id){
           input$TCA_KEYWORD_VALUE_CHOICE
         )
         plot_KEYWORD_summary(
-          ora_keyword_summary = scAgeCom_data$ORA_KEYWORD_SUMMARY,
-          ora_keyword_template = scAgeCom_data$ORA_KEYWORD_TEMPLATE,
+          ora_keyword_summary = scAgeComShiny::scAgeCom_data$ORA_KEYWORD_SUMMARY,
+          ora_keyword_template = scAgeComShiny::scAgeCom_data$ORA_KEYWORD_TEMPLATE,
           category = input$TCA_KEYWORD_CATEGORY_CHOICE,
           keyword = input$TCA_KEYWORD_VALUE_CHOICE
         )
       })
       
-      output$TCA_ERI_FAMILY_NETWORK <- visNetwork::renderVisNetwork({
-        req(
-          input$TCA_ERI_FAMILY_REGULATION_CHOICE,
-          input$TCA_ERI_FAMILY_NUM_TISS_THRESHOLD
-        )
-        REGULATION_CHOICE = input$TCA_ERI_FAMILY_REGULATION_CHOICE
-        NUM_TISSUE_THRESHOLD = input$TCA_ERI_FAMILY_NUM_TISS_THRESHOLD
-        graph_config = scDiffCom:::setup_graph_config()
-        edge_color = ifelse(
-          REGULATION_CHOICE == 'UP',
-          graph_config$EDGE_COLORING$ORA_COLOR_UP,
-          ifelse(
-            REGULATION_CHOICE == 'DOWN',
-            graph_config$EDGE_COLORING$ORA_COLOR_DOWN,
-            graph_config$EDGE_COLORING$ORA_COLOR_FLAT
-          )
-        )
-        edges = copy(scAgeCom_data$ORA_KEYWORD_COUNTS)[
-          ORA_CATEGORY == 'ER Cell Families' &
-            ORA_REGULATION == REGULATION_CHOICE &
-            as.integer(gsub("/23", "", `Overall (Union)`)) >= NUM_TISSUE_THRESHOLD,
-          c('VALUE', 'Overall (Union)')
-        ]
-        edges[, "from" := sapply(strsplit(edges[, VALUE], "_"), function(v) v[1])]
-        edges[, "to" := sapply(strsplit(edges[, VALUE], "_"), function(v) v[2])]
-        edges[, "value" := list(as.integer(gsub("/23", "", `Overall (Union)`)))]
-        edges[, "label" := value]
-        edges[, "color" := edge_color]
-        nodes_set = union(edges[, from], edges[, to])
-        nodes = data.table::data.table(id = nodes_set, label = nodes_set)
-        nodes[
-          ,
-          c("color.background", "color.border",
-            "color.highlight.background", "color.highlight.border",
-            "color.hover.background", "color.hover.border",
-            "shadow"
-          ) := list(
-            graph_config$NODE_COLORING$BACKGROUND,
-            graph_config$NODE_COLORING$BORDER,
-            graph_config$NODE_COLORING$HIGHLIGHT$BACKGROUND,
-            graph_config$NODE_COLORING$HIGHLIGHT$BORDER,
-            graph_config$NODE_COLORING$HOVER$BACKGROUND,
-            graph_config$NODE_COLORING$HOVER$BORDER,
-            TRUE
-          )
-        ]
-        visNetwork::visNetwork(
-          nodes = nodes,
-          edges = edges,
-          # width = 100,
-          # height = 100,
-          main = "Cell families",
-          # submain = sprintf("%s", object_name),
-          # footer = sprintf("Network type: %s", layout_type),
-          # background = config$VISNETWORK$BACKGROUND
-        ) %>% visNetwork::visNodes(
-          shape = "dot",
-          physics = FALSE,
-          font = list(size = 18, align = "left")
-        ) %>% visNetwork::visEdges(
-          shadow = TRUE,
-          arrows = "middle",
-          smooth = list(enabled = TRUE, roundness = 0.75)
-        )
-      })
+      # output$TCA_ERI_FAMILY_NETWORK <- visNetwork::renderVisNetwork({
+      #   req(
+      #     input$TCA_ERI_FAMILY_REGULATION_CHOICE,
+      #     input$TCA_ERI_FAMILY_NUM_TISS_THRESHOLD
+      #   )
+      #   REGULATION_CHOICE = input$TCA_ERI_FAMILY_REGULATION_CHOICE
+      #   NUM_TISSUE_THRESHOLD = input$TCA_ERI_FAMILY_NUM_TISS_THRESHOLD
+      #   graph_config = scDiffCom:::setup_graph_config()
+      #   edge_color = ifelse(
+      #     REGULATION_CHOICE == 'UP',
+      #     graph_config$EDGE_COLORING$ORA_COLOR_UP,
+      #     ifelse(
+      #       REGULATION_CHOICE == 'DOWN',
+      #       graph_config$EDGE_COLORING$ORA_COLOR_DOWN,
+      #       graph_config$EDGE_COLORING$ORA_COLOR_FLAT
+      #     )
+      #   )
+      #   edges = copy(scAgeComShiny::scAgeCom_data$ORA_KEYWORD_COUNTS)[
+      #     ORA_CATEGORY == 'ER Cell Families' &
+      #       ORA_REGULATION == REGULATION_CHOICE &
+      #       as.integer(gsub("/23", "", `Overall (Union)`)) >= NUM_TISSUE_THRESHOLD,
+      #     c('VALUE', 'Overall (Union)')
+      #   ]
+      #   edges[, "from" := sapply(strsplit(edges[, VALUE], "_"), function(v) v[1])]
+      #   edges[, "to" := sapply(strsplit(edges[, VALUE], "_"), function(v) v[2])]
+      #   edges[, "value" := list(as.integer(gsub("/23", "", `Overall (Union)`)))]
+      #   edges[, "label" := value]
+      #   edges[, "color" := edge_color]
+      #   nodes_set = union(edges[, from], edges[, to])
+      #   nodes = data.table::data.table(id = nodes_set, label = nodes_set)
+      #   nodes[
+      #     ,
+      #     c("color.background", "color.border",
+      #       "color.highlight.background", "color.highlight.border",
+      #       "color.hover.background", "color.hover.border",
+      #       "shadow"
+      #     ) := list(
+      #       graph_config$NODE_COLORING$BACKGROUND,
+      #       graph_config$NODE_COLORING$BORDER,
+      #       graph_config$NODE_COLORING$HIGHLIGHT$BACKGROUND,
+      #       graph_config$NODE_COLORING$HIGHLIGHT$BORDER,
+      #       graph_config$NODE_COLORING$HOVER$BACKGROUND,
+      #       graph_config$NODE_COLORING$HOVER$BORDER,
+      #       TRUE
+      #     )
+      #   ]
+      #   visNetwork::visNetwork(
+      #     nodes = nodes,
+      #     edges = edges,
+      #     # width = 100,
+      #     # height = 100,
+      #     main = "Cell families",
+      #     # submain = sprintf("%s", object_name),
+      #     # footer = sprintf("Network type: %s", layout_type),
+      #     # background = config$VISNETWORK$BACKGROUND
+      #   ) %>% visNetwork::visNodes(
+      #     shape = "dot",
+      #     physics = FALSE,
+      #     font = list(size = 18, align = "left")
+      #   ) %>% visNetwork::visEdges(
+      #     shadow = TRUE,
+      #     arrows = "middle",
+      #     smooth = list(enabled = TRUE, roundness = 0.75)
+      #   )
+      # })
       
       observeEvent(
         input$TCA_KEYWORD_CATEGORY_CHOICE,
         {
           req(input$TCA_KEYWORD_CATEGORY_CHOICE)
+          ORA_CATEGORY <- NULL
           freezeReactiveValue(input, "TCA_KEYWORD_VALUE_CHOICE")
           updateSelectInput(
             session = session,
             'TCA_KEYWORD_CATEGORY_CHOICE',
             selected = input$TCA_KEYWORD_CATEGORY_CHOICE
           )
-          choices <- sort(unique(scAgeCom_data$ORA_KEYWORD_COUNTS[
+          choices <- sort(unique(scAgeComShiny::scAgeCom_data$ORA_KEYWORD_COUNTS[
             ORA_CATEGORY == input$TCA_KEYWORD_CATEGORY_CHOICE
           ]$VALUE))
           #print(head(choices))
@@ -482,7 +483,7 @@ mod_tca_server <- function(id){
       #     )
       #
       #     ORA_CATEGORY <- REGULATION <- VALUE <- from <- to <- NULL
-      #     edges = scAgeCom_data$ORA_KEYWORD_COUNTS[
+      #     edges = scAgeComShiny::scAgeCom_data$ORA_KEYWORD_COUNTS[
       #       ORA_CATEGORY == 'ERI Family' &
       #         REGULATION == REGULATION_CHOICE &
       #         `Overall (Union)` >= NUM_TISSUE_THRESHOLD,
@@ -543,6 +544,7 @@ display_KEYWORD_counts <- function(
   regulation,
   go_aspect = NULL
 ) {
+  ORA_CATEGORY <- ORA_REGULATION <- ASPECT <- NULL
   dt <- ora_keyword_counts[
     ORA_CATEGORY == category &
       ORA_REGULATION == regulation
@@ -619,6 +621,8 @@ plot_KEYWORD_summary <- function(
   category,
   keyword
 ) {
+  ORA_CATEGORY <- VALUE <- Regulation <- i.ORA_REGULATION <-
+    Dataset <- Tissue <- NULL
   dt <- copy(ora_keyword_summary)[
     ORA_CATEGORY == category
   ]

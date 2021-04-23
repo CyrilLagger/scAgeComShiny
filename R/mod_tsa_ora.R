@@ -59,7 +59,7 @@ mod_tsa_ora_server <- function(
       ns <- session$ns
 
       output$TSA_ORA_CATEGORY_CHOICE <- renderUI({
-        choices <- scAgeCom_data$ALL_ORA_CATEGORIES_SPECIFIC
+        choices <- scAgeComShiny::scAgeCom_data$ALL_ORA_CATEGORIES_SPECIFIC
         selectInput(
           inputId = ns("TSA_ORA_CATEGORY_CHOICE"),
           label = "Category",
@@ -68,7 +68,7 @@ mod_tsa_ora_server <- function(
       })
       
       output$TSA_ORA_TYPE_CHOICE <- renderUI({
-        choices <- scAgeCom_data$ALL_ORA_TYPES
+        choices <- scAgeComShiny::scAgeCom_data$ALL_ORA_TYPES
         selectInput(
           inputId = ns("TSA_ORA_TYPE_CHOICE"),
           label = "Age Regulation",
@@ -81,7 +81,7 @@ mod_tsa_ora_server <- function(
           rv_tsa$tissue_choice,
           rv_tsa$dataset_choice
         )
-        choices <- scAgeCom_data$ALL_ORA_GO_ASPECTS
+        choices <- scAgeComShiny::scAgeCom_data$ALL_ORA_GO_ASPECTS
         selectInput(
           inputId = ns("TSA_ORA_GO_ASPECT_CHOICE"),
           label = "GO Aspect",
@@ -242,11 +242,11 @@ mod_tsa_ora_server <- function(
         #print(input$TSA_ORA_CATEGORY_CHOICE)
         #print("coucouy1b")
         plot_ORA_visnetwork(
-          CCI_table = scAgeCom_data$CCI_table,
-          ORA_table = scAgeCom_data$ORA_table,
+          CCI_table = scAgeComShiny::scAgeCom_data$CCI_table,
+          ORA_table = scAgeComShiny::scAgeCom_data$ORA_table,
           tissue_choice = rv_tsa$tissue_choice,
           dataset_choice = rv_tsa$dataset_choice,
-          abbr_celltype = scAgeCom_data$ABBR_CELLTYPE
+          abbr_celltype = scAgeComShiny::scAgeCom_data$ABBR_CELLTYPE
         )
       })
       
@@ -258,7 +258,7 @@ mod_tsa_ora_server <- function(
           input$TSA_ORA_TYPE_CHOICE
         )
         plot_ORA_score(
-          ORA_table = scAgeCom_data$ORA_table,
+          ORA_table = scAgeComShiny::scAgeCom_data$ORA_table,
           tissue_choice = rv_tsa$tissue_choice,
           dataset_choice = rv_tsa$dataset_choice,
           category_choice = "LRI",
@@ -274,7 +274,7 @@ mod_tsa_ora_server <- function(
           input$TSA_ORA_TYPE_CHOICE
         )
         plot_ORA_score(
-          ORA_table = scAgeCom_data$ORA_table,
+          ORA_table = scAgeComShiny::scAgeCom_data$ORA_table,
           tissue_choice = rv_tsa$tissue_choice,
           dataset_choice = rv_tsa$dataset_choice,
           category_choice = "LIGAND_COMPLEX",
@@ -290,7 +290,7 @@ mod_tsa_ora_server <- function(
           input$TSA_ORA_TYPE_CHOICE
         )
         plot_ORA_score(
-          ORA_table = scAgeCom_data$ORA_table,
+          ORA_table = scAgeComShiny::scAgeCom_data$ORA_table,
           tissue_choice = rv_tsa$tissue_choice,
           dataset_choice = rv_tsa$dataset_choice,
           category_choice = "RECEPTOR_COMPLEX",
@@ -306,7 +306,7 @@ mod_tsa_ora_server <- function(
           input$TSA_ORA_TYPE_CHOICE
         )
         dt <- subset_ORA_table(
-          ORA_table = scAgeCom_data$ORA_table,
+          ORA_table = scAgeComShiny::scAgeCom_data$ORA_table,
           dataset_choice = rv_tsa$dataset_choice,
           tissue_choice = rv_tsa$tissue_choice
         )
@@ -326,7 +326,7 @@ mod_tsa_ora_server <- function(
           input$TSA_ORA_TYPE_CHOICE
         )
         dt <- subset_ORA_table(
-          ORA_table = scAgeCom_data$ORA_table,
+          ORA_table = scAgeComShiny::scAgeCom_data$ORA_table,
           dataset_choice = rv_tsa$dataset_choice,
           tissue_choice = rv_tsa$tissue_choice
         )
@@ -346,7 +346,7 @@ mod_tsa_ora_server <- function(
           input$TSA_ORA_TYPE_CHOICE
         )
         dt <- subset_ORA_table(
-          ORA_table = scAgeCom_data$ORA_table,
+          ORA_table = scAgeComShiny::scAgeCom_data$ORA_table,
           dataset_choice = rv_tsa$dataset_choice,
           tissue_choice = rv_tsa$tissue_choice
         )
@@ -376,7 +376,7 @@ mod_tsa_ora_server <- function(
           )
         )
         plot_ORA_score(
-          ORA_table = scAgeCom_data$ORA_table,
+          ORA_table = scAgeComShiny::scAgeCom_data$ORA_table,
           tissue_choice = rv_tsa$tissue_choice,
           dataset_choice = rv_tsa$dataset_choice,
           category_choice = "GO_TERMS",
@@ -393,7 +393,7 @@ mod_tsa_ora_server <- function(
           input$TSA_ORA_TYPE_CHOICE
         )
         plot_ORA_score(
-          ORA_table = scAgeCom_data$ORA_table,
+          ORA_table = scAgeComShiny::scAgeCom_data$ORA_table,
           tissue_choice = rv_tsa$tissue_choice,
           dataset_choice = rv_tsa$dataset_choice,
           category_choice = "KEGG_PWS",
@@ -410,7 +410,7 @@ mod_tsa_ora_server <- function(
           input$TSA_ORA_GO_ASPECT_CHOICE
         )
         dt <- subset_ORA_table(
-          ORA_table = scAgeCom_data$ORA_table,
+          ORA_table = scAgeComShiny::scAgeCom_data$ORA_table,
           dataset_choice = rv_tsa$dataset_choice,
           tissue_choice = rv_tsa$tissue_choice
         )
@@ -432,7 +432,7 @@ mod_tsa_ora_server <- function(
         )
         #print("coucouKb")
         dt <- subset_ORA_table(
-          ORA_table = scAgeCom_data$ORA_table,
+          ORA_table = scAgeComShiny::scAgeCom_data$ORA_table,
           dataset_choice = rv_tsa$dataset_choice,
           tissue_choice = rv_tsa$tissue_choice
         )
@@ -455,6 +455,8 @@ plot_ORA_visnetwork <- function(
   dataset_choice,
   abbr_celltype
 ) {
+  Dataset <- Tissue <- ORA_CATEGORY <- ORIGINAL_CELLTYPE <-
+    EMITTER_CELLTYPE <- RECEIVER_CELLTYPE <- i.ABBR_CELLTYPE <- NULL
   CCI_dt <- copy(CCI_table)
   data.table::setnames(
     CCI_dt,
@@ -541,6 +543,7 @@ plot_ORA_score <- function(
   type_choice,
   go_aspect_choice = "biological_process"
 ) {
+  Dataset <- Tissue <- ORA_CATEGORY <- NULL
   dt <- ORA_table[
     Dataset == dataset_choice &
       Tissue == tissue_choice &
@@ -582,6 +585,8 @@ subset_ORA_table <- function(
   dataset_choice,
   tissue_choice
 ) {
+  Dataset <- Tissue <- ORA_CATEGORY <- i.category_new <- ASPECT <-
+    i.new_aspect <- NULL
   dt <- ORA_table[
     Dataset == dataset_choice &
       Tissue == tissue_choice
@@ -644,6 +649,9 @@ display_ORA_table <- function(
   go_aspect_choice,
   type_choice
 ) {
+  ORA_CATEGORY <- ASPECT <- OR_UP <- BH_P_VALUE_UP <-
+    OR_DOWN <- BH_P_VALUE_DOWN <- OR_FLAT <- BH_P_VALUE_FLAT <-
+    `GO Level` <- `ORA Score` <- NULL
   #print("C1")
   dt <- ORA_table[ORA_CATEGORY == category_choice]
   if (category_choice == "GO Term") {

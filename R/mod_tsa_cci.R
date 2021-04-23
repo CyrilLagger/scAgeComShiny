@@ -95,7 +95,7 @@ mod_tsa_cci_server <- function(
         },
         content = function(file) {
           CCI_table_downl <- subset_CCI_table(
-            CCI_table = scAgeCom_data$CCI_table,
+            CCI_table = scAgeComShiny::scAgeCom_data$CCI_table,
             dataset_choice = rv_tsa$dataset_choice,
             tissue_choice = rv_tsa$tissue_choice,
             filter = FALSE
@@ -110,10 +110,11 @@ mod_tsa_cci_server <- function(
           rv_tsa$tissue_choice,
           rv_tsa$dataset_choice
         )
+        Dataset <- Tissue <- NULL
         #print("coucou6b")
         #print(rv_tsa$dataset_choice)
         #print(rv_tsa$tissue_choice)
-        choices_cts <- sort(scAgeCom_data$ALL_CELLTYPES[
+        choices_cts <- sort(scAgeComShiny::scAgeCom_data$ALL_CELLTYPES[
           Dataset == rv_tsa$dataset_choice &
             Tissue == rv_tsa$tissue_choice
         ][["CELLTYPE"]])
@@ -134,7 +135,7 @@ mod_tsa_cci_server <- function(
           rv_tsa$dataset_choice
         )
         #print("coucou7b")
-        choices <- sort(scAgeCom_data$ALL_CELLTYPES[
+        choices <- sort(scAgeComShiny::scAgeCom_data$ALL_CELLTYPES[
           Dataset == rv_tsa$dataset_choice &
             Tissue == rv_tsa$tissue_choice
         ][["CELLTYPE"]])
@@ -260,7 +261,7 @@ mod_tsa_cci_server <- function(
         #print("coucouR1b")
         if (filter_values$do_filtering) {
           CCI_table <- subset_CCI_table(
-            CCI_table = scAgeCom_data$CCI_table,
+            CCI_table = scAgeComShiny::scAgeCom_data$CCI_table,
             dataset_choice = rv_tsa$dataset_choice,
             tissue_choice = rv_tsa$tissue_choice,
             emitter_choice = filter_values$emitter_choice,
@@ -269,13 +270,13 @@ mod_tsa_cci_server <- function(
             GENE_choice = filter_values$GENE_choice,
             GO_choice = filter_values$GO_choice,
             KEGG_choice = filter_values$KEGG_choice,
-            GO_REF = scAgeCom_data$REFERENCE_GO_TERMS,
-            KEGG_REF = scAgeCom_data$REFERENCE_KEGG_PWS,
+            GO_REF = scAgeComShiny::scAgeCom_data$REFERENCE_GO_TERMS,
+            KEGG_REF = scAgeComShiny::scAgeCom_data$REFERENCE_KEGG_PWS,
             filter = TRUE
           )
         } else {
           CCI_table <- subset_CCI_table(
-            CCI_table = scAgeCom_data$CCI_table,
+            CCI_table = scAgeComShiny::scAgeCom_data$CCI_table,
             dataset_choice = rv_tsa$dataset_choice,
             tissue_choice = rv_tsa$tissue_choice,
             filter = FALSE
@@ -314,7 +315,7 @@ mod_tsa_cci_server <- function(
             c(
               ALL_LRI_LABEL,
               sort(
-                scAgeCom_data$ALL_LRIs[
+                scAgeComShiny::scAgeCom_data$ALL_LRIs[
                   Dataset == rv_tsa$dataset_choice &
                     Tissue == rv_tsa$tissue_choice
                 ][["LRI"]]
@@ -337,7 +338,7 @@ mod_tsa_cci_server <- function(
             c(
               ALL_GENE_LABEL,
               sort(
-                scAgeCom_data$ALL_GENES[
+                scAgeComShiny::scAgeCom_data$ALL_GENES[
                   Dataset == rv_tsa$dataset_choice &
                     Tissue == rv_tsa$tissue_choice
                 ][["GENE"]]
@@ -360,7 +361,7 @@ mod_tsa_cci_server <- function(
             c(
               ALL_GO_LABEL,
               sort(
-                scAgeCom_data$ALL_GO_TERMS[
+                scAgeComShiny::scAgeCom_data$ALL_GO_TERMS[
                   Dataset == rv_tsa$dataset_choice &
                     Tissue == rv_tsa$tissue_choice
                 ][["GO_NAMES"]]
@@ -383,7 +384,7 @@ mod_tsa_cci_server <- function(
             c(
               ALL_KEGG_LABEL,
               sort(
-                scAgeCom_data$ALL_KEGG_PWS[
+                scAgeComShiny::scAgeCom_data$ALL_KEGG_PWS[
                   Dataset == rv_tsa$dataset_choice &
                     Tissue == rv_tsa$tissue_choice
                 ][["KEGG_NAMES"]]
@@ -431,7 +432,7 @@ mod_tsa_cci_server <- function(
           filter_values$GENE_choice <- NULL
           filter_values$GO_choice <- NULL
           filter_values$KEGG_choice <- NULL
-          choices_cts <- sort(scAgeCom_data$ALL_CELLTYPES[
+          choices_cts <- sort(scAgeComShiny::scAgeCom_data$ALL_CELLTYPES[
             Dataset == rv_tsa$dataset_choice &
               Tissue == rv_tsa$tissue_choice
           ][["CELLTYPE"]])
@@ -452,7 +453,7 @@ mod_tsa_cci_server <- function(
             c(
               ALL_LRI_LABEL,
               sort(
-                scAgeCom_data$ALL_LRIs[
+                scAgeComShiny::scAgeCom_data$ALL_LRIs[
                   Dataset == rv_tsa$dataset_choice &
                     Tissue == rv_tsa$tissue_choice
                 ][["LRI"]]
@@ -475,7 +476,7 @@ mod_tsa_cci_server <- function(
             c(
               ALL_GENE_LABEL,
               sort(
-                scAgeCom_data$ALL_GENES[
+                scAgeComShiny::scAgeCom_data$ALL_GENES[
                   Dataset == rv_tsa$dataset_choice &
                     Tissue == rv_tsa$tissue_choice
                 ][["GENE"]]
@@ -498,7 +499,7 @@ mod_tsa_cci_server <- function(
             c(
               ALL_GO_LABEL,
               sort(
-                scAgeCom_data$ALL_GO_TERMS[
+                scAgeComShiny::scAgeCom_data$ALL_GO_TERMS[
                   Dataset == rv_tsa$dataset_choice &
                     Tissue == rv_tsa$tissue_choice
                 ][["GO_NAMES"]]
@@ -521,7 +522,7 @@ mod_tsa_cci_server <- function(
             c(
               ALL_KEGG_LABEL,
               sort(
-                scAgeCom_data$ALL_KEGG_PWS[
+                scAgeComShiny::scAgeCom_data$ALL_KEGG_PWS[
                   Dataset == rv_tsa$dataset_choice &
                     Tissue == rv_tsa$tissue_choice
                 ][["KEGG_NAMES"]]
@@ -559,6 +560,10 @@ subset_CCI_table <- function(
   KEGG_REF = NULL,
   filter
 ) {
+  Dataset <- Tissue <- `Emitter Cell Type` <- 
+    `Receiver Cell Type` <- LIGAND_1 <- LIGAND_2 <- RECEPTOR_1 <-
+    RECEPTOR_2 <- RECEPTOR_3 <- `Ligand-Receptor Interaction` <- 
+    GO_NAME <- KEGG_NAME <- NULL
   dt <- CCI_table[
     Dataset == dataset_choice &
       Tissue == tissue_choice
@@ -688,7 +693,7 @@ plot_volcano_CCI <- function(
       `Receiver Cell Type`
     ),
     color = ~`Age Regulation`,
-    colors = setNames(
+    colors = stats::setNames(
       c("red", "blue", "green", "gray"),
       c("UP", "DOWN", "FLAT", "NSC")
     )
@@ -729,6 +734,7 @@ plot_volcano_CCI <- function(
 plot_scores_CCI <- function(
   CCI_table
 ) {
+  `Young CCI Score` <- `Old CCI Score` <- NULL
   dt <- CCI_table[
     ,
     3:12
@@ -767,7 +773,7 @@ plot_scores_CCI <- function(
       `Receiver Cell Type`
     ),
     color = ~`Age Regulation`,
-    colors = setNames(
+    colors = stats::setNames(
       c("red", "blue", "green", "gray"),
       c("UP", "DOWN", "FLAT", "NSC")
     )
@@ -833,7 +839,7 @@ plot_lrfc_CCI <- function(
       `Receiver Cell Type`
     ),
     color = ~`Age Regulation`,
-    colors = setNames(
+    colors = stats::setNames(
       c("red", "blue", "green", "gray"),
       c("UP", "DOWN", "FLAT", "NSC")
     )
