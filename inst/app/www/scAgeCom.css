@@ -1,0 +1,36 @@
+a { cursor: pointer; }
+
+#question_mark_icon {
+  /* https://css-tricks.com/tips-aligning-icons-text/ */
+  width: 3px;
+  height: 3px;
+  position: relative;
+  bottom: 5px;
+  margin-left: 5px;
+}
+
+div thead tr:nth-child(2) td input {
+  height: auto;
+  padding: 4px 12px;
+}
+
+div#tca_ui_1-TCA_GLOBAL_DETAILS tbody td:nth-child(2) {
+  display: block;
+  background-color: white;
+  color: black;
+  border: 1px solid #555555;
+/*  padding: 8px 16px; */
+  text-align: center;
+  text-decoration: none;
+  font-size: 14px;
+/*   margin: 5px 5px; */
+  transition-duration: 0.4s;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+div#tca_ui_1-TCA_GLOBAL_DETAILS tbody td:nth-child(2):hover {
+  background-color: #555555;
+  color: white;
+}
+ 

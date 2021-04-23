@@ -1,0 +1,49 @@
+Package: scAgeComShiny
+Title: A Shiny App for scAgeCom
+Version: 0.0.0.9000
+Authors@R: c(
+    person("Cyril", "Lagger", email = "lagger.cyril@gmail.com",
+    role = c("aut", "cre")),
+    person("Eugen", "Ursu", email = "ursu_eugen@hotmail.com",
+    role = c("aut")),
+    person("Anais", "Equey", email = "anais.equey@gmail.com",
+    role = c("ctb"))
+    )
+Description: The Shiny App used to build the website related
+    to the scAgeCom project.
+License: MIT + file LICENSE
+Imports: 
+    attempt,
+    bsplus,
+    ComplexUpset,
+    config (>= 0.3.1),
+    data.table,
+    DT,
+    ggplot2,
+    glue,
+    golem (>= 0.3.1),
+    htmltools,
+    htmlwidgets,
+    igraph,
+    kableExtra,
+    pkgload,
+    plotly,
+    processx,
+    purrr,
+    RColorBrewer,
+    scDiffCom,
+    shiny (>= 1.6.0),
+    shinythemes,
+    shinyWidgets,
+    stringr,
+    visNetwork
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 7.1.1
+Suggests: 
+    spelling,
+    testthat (>= 3.0.0)
+Config/testthat/edition: 3
+Language: en-US
+Depends: 
+    R (>= 2.10)
