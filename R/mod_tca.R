@@ -17,6 +17,13 @@ mod_tca_ui <- function(id){
         offset = 3
       ),
     ),
+    fluidRow(
+      column(
+        width = 6,
+        titlePanel(htmlOutput(ns("TCA_NOTE"))),
+        offset = 3
+      ),
+    ),
     tabsetPanel(
       type = "tabs",
       tabPanel(
@@ -121,9 +128,23 @@ mod_tca_server <- function(id){
             style = paste(
               "display: inline-block;",
               "text-align: center;",
-              "font-size: 24px"
+              "font-size: 20px"
               ),
             "Over-represented signals shared accross Tissues and Datasets"
+          )
+        )
+      })
+      
+      output$TCA_NOTE <- renderUI({
+        tags$p(
+          div(
+            style = paste(
+              "display: inline-block;",
+              "text-align: center;",
+              "font-size: 10px"
+            ),
+            "Note: we recommend reading relevant sections of the Glossary",
+            "before interpreting these results."
           )
         )
       })
@@ -678,14 +699,14 @@ plot_KEYWORD_summary <- function(
         "TMS FACS (female)" ,
         "TMS Droplet (male)",
         "TMS Droplet (female)",
-        "Calico2019 (male)"
+        "Calico Droplet (male)"
       ),
       labels = c(
         "TMS\nFACS\n(male)",
         "TMS\nFACS\n(female)",
         "TMS\nDroplet\n(male)",
         "TMS\nDroplet\n(female)",
-        "Calico2019\n(male)"
+        "Calico\nDroplet\n(male)"
       ),
       guide = ggplot2::guide_axis(n.dodge = 2)
     ) +

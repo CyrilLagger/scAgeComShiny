@@ -249,7 +249,7 @@ mod_introduction_server <- function(id) {
               )
             ),
             tags$li(
-              "Calico2019:",
+              "Murine aging cell atlas:",
               tags$ul(
                 tags$li(
                   tags$a(
