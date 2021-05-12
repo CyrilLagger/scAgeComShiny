@@ -141,7 +141,7 @@ mod_introduction_server <- function(id) {
               target = "_blank"
             ),
             paste(
-              "to inverstigate how intercellular communication varies between",
+              "to investigate how intercellular communication varies between",
               "two biological conditions of interest (young/old, sick/healthy, etc.).",
               "Here, we have used scDiffCom to study differences in intercellular",
               "comunication between young and old murine cells. Please visit"
