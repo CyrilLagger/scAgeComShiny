@@ -15,22 +15,26 @@ mod_tsa_ora_ui <- function(id){
       sidebarPanel(
         width = 2,
         uiOutput(ns("TSA_ORA_CATEGORY_CHOICE")),
-        conditionalPanel(
-          condition = "input.TSA_ORA_CATEGORY_CHOICE != 'By Cell Types'",
-          ns = ns,
-          hr(
-            style = "border-top: 1px solid #000000;"
-          ),
-          uiOutput(ns("TSA_ORA_TYPE_CHOICE"))
+        hr(
+          style = "border-top: 1px solid #000000;"
         ),
-        conditionalPanel(
-          condition = "input.TSA_ORA_CATEGORY_CHOICE == 'By GO/KEGG'",
-          ns = ns,
-          hr(
-            style = "border-top: 1px solid #000000;"
-          ),
-          uiOutput(ns("TSA_ORA_GO_ASPECT_CHOICE"))
-        )
+        uiOutput(ns("TSA_ORA_TYPE_CHOICE"))#,
+        # conditionalPanel(
+        #   condition = "input.TSA_ORA_CATEGORY_CHOICE != 'By Cell Types'",
+        #   ns = ns,
+        #   hr(
+        #     style = "border-top: 1px solid #000000;"
+        #   ),
+        #   uiOutput(ns("TSA_ORA_TYPE_CHOICE"))
+        # ),
+        # conditionalPanel(
+        #   condition = "input.TSA_ORA_CATEGORY_CHOICE == 'By GO/KEGG'",
+        #   ns = ns,
+        #   hr(
+        #     style = "border-top: 1px solid #000000;"
+        #   ),
+        #   uiOutput(ns("TSA_ORA_GO_ASPECT_CHOICE"))
+        # )
       ),
       mainPanel(
         width = 10,
@@ -76,18 +80,18 @@ mod_tsa_ora_server <- function(
         )
       })
       
-      output$TSA_ORA_GO_ASPECT_CHOICE <- renderUI({
-        req(
-          rv_tsa$tissue_choice,
-          rv_tsa$dataset_choice
-        )
-        choices <- scAgeComShiny::scAgeCom_data$ALL_ORA_GO_ASPECTS
-        selectInput(
-          inputId = ns("TSA_ORA_GO_ASPECT_CHOICE"),
-          label = "GO Aspect",
-          choices = choices
-        )
-      })
+      # output$TSA_ORA_GO_ASPECT_CHOICE <- renderUI({
+      #   req(
+      #     rv_tsa$tissue_choice,
+      #     rv_tsa$dataset_choice
+      #   )
+      #   choices <- scAgeComShiny::scAgeCom_data$ALL_ORA_GO_ASPECTS
+      #   selectInput(
+      #     inputId = ns("TSA_ORA_GO_ASPECT_CHOICE"),
+      #     label = "GO Aspect",
+      #     choices = choices
+      #   )
+      # })
       
       output$TSA_ORA_TITLE <- renderUI({
         req(
@@ -141,6 +145,30 @@ mod_tsa_ora_server <- function(
                   ns("TSA_ORA_NETWORK_PLOT"),
                   height = "800px"
                 )
+              )
+            ),
+            fluidRow(
+              column(
+                style = "padding: 10px;",
+                width = 8,
+                offset = 2,
+                DT::DTOutput(ns("TSA_ORA_TABLE_ERI"))
+              )
+            ),
+            fluidRow(
+              column(
+                style = "padding: 10px;",
+                width = 8,
+                offset = 2,
+                DT::DTOutput(ns("TSA_ORA_TABLE_EMITTER"))
+              )
+            ),
+            fluidRow(
+              column(
+                style = "padding: 10px;",
+                width = 8,
+                offset = 2,
+                DT::DTOutput(ns("TSA_ORA_TABLE_RECEIVER"))
               )
             )
           )
@@ -198,17 +226,25 @@ mod_tsa_ora_server <- function(
           fluidPage(
             fluidRow(
               column(
-                width = 6,
-                plotOutput(
-                  ns("TSA_ORA_PLOT_GO"),
-                  height = "600px"
+                width = 4,
+                plotly::plotlyOutput(
+                  ns("TSA_ORA_TREEMAP_GO_BP"),
+                  height = "500px"
                 )
               ),
               column(
-                width = 6,
-                plotOutput(
-                  ns("TSA_ORA_PLOT_KEGG"),
-                  height = "600px")
+                width = 4,
+                plotly::plotlyOutput(
+                  ns("TSA_ORA_TREEMAP_GO_MF"),
+                  height = "500px"
+                )
+              ),
+              column(
+                width = 4,
+                plotly::plotlyOutput(
+                  ns("TSA_ORA_TREEMAP_GO_CC"),
+                  height = "500px"
+                )
               )
             ),
             fluidRow(
@@ -219,6 +255,22 @@ mod_tsa_ora_server <- function(
                 DT::DTOutput(
                   ns("TSA_ORA_TABLE_GO")
                 )
+              )
+            ),
+            fluidRow(
+              # column(
+              #   width = 6,
+              #   plotOutput(
+              #     ns("TSA_ORA_PLOT_GO"),
+              #     height = "600px"
+              #   )
+              # ),
+              column(
+                width = 6,
+                offset = 3,
+                plotOutput(
+                  ns("TSA_ORA_PLOT_KEGG"),
+                  height = "600px")
               )
             ),
             fluidRow(
@@ -247,6 +299,66 @@ mod_tsa_ora_server <- function(
           tissue_choice = rv_tsa$tissue_choice,
           dataset_choice = rv_tsa$dataset_choice,
           abbr_celltype = scAgeComShiny::scAgeCom_data$ABBR_CELLTYPE
+        )
+      })
+      
+      output$TSA_ORA_TABLE_ERI <- DT::renderDT({
+        req(
+          rv_tsa$dataset_choice,
+          rv_tsa$tissue_choice,
+          input$TSA_ORA_CATEGORY_CHOICE,
+          input$TSA_ORA_TYPE_CHOICE
+        )
+        dt <- subset_ORA_table(
+          ORA_table = scAgeComShiny::scAgeCom_data$ORA_table,
+          dataset_choice = rv_tsa$dataset_choice,
+          tissue_choice = rv_tsa$tissue_choice
+        )
+        display_ORA_table(
+          ORA_table = dt,
+          category_choice = "Emitter-Receiver Cell Type pair",
+          #go_aspect_choice = NULL,
+          type_choice = input$TSA_ORA_TYPE_CHOICE
+        )
+      })
+      
+      output$TSA_ORA_TABLE_EMITTER <- DT::renderDT({
+        req(
+          rv_tsa$dataset_choice,
+          rv_tsa$tissue_choice,
+          input$TSA_ORA_CATEGORY_CHOICE,
+          input$TSA_ORA_TYPE_CHOICE
+        )
+        dt <- subset_ORA_table(
+          ORA_table = scAgeComShiny::scAgeCom_data$ORA_table,
+          dataset_choice = rv_tsa$dataset_choice,
+          tissue_choice = rv_tsa$tissue_choice
+        )
+        display_ORA_table(
+          ORA_table = dt,
+          category_choice = "Emitter Cell Type",
+          #go_aspect_choice = NULL,
+          type_choice = input$TSA_ORA_TYPE_CHOICE
+        )
+      })
+      
+      output$TSA_ORA_TABLE_RECEIVER <- DT::renderDT({
+        req(
+          rv_tsa$dataset_choice,
+          rv_tsa$tissue_choice,
+          input$TSA_ORA_CATEGORY_CHOICE,
+          input$TSA_ORA_TYPE_CHOICE
+        )
+        dt <- subset_ORA_table(
+          ORA_table = scAgeComShiny::scAgeCom_data$ORA_table,
+          dataset_choice = rv_tsa$dataset_choice,
+          tissue_choice = rv_tsa$tissue_choice
+        )
+        display_ORA_table(
+          ORA_table = dt,
+          category_choice = "Receiver Cell Type",
+          #go_aspect_choice = NULL,
+          type_choice = input$TSA_ORA_TYPE_CHOICE
         )
       })
       
@@ -313,7 +425,7 @@ mod_tsa_ora_server <- function(
         display_ORA_table(
           ORA_table = dt,
           category_choice = "Ligand-Receptor Interaction",
-          go_aspect_choice = NULL,
+          #go_aspect_choice = NULL,
           type_choice = input$TSA_ORA_TYPE_CHOICE
         )
       })
@@ -333,7 +445,7 @@ mod_tsa_ora_server <- function(
         display_ORA_table(
           ORA_table = dt,
           category_choice = "Ligand",
-          go_aspect_choice = NULL,
+          #go_aspect_choice = NULL,
           type_choice = input$TSA_ORA_TYPE_CHOICE
         )
       })
@@ -353,37 +465,118 @@ mod_tsa_ora_server <- function(
         display_ORA_table(
           ORA_table = dt,
           category_choice = "Receptor",
-          go_aspect_choice = NULL,
+          #go_aspect_choice = NULL,
           type_choice = input$TSA_ORA_TYPE_CHOICE
         )
       })
       
-      output$TSA_ORA_PLOT_GO <- renderPlot({
+      output$TSA_ORA_TREEMAP_GO_BP <- plotly::renderPlotly({
         req(
           rv_tsa$dataset_choice,
           rv_tsa$tissue_choice,
           input$TSA_ORA_CATEGORY_CHOICE,
-          input$TSA_ORA_TYPE_CHOICE,
-          input$TSA_ORA_GO_ASPECT_CHOICE
+          input$TSA_ORA_TYPE_CHOICE#,
+          #input$TSA_ORA_GO_ASPECT_CHOICE
         )
-        go_aspect <- ifelse(
-          input$TSA_ORA_GO_ASPECT_CHOICE == "Biological Process",
-          "biological_process",
-          ifelse(
-            input$TSA_ORA_GO_ASPECT_CHOICE == "Molecular Function",
-            "molecular_function",
-            "cellular_component"
-          )
-        )
-        plot_ORA_score(
-          ORA_table = scAgeComShiny::scAgeCom_data$ORA_table,
+        # go_aspect <- ifelse(
+        #   input$TSA_ORA_GO_ASPECT_CHOICE == "Biological Process",
+        #   "biological_process",
+        #   ifelse(
+        #     input$TSA_ORA_GO_ASPECT_CHOICE == "Molecular Function",
+        #     "molecular_function",
+        #     "cellular_component"
+        #   )
+        # )
+        plot_ORA_GO_treemap(
+          GO_REDUCED_table = scAgeComShiny::scAgeCom_data$GO_REDUCED_table,
           tissue_choice = rv_tsa$tissue_choice,
           dataset_choice = rv_tsa$dataset_choice,
-          category_choice = "GO_TERMS",
           type_choice = input$TSA_ORA_TYPE_CHOICE,
-          go_aspect_choice = go_aspect
+          go_aspect_choice = "biological_process",
+          title_text = paste0("Biological Processes - ", input$TSA_ORA_TYPE_CHOICE)
         )
       })
+      
+      output$TSA_ORA_TREEMAP_GO_MF <- plotly::renderPlotly({
+        req(
+          rv_tsa$dataset_choice,
+          rv_tsa$tissue_choice,
+          input$TSA_ORA_CATEGORY_CHOICE,
+          input$TSA_ORA_TYPE_CHOICE#,
+          #input$TSA_ORA_GO_ASPECT_CHOICE
+        )
+        # go_aspect <- ifelse(
+        #   input$TSA_ORA_GO_ASPECT_CHOICE == "Biological Process",
+        #   "biological_process",
+        #   ifelse(
+        #     input$TSA_ORA_GO_ASPECT_CHOICE == "Molecular Function",
+        #     "molecular_function",
+        #     "cellular_component"
+        #   )
+        # )
+        plot_ORA_GO_treemap(
+          GO_REDUCED_table = scAgeComShiny::scAgeCom_data$GO_REDUCED_table,
+          tissue_choice = rv_tsa$tissue_choice,
+          dataset_choice = rv_tsa$dataset_choice,
+          type_choice = input$TSA_ORA_TYPE_CHOICE,
+          go_aspect_choice = "molecular_function",
+          title_text = paste0("Molecular Functions - ", input$TSA_ORA_TYPE_CHOICE)
+        )
+      })
+      
+      output$TSA_ORA_TREEMAP_GO_CC <- plotly::renderPlotly({
+        req(
+          rv_tsa$dataset_choice,
+          rv_tsa$tissue_choice,
+          input$TSA_ORA_CATEGORY_CHOICE,
+          input$TSA_ORA_TYPE_CHOICE#,
+          #input$TSA_ORA_GO_ASPECT_CHOICE
+        )
+        # go_aspect <- ifelse(
+        #   input$TSA_ORA_GO_ASPECT_CHOICE == "Biological Process",
+        #   "biological_process",
+        #   ifelse(
+        #     input$TSA_ORA_GO_ASPECT_CHOICE == "Molecular Function",
+        #     "molecular_function",
+        #     "cellular_component"
+        #   )
+        # )
+        plot_ORA_GO_treemap(
+          GO_REDUCED_table = scAgeComShiny::scAgeCom_data$GO_REDUCED_table,
+          tissue_choice = rv_tsa$tissue_choice,
+          dataset_choice = rv_tsa$dataset_choice,
+          type_choice = input$TSA_ORA_TYPE_CHOICE,
+          go_aspect_choice = "cellular_component",
+          title_text = paste0("Cellular Components - ", input$TSA_ORA_TYPE_CHOICE)
+        )
+      })
+      
+      # output$TSA_ORA_PLOT_GO <- renderPlot({
+      #   req(
+      #     rv_tsa$dataset_choice,
+      #     rv_tsa$tissue_choice,
+      #     input$TSA_ORA_CATEGORY_CHOICE,
+      #     input$TSA_ORA_TYPE_CHOICE,
+      #     input$TSA_ORA_GO_ASPECT_CHOICE
+      #   )
+      #   go_aspect <- ifelse(
+      #     input$TSA_ORA_GO_ASPECT_CHOICE == "Biological Process",
+      #     "biological_process",
+      #     ifelse(
+      #       input$TSA_ORA_GO_ASPECT_CHOICE == "Molecular Function",
+      #       "molecular_function",
+      #       "cellular_component"
+      #     )
+      #   )
+      #   plot_ORA_score(
+      #     ORA_table = scAgeComShiny::scAgeCom_data$ORA_table,
+      #     tissue_choice = rv_tsa$tissue_choice,
+      #     dataset_choice = rv_tsa$dataset_choice,
+      #     category_choice = "GO_TERMS",
+      #     type_choice = input$TSA_ORA_TYPE_CHOICE,
+      #     go_aspect_choice = go_aspect
+      #   )
+      # })
       
       output$TSA_ORA_PLOT_KEGG <- renderPlot({
         req(
@@ -406,8 +599,8 @@ mod_tsa_ora_server <- function(
           rv_tsa$dataset_choice,
           rv_tsa$tissue_choice,
           input$TSA_ORA_CATEGORY_CHOICE,
-          input$TSA_ORA_TYPE_CHOICE,
-          input$TSA_ORA_GO_ASPECT_CHOICE
+          input$TSA_ORA_TYPE_CHOICE#,
+          #input$TSA_ORA_GO_ASPECT_CHOICE
         )
         dt <- subset_ORA_table(
           ORA_table = scAgeComShiny::scAgeCom_data$ORA_table,
@@ -417,7 +610,7 @@ mod_tsa_ora_server <- function(
         display_ORA_table(
           ORA_table = dt,
           category_choice = "GO Term",
-          go_aspect_choice = input$TSA_ORA_GO_ASPECT_CHOICE,
+          #go_aspect_choice = input$TSA_ORA_GO_ASPECT_CHOICE,
           type_choice = input$TSA_ORA_TYPE_CHOICE
         )
       })
@@ -440,7 +633,7 @@ mod_tsa_ora_server <- function(
         display_ORA_table(
           ORA_table = dt,
           category_choice = "KEGG Pathway",
-          go_aspect_choice = NULL,
+          #go_aspect_choice = NULL,
           type_choice = input$TSA_ORA_TYPE_CHOICE
         )
       })
@@ -580,6 +773,98 @@ plot_ORA_score <- function(
   p
 }
 
+plot_ORA_GO_treemap <- function(
+  GO_REDUCED_table,
+  tissue_choice,
+  dataset_choice,
+  type_choice,
+  go_aspect_choice,
+  title_text,
+  domain = NULL
+) {
+  ex_data <- GO_REDUCED_table[
+    Dataset == dataset_choice &
+      Tissue == tissue_choice &
+      ASPECT == go_aspect_choice &
+      REGULATION == type_choice
+  ][, c("score", "term", "parentTerm")]
+  if (nrow(ex_data) == 0) return(NULL)
+  ex_data[, new_parent := ifelse(
+    term %in% parentTerm,
+    "",
+    parentTerm
+  )]
+  new_data <- data.table(
+    labels = c(ex_data$term, ex_data[new_parent == ""]$term),
+    parents = c(ex_data$parentTerm, rep("", length(ex_data[new_parent == ""]$term)))
+  )
+  new_data[
+    ,
+    ids := sapply(
+      1:nrow(.SD),
+      function(i) {
+        if (labels[[i]] == parents[[i]]) {
+          res <- paste(labels[[i]], parents[[i]], sep = " - ")
+        } else {
+          res <- labels[[i]]
+        }
+        res
+      }
+    )
+  ]
+  new_data[
+    ,
+    score := sapply(
+      1:nrow(.SD),
+      function(i) {
+        if (parents[[i]] == "") {
+          res <- sum(ex_data[parentTerm == labels[[i]]]$score)
+        } else {
+          res <- ex_data[term == labels[[i]]]$score
+        }
+        res
+      }
+    )
+  ]
+  new_data[
+    ,
+    text := gsub(" ", "\n", labels)
+  ]
+  m <- list(
+    l = 5,
+    r = 5,
+    b = 5,
+    t = 30,
+    pad = 0
+  )
+  plotly::plot_ly(
+    new_data,
+    type = "treemap",
+    opacity = 1,
+    ids = ~ids,
+    parents = ~parents,
+    values = ~score,
+    labels = ~labels,
+    text = ~text,
+    textposition = "middle center",
+    branchvalues = "total",
+    hoverinfo = "label+value",
+    marker = list(
+      line = list(color = "black")
+    ),
+    textinfo = "text",
+    domain = domain
+  ) %>% plotly::layout(
+    title = list(
+      text = title_text,
+      font = list(size = 16),
+      xanchor = "left",
+      x = 0.0
+    ),
+    margin = m
+  )
+}
+
 subset_ORA_table <- function(
   ORA_table,
   dataset_choice,
@@ -595,9 +880,9 @@ subset_ORA_table <- function(
     "LRI",
     "LIGAND_COMPLEX",
     "RECEPTOR_COMPLEX",
-    #"ER_CELLTYPES",
-    #"EMITTER_CELLTYPE",
-    #"RECEIVER_CELLTYPE",
+    "ER_CELLTYPES",
+    "EMITTER_CELLTYPE",
+    "RECEIVER_CELLTYPE",
     "GO_TERMS",
     "KEGG_PWS"#,
     #"ER_CELLFAMILIES",
@@ -611,9 +896,9 @@ subset_ORA_table <- function(
       "Ligand-Receptor Interaction",
       "Ligand",
       "Receptor",
-      #"ER Cell Types",
-      #"Emitter Cell Types",
-      #"Receiver Cell Types",
+      "Emitter-Receiver Cell Type pair",
+      "Emitter Cell Type",
+      "Receiver Cell Type",
       "GO Term",
       "KEGG Pathway"#,
       #"ER Cell Families",
@@ -646,7 +931,7 @@ subset_ORA_table <- function(
 display_ORA_table <- function(
   ORA_table,
   category_choice,
-  go_aspect_choice,
+  #go_aspect_choice,
   type_choice
 ) {
   ORA_CATEGORY <- ASPECT <- OR_UP <- BH_P_VALUE_UP <-
@@ -655,14 +940,15 @@ display_ORA_table <- function(
   #print("C1")
   dt <- ORA_table[ORA_CATEGORY == category_choice]
   if (category_choice == "GO Term") {
-    dt <- dt[ASPECT == go_aspect_choice]
-    level_str <- "GO Level"
+    #dt <- dt[ASPECT == go_aspect_choice]
+    level_str <- c("GO Level", "ASPECT")
     filter <- "top"
-    if (go_aspect_choice == "Biological Process") {
-      category_label <- paste0("GO ", go_aspect_choice, "es")
-    } else {
-      category_label <- paste0("GO ", go_aspect_choice, "s")
-    }
+    category_label <- "GO Terms"
+    # if (go_aspect_choice == "Biological Process") {
+    #   category_label <- paste0("GO ", go_aspect_choice, "es")
+    # } else {
+    #   category_label <- paste0("GO ", go_aspect_choice, "s")
+    # }
   } else {
     level_str <- NULL
     filter <- "top"
@@ -709,6 +995,7 @@ display_ORA_table <- function(
   }
   if (category_choice == "GO Term") {
     dt[, `GO Level` := as.factor(`GO Level`)]
+    dt[, ASPECT := as.factor(ASPECT)]
   }
   #print("C2")
   data.table::setnames(
