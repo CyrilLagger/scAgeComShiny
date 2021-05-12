@@ -782,6 +782,9 @@ plot_ORA_GO_treemap <- function(
   title_text,
   domain = NULL
 ) {
+  Dataset <- Tissue <- ASPECT <- REGULATION <- 
+    new_parent <- term <- parentTerm <- ids <- 
+    parents <- score <- text <- NULL
   ex_data <- GO_REDUCED_table[
     Dataset == dataset_choice &
       Tissue == tissue_choice &
