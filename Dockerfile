@@ -27,7 +27,7 @@ RUN Rscript -e 'remotes::install_version("igraph",upgrade="never", version = "1.
 RUN Rscript -e 'remotes::install_version("golem",upgrade="never", version = "0.3.1")'
 RUN Rscript -e 'remotes::install_version("DT",upgrade="never", version = "0.17")'
 RUN Rscript -e 'remotes::install_version("bsplus",upgrade="never", version = "0.1.2")'
-RUN Rscript -e 'remotes::install_github("CyrilLagger/scDiffCom@194ed92dcb415b444d11ae7bc69d12e571fc9373")'
+RUN Rscript -e 'remotes::install_github("CyrilLagger/scDiffCom@5a5482660f096068f911470b703c9e27669a2838")'
 RUN Rscript -e 'remotes::install_github("krassowski/complex-upset@0608c1ebd70c0b6e6f44bee7d84a6552db5c08f4")'
 RUN mkdir /build_zone
 ADD . /build_zone
