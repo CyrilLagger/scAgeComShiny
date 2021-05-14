@@ -422,6 +422,23 @@ mod_tsa_cci_server <- function(
       )
       
       observeEvent(
+        {
+          rv_tsa$dataset_choice
+          rv_tsa$tissue_choice
+        },
+        {
+          filter_values$do_filtering <- FALSE
+          filter_values$emitter_choice <- NULL
+          filter_values$receiver_choice <- NULL
+          filter_values$LRI_choice <- NULL
+          filter_values$GENE_choice <- NULL
+          filter_values$GO_choice <- NULL
+          filter_values$KEGG_choice <- NULL
+          
+        }
+      )
+      
+      observeEvent(
         input$TSA_RESET_BUTTON,
         {
           #print("coucoux9")
@@ -542,7 +559,6 @@ mod_tsa_cci_server <- function(
           )
         }
       )
-      
     })
 }
 
