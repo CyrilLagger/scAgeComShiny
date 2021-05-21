@@ -95,8 +95,8 @@ mod_tsa_ora_server <- function(
       
       output$TSA_ORA_TITLE <- renderUI({
         req(
-          rv_tsa$dataset_choice,
-          rv_tsa$tissue_choice
+          rv_tsa$dataset_choice#,
+          #rv_tsa$tissue_choice
         )
         fluidPage(
           fluidRow(
@@ -131,7 +131,7 @@ mod_tsa_ora_server <- function(
       
       output$TSA_ORA_DETAILS <-  renderUI({
         req(
-          rv_tsa$tissue_choice,
+          #rv_tsa$tissue_choice,
           rv_tsa$dataset_choice,
           input$TSA_ORA_CATEGORY_CHOICE
         )
@@ -286,13 +286,13 @@ mod_tsa_ora_server <- function(
       })
       
       output$TSA_ORA_NETWORK_PLOT <- visNetwork::renderVisNetwork({
-        #print("coucouy1a")
+        #print("hello_visnetwork_not_do")
         req(
-          rv_tsa$tissue_choice,
+          #rv_tsa$tissue_choice,
           rv_tsa$dataset_choice
         )
         #print(input$TSA_ORA_CATEGORY_CHOICE)
-        #print("coucouy1b")
+        #print("hello_visnetwork_do")
         plot_ORA_visnetwork(
           CCI_table = scAgeComShiny::scAgeCom_data$CCI_table,
           ORA_table = scAgeComShiny::scAgeCom_data$ORA_table,
@@ -305,7 +305,7 @@ mod_tsa_ora_server <- function(
       output$TSA_ORA_TABLE_ERI <- DT::renderDT({
         req(
           rv_tsa$dataset_choice,
-          rv_tsa$tissue_choice,
+          #rv_tsa$tissue_choice,
           input$TSA_ORA_CATEGORY_CHOICE,
           input$TSA_ORA_TYPE_CHOICE
         )
@@ -325,7 +325,7 @@ mod_tsa_ora_server <- function(
       output$TSA_ORA_TABLE_EMITTER <- DT::renderDT({
         req(
           rv_tsa$dataset_choice,
-          rv_tsa$tissue_choice,
+          #rv_tsa$tissue_choice,
           input$TSA_ORA_CATEGORY_CHOICE,
           input$TSA_ORA_TYPE_CHOICE
         )
@@ -345,7 +345,7 @@ mod_tsa_ora_server <- function(
       output$TSA_ORA_TABLE_RECEIVER <- DT::renderDT({
         req(
           rv_tsa$dataset_choice,
-          rv_tsa$tissue_choice,
+          #rv_tsa$tissue_choice,
           input$TSA_ORA_CATEGORY_CHOICE,
           input$TSA_ORA_TYPE_CHOICE
         )
@@ -365,7 +365,7 @@ mod_tsa_ora_server <- function(
       output$TSA_ORA_PLOT_LRI <- renderPlot({
         req(
           rv_tsa$dataset_choice,
-          rv_tsa$tissue_choice,
+          #rv_tsa$tissue_choice,
           input$TSA_ORA_CATEGORY_CHOICE,
           input$TSA_ORA_TYPE_CHOICE
         )
@@ -381,7 +381,7 @@ mod_tsa_ora_server <- function(
       output$TSA_ORA_PLOT_LIGAND <- renderPlot({
         req(
           rv_tsa$dataset_choice,
-          rv_tsa$tissue_choice,
+          #rv_tsa$tissue_choice,
           input$TSA_ORA_CATEGORY_CHOICE,
           input$TSA_ORA_TYPE_CHOICE
         )
@@ -397,7 +397,7 @@ mod_tsa_ora_server <- function(
       output$TSA_ORA_PLOT_RECEPTOR <- renderPlot({
         req(
           rv_tsa$dataset_choice,
-          rv_tsa$tissue_choice,
+          #rv_tsa$tissue_choice,
           input$TSA_ORA_CATEGORY_CHOICE,
           input$TSA_ORA_TYPE_CHOICE
         )
@@ -413,7 +413,7 @@ mod_tsa_ora_server <- function(
       output$TSA_ORA_TABLE_LRI <- DT::renderDT({
         req(
           rv_tsa$dataset_choice,
-          rv_tsa$tissue_choice,
+          #rv_tsa$tissue_choice,
           input$TSA_ORA_CATEGORY_CHOICE,
           input$TSA_ORA_TYPE_CHOICE
         )
@@ -433,7 +433,7 @@ mod_tsa_ora_server <- function(
       output$TSA_ORA_TABLE_LIGAND <- DT::renderDT({
         req(
           rv_tsa$dataset_choice,
-          rv_tsa$tissue_choice,
+          #rv_tsa$tissue_choice,
           input$TSA_ORA_CATEGORY_CHOICE,
           input$TSA_ORA_TYPE_CHOICE
         )
@@ -453,7 +453,7 @@ mod_tsa_ora_server <- function(
       output$TSA_ORA_TABLE_RECEPTOR <- DT::renderDT({
         req(
           rv_tsa$dataset_choice,
-          rv_tsa$tissue_choice,
+          #rv_tsa$tissue_choice,
           input$TSA_ORA_CATEGORY_CHOICE,
           input$TSA_ORA_TYPE_CHOICE
         )
@@ -473,7 +473,7 @@ mod_tsa_ora_server <- function(
       output$TSA_ORA_TREEMAP_GO_BP <- plotly::renderPlotly({
         req(
           rv_tsa$dataset_choice,
-          rv_tsa$tissue_choice,
+          #rv_tsa$tissue_choice,
           input$TSA_ORA_CATEGORY_CHOICE,
           input$TSA_ORA_TYPE_CHOICE#,
           #input$TSA_ORA_GO_ASPECT_CHOICE
@@ -500,7 +500,7 @@ mod_tsa_ora_server <- function(
       output$TSA_ORA_TREEMAP_GO_MF <- plotly::renderPlotly({
         req(
           rv_tsa$dataset_choice,
-          rv_tsa$tissue_choice,
+          #rv_tsa$tissue_choice,
           input$TSA_ORA_CATEGORY_CHOICE,
           input$TSA_ORA_TYPE_CHOICE#,
           #input$TSA_ORA_GO_ASPECT_CHOICE
@@ -527,7 +527,7 @@ mod_tsa_ora_server <- function(
       output$TSA_ORA_TREEMAP_GO_CC <- plotly::renderPlotly({
         req(
           rv_tsa$dataset_choice,
-          rv_tsa$tissue_choice,
+          #rv_tsa$tissue_choice,
           input$TSA_ORA_CATEGORY_CHOICE,
           input$TSA_ORA_TYPE_CHOICE#,
           #input$TSA_ORA_GO_ASPECT_CHOICE
@@ -581,7 +581,7 @@ mod_tsa_ora_server <- function(
       output$TSA_ORA_PLOT_KEGG <- renderPlot({
         req(
           rv_tsa$dataset_choice,
-          rv_tsa$tissue_choice,
+          #rv_tsa$tissue_choice,
           input$TSA_ORA_CATEGORY_CHOICE,
           input$TSA_ORA_TYPE_CHOICE
         )
@@ -597,7 +597,7 @@ mod_tsa_ora_server <- function(
       output$TSA_ORA_TABLE_GO <- DT::renderDT({
         req(
           rv_tsa$dataset_choice,
-          rv_tsa$tissue_choice,
+          #rv_tsa$tissue_choice,
           input$TSA_ORA_CATEGORY_CHOICE,
           input$TSA_ORA_TYPE_CHOICE#,
           #input$TSA_ORA_GO_ASPECT_CHOICE
@@ -616,14 +616,14 @@ mod_tsa_ora_server <- function(
       })
       
       output$TSA_ORA_TABLE_KEGG <- DT::renderDT({
-        #print("coucouKa")
+        #print("helloKa")
         req(
           rv_tsa$dataset_choice,
-          rv_tsa$tissue_choice,
+          #rv_tsa$tissue_choice,
           input$TSA_ORA_CATEGORY_CHOICE,
           input$TSA_ORA_TYPE_CHOICE
         )
-        #print("coucouKb")
+        #print("helloKb")
         dt <- subset_ORA_table(
           ORA_table = scAgeComShiny::scAgeCom_data$ORA_table,
           dataset_choice = rv_tsa$dataset_choice,
@@ -660,6 +660,16 @@ plot_ORA_visnetwork <- function(
     Dataset == dataset_choice &
       Tissue == tissue_choice &
       ORA_CATEGORY == "ER_CELLTYPES"
+  ]
+  ora_table_EMITTER <- ORA_table[
+    Dataset == dataset_choice &
+      Tissue == tissue_choice &
+      ORA_CATEGORY == "EMITTER_CELLTYPE"
+  ]
+  ora_table_RECEIVER <- ORA_table[
+    Dataset == dataset_choice &
+      Tissue == tissue_choice &
+      ORA_CATEGORY == "RECEIVER_CELLTYPE"
   ]
   cci_table_detected <- CCI_dt[
     Dataset == dataset_choice &
@@ -712,11 +722,21 @@ plot_ORA_visnetwork <- function(
       abbreviation_table,
       on = "RECEIVER_CELLTYPE==ORIGINAL_CELLTYPE",
       "RECEIVER_CELLTYPE" := i.ABBR_CELLTYPE]
+    ora_table_EMITTER[
+      abbreviation_table,
+      on = "VALUE==ORIGINAL_CELLTYPE",
+      "VALUE" := i.ABBR_CELLTYPE]
+    ora_table_RECEIVER[
+      abbreviation_table,
+      on = "VALUE==ORIGINAL_CELLTYPE",
+      "VALUE" := i.ABBR_CELLTYPE]
   }
   scDiffCom:::interactive_from_igraph(
     cci_table_detected = cci_table_detected,
     conds = c("YOUNG", "OLD"),
     ora_table_ER = ora_table_ER,
+    ora_table_EMITTER = ora_table_EMITTER,
+    ora_table_RECEIVER = ora_table_RECEIVER,
     ora_table_LR = ORA_table[
       Dataset == dataset_choice &
         Tissue == tissue_choice &

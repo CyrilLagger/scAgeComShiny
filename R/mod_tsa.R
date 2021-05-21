@@ -52,7 +52,7 @@ mod_tsa_server <- function(id){
       ns <- session$ns
 
       output$TSA_TISSUE_CHOICE <- renderUI({
-        #print("coucou2")
+        #print("hello_tissue_choice")
         choices <- scAgeComShiny::scAgeCom_data$ALL_TISSUES
         tags$table(
           style = "margin-top: 10px; margin-left: auto; margin-right:auto;",
@@ -83,9 +83,9 @@ mod_tsa_server <- function(id){
       })
       
       output$TSA_OVERVIEW_TABLE <- DT::renderDT({
-        #print("coucou3a")
+        #print("hello_overview_table_not_show")
         req(input$TSA_TISSUE_CHOICE)
-        #print("coucou3b")
+        #print("hello_overview_table_show")
         Tissue <- NULL
         dt <- scAgeComShiny::scAgeCom_data$TISSUE_COUNTS_SUMMARY[
           Tissue == input$TSA_TISSUE_CHOICE
@@ -96,9 +96,9 @@ mod_tsa_server <- function(id){
       })
       
       output$TSA_DATASET_CHOICE <- renderUI({
-        #print("coucou4a")
+        #print("hello_dataset_choice_not_do")
         req(input$TSA_TISSUE_CHOICE)
-        #print("coucou4b")
+        #print("hello_dataset_choice_do")
         dt <- scAgeComShiny::scAgeCom_data$TISSUE_COUNTS_SUMMARY[
           Tissue == input$TSA_TISSUE_CHOICE
         ]
@@ -138,10 +138,10 @@ mod_tsa_server <- function(id){
       observeEvent(
         input$TSA_TISSUE_CHOICE,
         {
-          #print("coucouA1a")
+          #print("hello_update_tissue_not_do")
           req(input$TSA_TISSUE_CHOICE)
+          #print("hello_update_tissue_do")
           rv_tsa$dataset_choice <- NULL
-          #print("coucouA1b")
           rv_tsa$tissue_choice <- input$TSA_TISSUE_CHOICE
         }
       )
@@ -149,12 +149,12 @@ mod_tsa_server <- function(id){
       observeEvent(
         input$TSA_DATASET_CHOICE,
         {
-          #print("coucouB1a")
+          #print("hello_dataset_choice_not_do")
           req(
             input$TSA_TISSUE_CHOICE,
             input$TSA_DATASET_CHOICE
             )
-          #print("coucouB1b")
+          #print("hello_dataset_choice_do")
           rv_tsa$dataset_choice <- input$TSA_DATASET_CHOICE
         }
       )
@@ -170,12 +170,13 @@ mod_tsa_server <- function(id){
       )
       
       output$TSA_PANEL_VIEW <- renderUI({
-        #print("coucou5a")
+        #print("hello_panel_view_not_do")
+        #print(input$TSA_DATASET_CHOICE)
         req(
-          input$TSA_TISSUE_CHOICE,
+          #input$TSA_TISSUE_CHOICE,
           input$TSA_DATASET_CHOICE
         )
-        #print("coucou5b")
+        #print("hello_panel_view_do")
         tabsetPanel(
           type = "tabs",
           mod_tsa_cci_ui(ns("tsa_cci_ui_1")),
@@ -221,4 +222,3 @@ display_tissue_counts <- function(
       `text-align` = 'center'
     )
 }
-

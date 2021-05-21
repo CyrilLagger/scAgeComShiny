@@ -105,13 +105,13 @@ mod_tsa_cci_server <- function(
       )
       
       output$TSA_EMITTER_CHOICE <- renderUI({
-        #print("coucou6a")
+        #print("hello_emitter_choice_not_do")
         req(
-          rv_tsa$tissue_choice,
+          #rv_tsa$tissue_choice,
           rv_tsa$dataset_choice
         )
         Dataset <- Tissue <- NULL
-        #print("coucou6b")
+        #print("hello6b")
         #print(rv_tsa$dataset_choice)
         #print(rv_tsa$tissue_choice)
         choices_cts <- sort(scAgeComShiny::scAgeCom_data$ALL_CELLTYPES[
@@ -129,12 +129,12 @@ mod_tsa_cci_server <- function(
       })
       
       output$TSA_RECEIVER_CHOICE <- renderUI({
-        #print("coucou7a")
+        #print("hello7a")
         req(
-          rv_tsa$tissue_choice,
+          #rv_tsa$tissue_choice,
           rv_tsa$dataset_choice
         )
-        #print("coucou7b")
+        #print("hello7b")
         choices <- sort(scAgeComShiny::scAgeCom_data$ALL_CELLTYPES[
           Dataset == rv_tsa$dataset_choice &
             Tissue == rv_tsa$tissue_choice
@@ -150,12 +150,12 @@ mod_tsa_cci_server <- function(
       })
       
       output$TSA_CCI_TITLE <- renderUI({
-        #print("coucou8a")
+        #print("hello8a")
         req(
-          rv_tsa$dataset_choice,
-          rv_tsa$tissue_choice
+          rv_tsa$dataset_choice
+          #rv_tsa$tissue_choice
         )
-        #print("coucou8b")
+        #print("hello8b")
         fluidPage(
           fluidRow(
             column(
@@ -188,12 +188,12 @@ mod_tsa_cci_server <- function(
       })
       
       output$TSA_CCI_DETAILS <- renderUI({
-        #print("coucou9a")
+        #print("hello9a")
         req(
-          rv_tsa$tissue_choice,
+          #rv_tsa$tissue_choice,
           rv_tsa$dataset_choice
         )
-        #print("coucou9b")
+        #print("hello9b")
         fluidPage(
           fluidRow(
             column(
@@ -253,12 +253,12 @@ mod_tsa_cci_server <- function(
       })
       
       CCI_table <- reactive({
-        #print("coucouR1a")
+        #print("helloR1a")
         req(
-          rv_tsa$dataset_choice,
-          rv_tsa$tissue_choice
+          rv_tsa$dataset_choice#,
+          #rv_tsa$tissue_choice
         )
-        #print("coucouR1b")
+        #print("helloR1b")
         if (filter_values$do_filtering) {
           CCI_table <- subset_CCI_table(
             CCI_table = scAgeComShiny::scAgeCom_data$CCI_table,
@@ -298,7 +298,7 @@ mod_tsa_cci_server <- function(
       observeEvent(
         rv_tsa$dataset_choice,
         {
-          #print("coucoux4a")
+          #print("hellox4a")
           req(
             rv_tsa$dataset_choice
           )
@@ -308,7 +308,7 @@ mod_tsa_cci_server <- function(
           #   "active_TSA_panel",
           #   selected = "Table of Interactions"
           # )
-          #print("coucoux4b")
+          #print("hellox4b")
           #ora_reactives$category_choice <- NULL
           ALL_LRI_LABEL = 'All LRIs'
           choices_LRI <-
@@ -402,7 +402,7 @@ mod_tsa_cci_server <- function(
             ),
             server = TRUE
           )
-          #print("coucoux4c")
+          #print("hellox4c")
           #print(input$TSA_ORA_CATEGORY_CHOICE)
         }
       )
@@ -410,7 +410,7 @@ mod_tsa_cci_server <- function(
       observeEvent(
         input$TSA_FILTER_BUTTON,
         {
-          #print("coucoux8")
+          #print("hellox8")
           filter_values$do_filtering <- TRUE
           filter_values$emitter_choice <- input$TSA_EMITTER_CHOICE
           filter_values$receiver_choice <- input$TSA_RECEIVER_CHOICE
@@ -424,7 +424,7 @@ mod_tsa_cci_server <- function(
       observeEvent(
         {
           rv_tsa$dataset_choice
-          rv_tsa$tissue_choice
+          #rv_tsa$tissue_choice
         },
         {
           filter_values$do_filtering <- FALSE
@@ -441,7 +441,7 @@ mod_tsa_cci_server <- function(
       observeEvent(
         input$TSA_RESET_BUTTON,
         {
-          #print("coucoux9")
+          #print("hellox9")
           filter_values$do_filtering <- FALSE
           filter_values$emitter_choice <- NULL
           filter_values$receiver_choice <- NULL
