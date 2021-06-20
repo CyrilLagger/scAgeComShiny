@@ -181,6 +181,7 @@ mod_introduction_server <- function(id) {
             ),
             .noWS = c("after-begin", "before-end")
           ),
+          tags$img(src = "img/figure_workflow.png", width = "100%"),
           tags$h4("Find our scripts on GitHub"),
           tags$ol(
             tags$li(
@@ -269,9 +270,7 @@ mod_introduction_server <- function(id) {
               )
             )
           ),
-          tags$p(
-            "Overall, this represents data for 23 organs (give here a summary picture)"
-          )
+          tags$img(src = "img/figure_datasets.png", width = "100%")
         )
       })
       
@@ -318,7 +317,7 @@ mod_introduction_server <- function(id) {
           style = style_intro_accordion_text,
           tags$p(
             "scDiffCom internally relies on a list of ligand-receptor interactions",
-            "that we have processed and combined from the eight studies in the list",
+            "that we have processed and combined from the seven studies in the list",
             "opposite. We carefully took into account the interactions involving",
             "heteromeric complexes (see our manuscript in preparation)."
           ),
@@ -441,22 +440,6 @@ mod_introduction_server <- function(id) {
               .noWS = "outside"
             ),
             "."
-          ),
-          tags$li(
-            "scTensor:",
-            tags$a(
-              href = "https://github.com/rikenbit/scTensor",
-              "webpage",
-              target = "_blank"
-            ),
-            " and ",
-            tags$a(
-              href = "https://www.biorxiv.org/content/10.1101/566182v1",
-              "bioRxiv article",
-              target = "_blank",
-              .noWS = "outside"
-            ),
-            "."
           )
         )
       })
@@ -471,7 +454,7 @@ mod_introduction_server <- function(id) {
       output$INTRO_LRI_UPSET_PLOT <- renderPlot({
         plot_upset_LRI(
           LRI_table = scAgeComShiny::scAgeCom_data$LRI_mouse_curated,
-          groups = colnames(scAgeComShiny::scAgeCom_data$LRI_mouse_curated)[9:16],
+          groups = colnames(scAgeComShiny::scAgeCom_data$LRI_mouse_curated)[9:15],
           min_size = 40
         )
       })
@@ -547,13 +530,13 @@ plot_upset_LRI <- function(
   groups,
   min_size
 ) {
-  COMPLEX <- NULL
+  Type <- NULL
   p <- ComplexUpset::upset(
     as.data.frame(LRI_table),
     groups,
     base_annotations = list(
       'Intersection size' = ComplexUpset::intersection_size(
-        mapping = ggplot2::aes(fill = COMPLEX),
+        mapping = ggplot2::aes(fill = Type),
         counts = TRUE,
         bar_number_threshold = 100
       )
