@@ -7,4 +7,4 @@ scAgeCom_data <- readRDS(
   "../data_scAgeCom/analysis/outputs_data/scAgeCom_shiny_data.rds"
 )
 
-usethis::use_data(scAgeCom_data, overwrite = TRUE)
+usethis::use_data(scAgeCom_data, overwrite = TRUE, compress = "xz")
