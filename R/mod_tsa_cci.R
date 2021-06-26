@@ -10,7 +10,7 @@
 mod_tsa_cci_ui <- function(id){
   ns <- NS(id)
   tabPanel(
-    title = "Table of Interactions",
+    title = "Detected Interactions",
     sidebarLayout(
       sidebarPanel(
         width = 2,
@@ -167,7 +167,8 @@ mod_tsa_cci_server <- function(
                       "width: 80%;",
                       "margin:auto;",
                       "font-size: 20px;",
-                      "text-align: center;"
+                      "text-align: center;",
+                      "margin-bottom: 50px;"
                     ),
                     "Plots and Table for the ",
                     span(
@@ -196,22 +197,22 @@ mod_tsa_cci_server <- function(
         #print("hello9b")
         fluidPage(
           fluidRow(
-            column(
-              style = "padding: 10px;",
-              width = 6,
-              plotly::plotlyOutput(
-                outputId = ns("TSA_PLOTLY_VOLCANO"),
-                height = "520px"
-              )
-            ),
-            column(
-              style = "padding: 10px;",
-              width = 6,
-              plotly::plotlyOutput(
-                outputId = ns("TSA_PLOTLY_SCORE"),
-                height = "520px"
-              )
+          column(
+            style = "padding: 10px;margin-bottom:50px;",
+            width = 6,
+            plotly::plotlyOutput(
+              outputId = ns("TSA_PLOTLY_VOLCANO"),
+              height = "520px"
             )
+          ),
+          column(
+            style = "padding: 10px;margin-bottom:50px;",
+            width = 6,
+            plotly::plotlyOutput(
+              outputId = ns("TSA_PLOTLY_SCORE"),
+              height = "520px"
+            )
+          )
           ),
           fluidRow(
             column(
@@ -716,20 +717,20 @@ plot_volcano_CCI <- function(
   ) %>% plotly::layout(
     title = list(
       text = "Interactive Aging Volcano Plot",
-      font = list(size = 16),
+      font = list(size = 20),
       xanchor = "left",
       x = 0.0
     ),
     xaxis = list(
       title = list(
         text = "Log2(FC)",
-        font = list(size = 14)
+        font = list(size = 18)
       )
     ),
     yaxis = list(
       title = list(
         text = "-Log10(Adj. p-value)",
-        font = list(size = 14)
+        font = list(size = 18)
       )
     ),
     shapes = list(
@@ -796,20 +797,20 @@ plot_scores_CCI <- function(
   ) %>% plotly::layout(
     title = list(
       text = "Interactive Score Plot",
-      font = list(size = 16),
+      font = list(size = 20),
       xanchor = "left",
       x = 0.0
     ),
     xaxis = list(
       title = list(
         text = "Log10(Young CCI Score)",
-        font = list(size = 14)
+        font = list(size = 18)
       )
     ),
     yaxis = list(
       title = list(
         text = "Log10(Old CCI Score)",
-        font = list(size = 14)
+        font = list(size = 18)
       )
     ),
     legend = list(
@@ -862,20 +863,20 @@ plot_lrfc_CCI <- function(
   )  %>% plotly::layout(
     title = list(
       text = "Interactive 'Ligand-FC vs Receptor-FC' Plot",
-      font = list(size = 16),
+      font = list(size = 20),
       xanchor = "left",
       x = 0.0
     ),
     xaxis = list(
       title = list(
         text = "Ligand Log2(FC)",
-        font = list(size = 14)
+        font = list(size = 18)
       )
     ),
     yaxis = list(
       title = list(
         text = "Receptor Log2(FC)",
-        font = list(size = 14)
+        font = list(size = 18)
       )
     ),
     legend = list(
