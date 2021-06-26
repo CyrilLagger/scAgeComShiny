@@ -33,13 +33,13 @@ mod_glossary_server <- function(id){
         id = "HELP_GLOSSARY"
       ) %>%
         bsplus::bs_append(
-          title = "LRI: Ligand-Receptor Interaction",
+          title = "LRI: ligand-receptor interaction",
           content = paste(
             "TODO"
           )
         ) %>%
         bsplus::bs_append(
-          title = "CCI: Cell-Cell Interaction",
+          title = "CCI: cell-cell interaction",
           content = paste(
             "TODO"
           )
@@ -51,9 +51,25 @@ mod_glossary_server <- function(id){
           )
         ) %>%
         bsplus::bs_append(
-          title = "TODO",
+          title = "ORA Score",
           content = paste(
             "TODO"
+          )
+        ) %>%
+        bsplus::bs_append(
+          title = "TMS FACS",
+          content = paste(
+            "Refers to Tabula Muris Senis scRNA-seq datasets obtained by",
+            "cell sorting in microtiter well plates followed by Smart-seq2",
+            "library preparation and full-length sequencing."
+          )
+        ) %>%
+        bsplus::bs_append(
+          title = "TMS Droplet / Calico Droplet",
+          content = paste(
+            "Refers to Tabula Muris Senis and Calico scRNA-seq datasets",
+            "obtained by cell capture by microfluidic droplets as per the",
+            "10x Genomics protocol followed by 3' end counting."
           )
         )
     })
