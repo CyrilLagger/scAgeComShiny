@@ -72,11 +72,11 @@ mod_introduction_server <- function(id) {
                 bsplus::bs_append(
                   title = htmlOutput(ns("INTRO_LRI_TITLE")),
                   content = uiOutput(ns("INTRO_LRI_CONTENT"))
-                ) %>%
-                bsplus::bs_append(
-                  title = htmlOutput(ns("INTRO_CONTACT_TITLE")),
-                  content = htmlOutput(ns("INTRO_CONTACT_TEXT"))
-                ),
+                ),# %>%
+                #bsplus::bs_append(
+                  #title = htmlOutput(ns("INTRO_ABOUT_TITLE")),
+                  #content = htmlOutput(ns("INTRO_ABOUT_TEXT"))
+                #),
               style = "padding: 10px"
             )
           )
@@ -104,19 +104,13 @@ mod_introduction_server <- function(id) {
           tags$p(
             tags$b(
               paste(
-                "Explore how intercellular communication changes with age",
-                "in 23 mouse tissues."
+                "This project is a comprehensive analysis of changes occurring",
+                "with age in mouse intercellular communication. The Atlas was",
+                "built by applying our R package scDiffCom to publicly",
+                "available scRNA-seq datasets. We provide tissue-specific",
+                "results for 23 organs as well as a global comparison of",
+                "changes across tissues."
               )
-            )
-          ),
-          tags$p(
-            paste(
-              "This website includes both tissue specific results and",
-              "a global comparison of the changes shared accross",
-              "the different organs.",
-              "The full methodology behind this analysis is described in our",
-              "(manuscript in preparation) but the most important steps",
-              "are highligthed below."
             )
           )
         )
@@ -134,7 +128,7 @@ mod_introduction_server <- function(id) {
           style = style_intro_accordion_text,
           tags$h4("The package"),
           tags$p(
-            "We built the R package",
+            "We developed the R package",
             tags$a(
               href = "https://github.com/CyrilLagger/scDiffCom",
               "scDiffCom",
@@ -143,7 +137,7 @@ mod_introduction_server <- function(id) {
             paste(
               "to investigate how intercellular communication varies between",
               "two biological conditions of interest (young/old, sick/healthy, etc.).",
-              "Here, we have used scDiffCom to study differences in intercellular",
+              "Here, we used scDiffCom to study differences in intercellular",
               "comunication between young and old murine cells. Please visit"
             ),
             tags$a(
@@ -156,8 +150,7 @@ mod_introduction_server <- function(id) {
           tags$h4("How does it work?"),
           tags$p(
             paste(
-              "scDiffCom can be applied to any scRNA-seq dataset",
-              "(defined as a "
+              "scDiffCom can be applied to any scRNA-seq "
             ),
             tags$a(
               href = "https://satijalab.org/seurat/index.html",
@@ -166,26 +159,25 @@ mod_introduction_server <- function(id) {
               .noWS = "outside"
             ),
             paste(
-              "). It uses its own integrated database of ligand-receptor interactions",
-              "to list all the potential signals between the cell types of the dataset."
-            )
-          ),
-          tags$p(
-            paste(
+              ". It uses its own integrated database of ligand-receptor interactions",
+              "to list all the potential signals between the cell types of the dataset.",
               "Statistical tests are then performed to only retain biologically",
-              "significant interactions and to measure their change between",
+              "significant interactions and to assess how they change between",
               "the two conditions. Finally, an over-representation test allows the",
               "package to infer the dominant",
               "changing patterns on a gene-centric, cell type-centric or",
-              "annotation-centric (GO/KEGG) level."
-            ),
-            .noWS = c("after-begin", "before-end")
+              "functional-centric (GO/KEGG) level."
+            )
           ),
-          tags$img(src = "img/figure_workflow.png", width = "100%"),
+          tags$img(
+            src = "img/figure_workflow_f.png",
+            #width = "80%",
+            style = "display: block; margin-left: auto; margin-right: auto;"
+          ),
           tags$h4("Find our scripts on GitHub"),
-          tags$ol(
+          tags$ul(
             tags$li(
-              "Package for differential analysis on any dataset:",
+              "R package for differential analysis:",
               tags$a(
                 href = "https://github.com/CyrilLagger/scDiffCom",
                 "scDiffCom",
@@ -220,57 +212,134 @@ mod_introduction_server <- function(id) {
       })
       
       output$INTRO_SCRNA_TEXT <- renderUI({
-        tags$div(
-          style = style_intro_accordion_text,
-          tags$p(
-            paste(
-              "We based our analysis on several murine scRNA-seq datasets",
-              "provided by the two studies below:"
-            )
-          ),
-          tags$ul(
-            tags$li(
-              "Tabula Muris Senis (TMS):",
-              tags$ul(
-                tags$li(
+        fluidPage(
+          fluidRow(
+            column(
+              width = 12,
+              tags$div(
+                style = style_intro_accordion_text,
+                tags$p(
+                  paste(
+                    "We built this Atlas from several murine scRNA-seq datasets",
+                    "provided by "
+                  ),
                   tags$a(
                     href = "https://tabula-muris-senis.ds.czbiohub.org/",
-                    "webpage",
-                    target = "_blank"
-                  )
-                ),
-                tags$li(
+                    "Tabula Muris Senis",
+                    target = "_blank",
+                    .noWS = "outside"
+                  ),
+                  paste(" ("),
                   tags$a(
                     href = "https://www.nature.com/articles/s41586-020-2496-1",
                     "Nature article",
                     target = "_blank",
                     .noWS = "outside"
-                  )
-                )
-              )
-            ),
-            tags$li(
-              "Murine aging cell atlas:",
-              tags$ul(
-                tags$li(
+                  ),
+                  paste(") and "),
                   tags$a(
                     href = "https://mca.research.calicolabs.com/",
-                    "webpage",
-                    target = "_blank"
-                  )
-                ),
-                tags$li(
+                    "Calico's Murine aging cell atlas",
+                    target = "_blank",
+                    .noWS = "outside"
+                  ),
+                  paste(" ("),
                   tags$a(
                     href = "https://genome.cshlp.org/content/29/12/2088",
                     "Genome Research article",
                     target = "_blank",
                     .noWS = "outside"
+                  ),
+                  paste(
+                    "). After pre-processing, we retained 58 datasets across",
+                    "23 tissues and 5 sex/experimental conditions:"
                   )
                 )
               )
             )
           ),
-          tags$img(src = "img/figure_datasets.png", width = "100%")
+          # fluidRow(
+          #   column(
+          #     width = 6,
+          #     htmlOutput(ns("INTRO_SCRNA_HTML_TMS"))
+          #   ),
+          #   column(
+          #     width = 6,
+          #     htmlOutput(ns("INTRO_SCRNA_HTML_CALICO"))
+          #   )
+          # ),
+          fluidRow(
+            column(
+              width = 12,
+              htmlOutput(ns("INTRO_SCRNA_HTML_FIG"))
+            )
+          )
+        )
+      })
+      
+      # output$INTRO_SCRNA_HTML_TMS <- renderUI({
+      #   tags$div(
+      #     style = style_intro_accordion_text,
+      #     tags$ul(
+      #       tags$li(
+      #         "Tabula Muris Senis (TMS):",
+      #         tags$ul(
+      #           tags$li(
+      #             tags$a(
+      #               href = "https://tabula-muris-senis.ds.czbiohub.org/",
+      #               "webpage",
+      #               target = "_blank"
+      #             )
+      #           ),
+      #           tags$li(
+      #             tags$a(
+      #               href = "https://www.nature.com/articles/s41586-020-2496-1",
+      #               "Nature article",
+      #               target = "_blank",
+      #               .noWS = "outside"
+      #             )
+      #           )
+      #         )
+      #       )
+      #     )
+      #   )
+      # })
+      # 
+      # output$INTRO_SCRNA_HTML_CALICO <- renderUI({
+      #   tags$div(
+      #     style = style_intro_accordion_text,
+      #     tags$ul(
+      #       tags$li(
+      #         "Calico Murine aging cell atlas:",
+      #         tags$ul(
+      #           tags$li(
+      #             tags$a(
+      #               href = "https://mca.research.calicolabs.com/",
+      #               "webpage",
+      #               target = "_blank"
+      #             )
+      #           ),
+      #           tags$li(
+      #             tags$a(
+      #               href = "https://genome.cshlp.org/content/29/12/2088",
+      #               "Genome Research article",
+      #               target = "_blank",
+      #               .noWS = "outside"
+      #             )
+      #           )
+      #         )
+      #       )
+      #     )
+      #   )
+      # })
+      
+      output$INTRO_SCRNA_HTML_FIG <- renderUI({
+        tags$div(
+          tags$img(
+            src = "img/figure_dataset_f.png",
+            #width = "80%",
+            style = "display: block; margin-left: auto; margin-right: auto;"
+          )
         )
       })
       
@@ -319,12 +388,12 @@ mod_introduction_server <- function(id) {
             "scDiffCom internally relies on a list of ligand-receptor interactions",
             "that we have processed and combined from the seven studies in the list",
             "opposite. We carefully took into account the interactions involving",
-            "heteromeric complexes (see our manuscript in preparation)."
+            "heteromeric complexes."
           ),
           tags$p(
             "You will find below the mouse interactions for the scAgeCom analysis.",
             "This table and its human equivalent can also be directly accessed",
-            "in the scDiffCom package."
+            "from the scDiffCom package."
           )
         )
       })
@@ -459,21 +528,21 @@ mod_introduction_server <- function(id) {
         )
       })
       
-      output$INTRO_CONTACT_TITLE <- renderUI({
-        tags$h3(
-          style = style_intro_accordion_title,
-          "Contact"
-        )
-      })
+      # output$INTRO_ABOUT_TITLE <- renderUI({
+      #   tags$h3(
+      #     style = style_intro_accordion_title,
+      #     "About"
+      #   )
+      # })
       
-      output$INTRO_CONTACT_TEXT <- renderUI({
-        tags$div(
-          style = style_intro_accordion_text,
-          tags$p(
-            "Please contact ..."
-          )
-        )
-      })
+      # output$INTRO_ABOUT_TEXT <- renderUI({
+      #   tags$div(
+      #     style = style_intro_accordion_text,
+      #     tags$p(
+      #       "Please contact ..."
+      #     )
+      #   )
+      # })
       
     })
 }
@@ -519,7 +588,7 @@ display_LRI_table <- function(
         "text-align: center;",
         "color: black;",
         "font-size: 130%;"
-        ),
+      ),
       "Table of Mouse Ligand-Receptor Interactions"
     )
   )
@@ -534,20 +603,23 @@ plot_upset_LRI <- function(
   p <- ComplexUpset::upset(
     as.data.frame(LRI_table),
     groups,
+    name = "Database",
     base_annotations = list(
       'Intersection size' = ComplexUpset::intersection_size(
         mapping = ggplot2::aes(fill = Type),
         counts = TRUE,
         bar_number_threshold = 100
+      ) + ggplot2::scale_fill_manual(
+        values = c("purple", "coral")
       )
     ),
     themes = ComplexUpset::upset_default_themes(
       text = ggplot2::element_text(size = 16)
-      ),
+    ),
     min_size = min_size
   ) + ggplot2::ggtitle(
-    "Number of Ligand-Receptor Interactions"
-    )
+    "Number of curated mouse ligand-receptor interactions"
+  ) 
   return(p)
 }
 
