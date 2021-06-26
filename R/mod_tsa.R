@@ -29,6 +29,13 @@ mod_tsa_ui <- function(id){
       fluidRow(
         column(
           width = 6,
+          offset = 3,
+          htmlOutput(ns("TSA_OVERVIEW_NOTE"))
+        )
+      ),
+      fluidRow(
+        column(
+          width = 6,
           uiOutput(ns("TSA_DATASET_CHOICE")),
           offset = 3
         )
@@ -50,7 +57,7 @@ mod_tsa_server <- function(id){
       session
     ) {
       ns <- session$ns
-
+      
       output$TSA_TISSUE_CHOICE <- renderUI({
         #print("hello_tissue_choice")
         choices <- scAgeComShiny::scAgeCom_data$ALL_TISSUES
@@ -93,6 +100,23 @@ mod_tsa_server <- function(id){
         display_tissue_counts(
           tissue_counts_summary = dt
         )
+      })
+      
+      output$TSA_OVERVIEW_NOTE <- renderUI({
+        req(input$TSA_TISSUE_CHOICE)
+        if (input$TSA_TISSUE_CHOICE == "Brain") {
+          tags$div(
+            style = "text-align: center;margin-top:20px;",
+            tags$b(
+              paste0(
+                "Note: macrophages and microglial cells have been sequenced ",
+                "independently from other brain cell types."
+              )
+            )
+          )
+        } else {
+          NULL
+        }
       })
       
       output$TSA_DATASET_CHOICE <- renderUI({
@@ -153,7 +177,7 @@ mod_tsa_server <- function(id){
           req(
             input$TSA_TISSUE_CHOICE,
             input$TSA_DATASET_CHOICE
-            )
+          )
           #print("hello_dataset_choice_do")
           rv_tsa$dataset_choice <- input$TSA_DATASET_CHOICE
         }
