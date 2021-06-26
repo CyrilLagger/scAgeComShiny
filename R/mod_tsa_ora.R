@@ -10,7 +10,7 @@
 mod_tsa_ora_ui <- function(id){
   ns <- NS(id)
   tabPanel(
-    title = "Over-Representation Analysis",
+    title = "Over-representation Analysis",
     sidebarLayout(
       sidebarPanel(
         width = 2,
@@ -61,7 +61,7 @@ mod_tsa_ora_server <- function(
       session
     ) {
       ns <- session$ns
-
+      
       output$TSA_ORA_CATEGORY_CHOICE <- renderUI({
         choices <- scAgeComShiny::scAgeCom_data$ALL_ORA_CATEGORIES_SPECIFIC
         selectInput(
@@ -109,7 +109,8 @@ mod_tsa_ora_server <- function(
                       "width: 80%;",
                       "margin:auto;",
                       "font-size: 20px;",
-                      "text-align: center;"
+                      "text-align: center;",
+                      "margin-bottom:50px"
                     ),
                     "Over-representation Results for the ",
                     span(
@@ -140,10 +141,11 @@ mod_tsa_ora_server <- function(
             fluidRow(
               column(
                 width = 9,
-                offset = 2,
+                offset = 1,
+                style = "margin-bottom: 50px;",
                 visNetwork::visNetworkOutput(
                   ns("TSA_ORA_NETWORK_PLOT"),
-                  height = "800px"
+                  height = "700px"
                 )
               )
             ),
@@ -175,6 +177,7 @@ mod_tsa_ora_server <- function(
         } else if (input$TSA_ORA_CATEGORY_CHOICE == "By Genes") {
           fluidPage(
             fluidRow(
+              style = "margin-bottom:50px;",
               column(
                 width = 4,
                 plotOutput(
@@ -225,26 +228,35 @@ mod_tsa_ora_server <- function(
         } else if (input$TSA_ORA_CATEGORY_CHOICE == "By GO/KEGG") {
           fluidPage(
             fluidRow(
+              style = "margin-bottom:50px;",
               column(
-                width = 4,
+                width = 6,
                 plotly::plotlyOutput(
                   ns("TSA_ORA_TREEMAP_GO_BP"),
-                  height = "500px"
+                  height = "700px"
                 )
               ),
               column(
-                width = 4,
+                width = 6,
                 plotly::plotlyOutput(
                   ns("TSA_ORA_TREEMAP_GO_MF"),
-                  height = "500px"
+                  height = "700px"
+                )
+              )
+            ),
+            fluidRow(
+              column(
+                width = 6,
+                plotly::plotlyOutput(
+                  ns("TSA_ORA_TREEMAP_GO_CC"),
+                  height = "700px"
                 )
               ),
               column(
-                width = 4,
-                plotly::plotlyOutput(
-                  ns("TSA_ORA_TREEMAP_GO_CC"),
-                  height = "500px"
-                )
+                width = 6,
+                plotOutput(
+                  ns("TSA_ORA_PLOT_KEGG"),
+                  height = "700px")
               )
             ),
             fluidRow(
@@ -255,22 +267,6 @@ mod_tsa_ora_server <- function(
                 DT::DTOutput(
                   ns("TSA_ORA_TABLE_GO")
                 )
-              )
-            ),
-            fluidRow(
-              # column(
-              #   width = 6,
-              #   plotOutput(
-              #     ns("TSA_ORA_PLOT_GO"),
-              #     height = "600px"
-              #   )
-              # ),
-              column(
-                width = 6,
-                offset = 3,
-                plotOutput(
-                  ns("TSA_ORA_PLOT_KEGG"),
-                  height = "600px")
               )
             ),
             fluidRow(
@@ -493,7 +489,10 @@ mod_tsa_ora_server <- function(
           dataset_choice = rv_tsa$dataset_choice,
           type_choice = input$TSA_ORA_TYPE_CHOICE,
           go_aspect_choice = "biological_process",
-          title_text = paste0("Biological Processes - ", input$TSA_ORA_TYPE_CHOICE)
+          title_text = paste0(
+            "GO Biological Processes - ",
+            input$TSA_ORA_TYPE_CHOICE
+          )
         )
       })
       
@@ -520,7 +519,10 @@ mod_tsa_ora_server <- function(
           dataset_choice = rv_tsa$dataset_choice,
           type_choice = input$TSA_ORA_TYPE_CHOICE,
           go_aspect_choice = "molecular_function",
-          title_text = paste0("Molecular Functions - ", input$TSA_ORA_TYPE_CHOICE)
+          title_text = paste0(
+            "GO Molecular Functions - ",
+            input$TSA_ORA_TYPE_CHOICE
+          )
         )
       })
       
@@ -547,7 +549,10 @@ mod_tsa_ora_server <- function(
           dataset_choice = rv_tsa$dataset_choice,
           type_choice = input$TSA_ORA_TYPE_CHOICE,
           go_aspect_choice = "cellular_component",
-          title_text = paste0("Cellular Components - ", input$TSA_ORA_TYPE_CHOICE)
+          title_text = paste0(
+            "GO Cellular Components - ",
+            input$TSA_ORA_TYPE_CHOICE
+          )
         )
       })
       
@@ -637,7 +642,7 @@ mod_tsa_ora_server <- function(
           type_choice = input$TSA_ORA_TYPE_CHOICE
         )
       })
-
+      
     })
 }
 
@@ -884,6 +889,10 @@ plot_ORA_GO_treemap <- function(
       xanchor = "left",
       x = 0.0
     ),
+    #uniformtext = list(
+    #  minsize = 14,
+    #  mode = "hide"
+    #),
     margin = m
   )
 }
@@ -1015,7 +1024,7 @@ display_ORA_table <- function(
       `OR_FLAT` >= 1 & BH_P_VALUE_FLAT <= 0.05,
       cols_to_keep,
       with = FALSE]
-  }
+  } 
   if (category_choice == "GO Term") {
     dt[, `GO Level` := as.factor(`GO Level`)]
     dt[, ASPECT := as.factor(ASPECT)]
