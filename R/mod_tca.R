@@ -12,22 +12,24 @@ mod_tca_ui <- function(id){
   tagList(
     fluidRow(
       column(
+        style = "text-align:center;",
         width = 6,
         titlePanel(htmlOutput(ns("TCA_TITLE"))),
         offset = 3
       ),
     ),
-    fluidRow(
-      column(
-        width = 6,
-        titlePanel(htmlOutput(ns("TCA_NOTE"))),
-        offset = 3
-      ),
-    ),
+    # fluidRow(
+    #   column(
+    #     style = "text-align:center;",
+    #     width = 6,
+    #     titlePanel(htmlOutput(ns("TCA_NOTE"))),
+    #     offset = 3
+    #   ),
+    # ),
     tabsetPanel(
       type = "tabs",
       tabPanel(
-        title = "Table of Results",
+        title = "Tissue-count Tables",
         sidebarLayout(
           sidebarPanel(
             width = 2,
@@ -50,7 +52,7 @@ mod_tca_ui <- function(id){
         value = "TCA_SUMMARY_TABLE"
       ),
       tabPanel(
-        title = "Summary by Keywords",
+        title = "Keyword over-representation across datasets",
         sidebarLayout(
           sidebarPanel(
             width = 2,
@@ -123,31 +125,25 @@ mod_tca_server <- function(id){
       ns <- session$ns
       
       output$TCA_TITLE <- renderUI({
-        tags$p(
-          div(
+          tags$div(
             style = paste(
-              "display: inline-block;",
-              "text-align: center;",
-              "font-size: 20px"
+              #"display: inline-block;",
+              #"text-align: center;",
+              "font-size: 26px"
               ),
             "Over-represented signals shared accross Tissues and Datasets"
           )
-        )
       })
       
-      output$TCA_NOTE <- renderUI({
-        tags$p(
-          div(
-            style = paste(
-              "display: inline-block;",
-              "text-align: center;",
-              "font-size: 10px"
-            ),
-            "Note: we recommend reading relevant sections of the Glossary",
-            "before interpreting these results."
-          )
-        )
-      })
+      # output$TCA_NOTE <- renderUI({
+      #   tags$div(
+      #       style = paste(
+      #         "font-size: 20px"
+      #       ),
+      #       "Note: we recommend reading relevant sections of the Glossary",
+      #       "before interpreting these results."
+      #   )
+      # })
       
       output$TCA_GLOBAL_TABLE_CHOICE <- renderUI({
         selectInput(
@@ -720,7 +716,8 @@ plot_KEYWORD_summary <- function(
     ggplot2::ylab("") +
     #theme(plot.title = element_text(hjust = 0.5)) +
     ggplot2::theme(text=ggplot2::element_text(size = 10)) +
-    ggplot2::theme(axis.text=ggplot2::element_text(size = 10))
+    ggplot2::theme(axis.text=ggplot2::element_text(size = 10))# +
+    #ggplot2::theme(legend.position = c(0.8, 0.8))
   plotly::ggplotly(
     p,
     source = "TCA_PLOT_KEYWORD_SUMMARY",
