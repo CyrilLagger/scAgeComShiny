@@ -14,7 +14,7 @@ mod_glossary_ui <- function(id){
       column(
         width = 10,
         offset = 1,
-        uiOutput(ns("GLOSSARY_ACCORDION")),
+        uiOutput(ns("GLOSSARY_PAGE")),
         style = "padding:10px"
       )
     )
@@ -28,7 +28,33 @@ mod_glossary_server <- function(id){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
     
-    output$GLOSSARY_ACCORDION <- renderUI({
+    output$GLOSSARY_PAGE <- renderUI({
+      fluidPage(
+        fluidRow(
+          column(
+            width = 8,
+            titlePanel(htmlOutput(ns("GLOSSARY_TITLE_GT"))),
+          )
+        ),
+        fluidRow(
+          column(
+            width = 8,
+            htmlOutput(ns("GLOSSARY_CONTENT_GT"))
+          )
+        )
+      )
+    })
+    
+    output$GLOSSARY_TITLE_GT <- renderUI({
+      tags$p(
+        style = paste(
+          "font-size: 22px;"
+        ),
+        "General terminology"
+      )
+    })
+    
+    output$GLOSSARY_CONTENT_GT <- renderUI({
       bsplus::bs_accordion(
         id = "HELP_GLOSSARY"
       ) %>%
