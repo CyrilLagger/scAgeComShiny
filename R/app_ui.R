@@ -14,7 +14,8 @@ app_ui <- function(request) {
       tags$head(
         tags$style(
           type = 'text/css',
-          '.navbar-brand{display:none;}'
+          "body {padding-bottom: 70px;}"
+          #'.navbar-brand{display:none;}'
         )
         # tags$script(
         #   src = "https://kit.fontawesome.com/8deb5c53bb.js",
@@ -22,11 +23,31 @@ app_ui <- function(request) {
         # ),
       ),
       titlePanel(
-        title = tags$div(
-          style = "font-size: 26px",
-          paste(
-            "A Murine ATLAS of Age-related Changes in Intercellular",
-            "Communication (Development Website!)."
+        title = tags$table(
+          style = "width: 100%",
+          tags$tbody(
+            tags$tr(
+              tags$td(
+                tags$span(
+                  style = "font-size: 26px",
+                  paste(
+                    "A Murine Atlas of Age-related Changes in Intercellular",
+                    "Communication"
+                  )
+                )
+              ),
+              tags$td(
+                style = "text-align: left;",
+                tags$div(
+                  tags$img(
+                    src = "img/uol_logo_f.png"
+                  ),
+                  tags$img(
+                    src = "img/hfsp_logo_f.jpg"
+                  )
+                )
+              )
+            )
           )
         ),
         windowTitle = "scAgeCom"
@@ -40,20 +61,47 @@ app_ui <- function(request) {
           value = "INTRO_navbar"
         ),
         tabPanel(
-          title = "Tissue Specific Results",
+          title = "Tissue-specific Results",
           mod_tsa_ui("tsa_ui_1"),
           value = "TSA_navbar"
         ),
         tabPanel(
-          title = "Global Comparison",
+          title = "Cross-tissue Results",
           mod_tca_ui("tca_ui_1"),
           value = "TCA_navbar"
         ),
         tabPanel(
-          title = "Glossary",
+          title = "Help/Glossary",
           mod_glossary_ui("glossary_ui_1"),
           value = "HELP_navbar"
         )
+      ),
+      navbarPage(
+        # title = tags$a(
+        #   href = "aaa",
+        #   "Please cite: (article in preparation)",
+        #   style = "text-align: center;color:white;"
+        # ),
+        title = tags$div(
+          tags$a(
+            href = "aaa",
+            paste(
+              "Please note: this website will be made publicly available in July 2021.",
+              " ",
+              "Please contact: Cyril Lagger (cyril.lagger@liverpool.ac.uk)", 
+              "or Joao Pedro de Magalhaes (aging@liverpool.ac.uk)."
+            ),
+            style = "text-align: center;color:white;font-size: 14px;"
+          )#,
+          # tags$script(
+          #   HTML(
+          #     "var header = $('.navbar > .container-fluid');
+          # header.append('<div style=\"float:right\"><ahref=\"URL\"><img src=\"img/hfsp_logo.jpg\" alt=\"alt\" style=\"float:right;width:150px;height:48px;padding-top:2px;\"> </a>`</div>');
+          # console.log(header)")
+          # )
+        ),
+        position = "fixed-bottom",
+        id = "navbarBottom"
       )
     )
   )
@@ -69,7 +117,12 @@ app_ui <- function(request) {
 #' @noRd
 golem_add_external_resources <- function(){
   add_resource_path(
-    'www', app_sys('app/www')
+    'www',
+    app_sys('app/www')
+  )
+  addResourcePath(
+  'img',
+  app_sys('app/img')
   )
   tags$head(
     favicon(),
