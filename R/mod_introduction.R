@@ -171,7 +171,7 @@ mod_introduction_server <- function(id) {
           ),
           tags$img(
             src = "img/figure_workflow_f.png",
-            #width = "80%",
+            width = "100%",
             style = "display: block; margin-left: auto; margin-right: auto;"
           ),
           tags$h4("Find our scripts on GitHub"),
@@ -337,7 +337,7 @@ mod_introduction_server <- function(id) {
         tags$div(
           tags$img(
             src = "img/figure_dataset_f.png",
-            #width = "80%",
+            width = "100%",
             style = "display: block; margin-left: auto; margin-right: auto;"
           )
         )
