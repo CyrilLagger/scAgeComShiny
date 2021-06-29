@@ -32,7 +32,7 @@ app_ui <- function(request) {
                   style = "font-size: 26px",
                   paste(
                     "A Murine Atlas of Age-related Changes in Intercellular",
-                    "Communication"
+                    "Communication (Development version)"
                   )
                 )
               ),
