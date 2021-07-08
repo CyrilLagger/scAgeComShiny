@@ -72,11 +72,11 @@ mod_introduction_server <- function(id) {
                 bsplus::bs_append(
                   title = htmlOutput(ns("INTRO_LRI_TITLE")),
                   content = uiOutput(ns("INTRO_LRI_CONTENT"))
-                ),# %>%
-                #bsplus::bs_append(
-                  #title = htmlOutput(ns("INTRO_ABOUT_TITLE")),
-                  #content = htmlOutput(ns("INTRO_ABOUT_TEXT"))
-                #),
+                ) %>%
+                bsplus::bs_append(
+                  title = htmlOutput(ns("INTRO_ABOUT_TITLE")),
+                  content = htmlOutput(ns("INTRO_ABOUT_TEXT"))
+                ),
               style = "padding: 10px"
             )
           )
@@ -170,7 +170,7 @@ mod_introduction_server <- function(id) {
             )
           ),
           tags$img(
-            src = "img/figure_workflow_f.png",
+            src = "img/figure_workflow.png",
             width = "100%",
             style = "display: block; margin-left: auto; margin-right: auto;"
           ),
@@ -391,9 +391,9 @@ mod_introduction_server <- function(id) {
             "heteromeric complexes."
           ),
           tags$p(
-            "You will find below the mouse interactions for the scAgeCom analysis.",
-            "This table and its human equivalent can also be directly accessed",
-            "from the scDiffCom package."
+            "You will find below the mouse interactions used for the scAgeCom analysis.",
+            "This table and its human equivalent can also be accessed",
+            "from our package scDiffcom."
           )
         )
       })
@@ -528,22 +528,26 @@ mod_introduction_server <- function(id) {
         )
       })
       
-      # output$INTRO_ABOUT_TITLE <- renderUI({
-      #   tags$h3(
-      #     style = style_intro_accordion_title,
-      #     "About"
-      #   )
-      # })
-      
-      # output$INTRO_ABOUT_TEXT <- renderUI({
-      #   tags$div(
-      #     style = style_intro_accordion_text,
-      #     tags$p(
-      #       "Please contact ..."
-      #     )
-      #   )
-      # })
-      
+      output$INTRO_ABOUT_TITLE <- renderUI({
+        tags$h3(
+          style = style_intro_accordion_title,
+          "Contact"
+        )
+      })
+
+      output$INTRO_ABOUT_TEXT <- renderUI({
+        tags$div(
+          style = style_intro_accordion_text,
+          tags$p(
+            paste(
+              "For questions, issues or comments, please contact Cyril Lagger",
+              "(cyril.lagger@liverpool.ac.uk) or Joao Pedro de Magalhaes",
+              "(aging@liverpool.ac.uk)."
+            )
+          )
+        )
+      })
+
     })
 }
 
@@ -604,6 +608,8 @@ plot_upset_LRI <- function(
     as.data.frame(LRI_table),
     groups,
     name = "Database",
+    set_sizes = ComplexUpset::upset_set_size()
+    + ggplot2::ylab('Database size'),
     base_annotations = list(
       'Intersection size' = ComplexUpset::intersection_size(
         mapping = ggplot2::aes(fill = Type),
