@@ -110,15 +110,9 @@ mod_glossary_server <- function(id){
             "A communication signals between two cell types mediated by a",
             "ligand-receptor interaction. For example, (B cell, T cell, Apoe:Ldlr)",
             "is a CCI that corresponds to the emission of Apoe from B cells and that",
-            "will interact with Ldlr expressed by T cells"
+            "will interact with Ldlr expressed by T cells."
           )
-        ) %>%
-        bsplus::bs_append(
-          title = "TODO",
-          content = paste(
-            "TODO"
-          )
-        )
+        ) 
     })
     
     output$GLOSSARY_TITLE_DATA <- renderUI({
@@ -137,7 +131,7 @@ mod_glossary_server <- function(id){
         bsplus::bs_append(
           title = "TMS FACS",
           content = paste(
-            "Refers to Tabula Muris Senis scRNA-seq datasets obtained by",
+            "Refers to the Tabula Muris Senis scRNA-seq datasets obtained by",
             "cell sorting in microtiter well plates followed by Smart-seq2",
             "library preparation and full-length sequencing."
           )
@@ -145,7 +139,7 @@ mod_glossary_server <- function(id){
         bsplus::bs_append(
           title = "TMS Droplet / Calico Droplet",
           content = paste(
-            "Refers to Tabula Muris Senis and Calico scRNA-seq datasets",
+            "Refers to the Tabula Muris Senis and Calico scRNA-seq datasets",
             "obtained by cell capture by microfluidic droplets as per the",
             "10x Genomics protocol followed by 3' end counting."
           )
@@ -166,15 +160,11 @@ mod_glossary_server <- function(id){
         id = "HELP_DA"
       ) %>%
         bsplus::bs_append(
-          title = "Detected CCIs",
-          content = paste(
-            "TODO"
-          )
-        ) %>%
-        bsplus::bs_append(
           title = "UP/DOWN/FLAT/NSC CCIs",
           content = paste(
-            "TODO"
+            "Refers to how each cell-cell interaction (CCI) is regulated",
+            "with age. UP: increases with age. DOWN: decreases with age.",
+            "FLAT: stable with age. NCS: non-significant change with age."
           )
         )
     })
@@ -195,7 +185,7 @@ mod_glossary_server <- function(id){
         bsplus::bs_append(
           title = "ORA",
           content = paste(
-            ""
+            "Refers to Over-representation Analysis."
           )
         )  %>%
         bsplus::bs_append(
