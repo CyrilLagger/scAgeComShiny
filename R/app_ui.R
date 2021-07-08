@@ -32,7 +32,7 @@ app_ui <- function(request) {
                   style = "font-size: 26px",
                   paste(
                     "A Murine Atlas of Age-related Changes in Intercellular",
-                    "Communication (Development version)"
+                    "Communication"
                   )
                 )
               ),
@@ -86,10 +86,8 @@ app_ui <- function(request) {
           tags$a(
             href = "aaa",
             paste(
-              "Please note: this website will be made publicly available in July 2021.",
-              " ",
-              "Please contact: Cyril Lagger (cyril.lagger@liverpool.ac.uk)", 
-              "or Joao Pedro de Magalhaes (aging@liverpool.ac.uk)."
+              "Please consider citing our preprint: (in preparation, stay",
+              "tuned!) "
             ),
             style = "text-align: center;color:white;font-size: 14px;"
           )#,
