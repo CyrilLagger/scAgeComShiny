@@ -983,7 +983,7 @@ display_ORA_table <- function(
     # }
   } else {
     level_str <- NULL
-    filter <- "top"
+    filter <- "none"
     category_label <- paste0(category_choice, "s")
   }
   if(type_choice == "UP") {
