@@ -60,23 +60,31 @@ mod_introduction_server <- function(id) {
             column(
               width = 8,
               offset = 2,
-              bsplus::bs_accordion(id = "INTRO_METHOD_DETAIL") %>%
-                bsplus::bs_append(
-                  title = htmlOutput(ns("INTRO_CODE_TITLE")),
-                  content = htmlOutput(ns("INTRO_CODE_TEXT"))
+              {
+                intro_accordion <-  bsplus::bs_accordion(
+                  id = "INTRO_METHOD_DETAIL"
                 ) %>%
-                bsplus::bs_append(
-                  title = htmlOutput(ns("INTRO_SCRNA_TITLE")),
-                  content = htmlOutput(ns("INTRO_SCRNA_TEXT"))
-                ) %>%
-                bsplus::bs_append(
-                  title = htmlOutput(ns("INTRO_LRI_TITLE")),
-                  content = uiOutput(ns("INTRO_LRI_CONTENT"))
-                ) %>%
-                bsplus::bs_append(
-                  title = htmlOutput(ns("INTRO_ABOUT_TITLE")),
-                  content = htmlOutput(ns("INTRO_ABOUT_TEXT"))
-                ),
+                  bsplus::bs_append(
+                    title = htmlOutput(ns("INTRO_CODE_TITLE")),
+                    content = htmlOutput(ns("INTRO_CODE_TEXT"))
+                  ) %>%
+                  bsplus::bs_append(
+                    title = htmlOutput(ns("INTRO_SCRNA_TITLE")),
+                    content = htmlOutput(ns("INTRO_SCRNA_TEXT"))
+                  ) %>%
+                  bsplus::bs_append(
+                    title = htmlOutput(ns("INTRO_LRI_TITLE")),
+                    content = uiOutput(ns("INTRO_LRI_CONTENT"))
+                  ) %>%
+                  bsplus::bs_append(
+                    title = htmlOutput(ns("INTRO_ABOUT_TITLE")),
+                    content = htmlOutput(ns("INTRO_ABOUT_TEXT"))
+                  )
+                attrib_ <- intro_accordion$children[[1]]$children[[2]]$attribs
+                attrib_[which(attrib_ == "in")] <- NULL
+                intro_accordion$children[[1]]$children[[2]]$attribs <- attrib_
+                intro_accordion
+              },
               style = "padding: 10px"
             )
           )
@@ -534,7 +542,7 @@ mod_introduction_server <- function(id) {
           "Contact"
         )
       })
-
+      
       output$INTRO_ABOUT_TEXT <- renderUI({
         tags$div(
           style = style_intro_accordion_text,
@@ -547,7 +555,7 @@ mod_introduction_server <- function(id) {
           )
         )
       })
-
+      
     })
 }
 
