@@ -25,7 +25,13 @@ mod_glossary_ui <- function(id){
 #'
 #' @noRd 
 mod_glossary_server <- function(id){
-  moduleServer( id, function(input, output, session){
+  moduleServer(
+    id,
+    function(
+      input,
+      output,
+      session
+      ){
     ns <- session$ns
     
     output$GLOSSARY_PAGE <- renderUI({
@@ -91,7 +97,7 @@ mod_glossary_server <- function(id){
     })
     
     output$GLOSSARY_CONTENT_GT <- renderUI({
-      bsplus::bs_accordion(
+      acc <- bsplus::bs_accordion(
         id = "HELP_GT"
       ) %>%
         bsplus::bs_append(
@@ -107,12 +113,16 @@ mod_glossary_server <- function(id){
         bsplus::bs_append(
           title = "CCI: cell-cell interaction",
           content = paste(
-            "A communication signals between two cell types mediated by a",
+            "A communication signal between two cell types mediated by a",
             "ligand-receptor interaction. For example, (B cell, T cell, Apoe:Ldlr)",
             "is a CCI that corresponds to the emission of Apoe from B cells and that",
             "will interact with Ldlr expressed by T cells."
           )
         ) 
+      attrib_ <- acc$children[[1]]$children[[2]]$attribs
+      attrib_[which(attrib_ == "in")] <- NULL
+      acc$children[[1]]$children[[2]]$attribs <- attrib_
+      acc
     })
     
     output$GLOSSARY_TITLE_DATA <- renderUI({
@@ -125,7 +135,7 @@ mod_glossary_server <- function(id){
     })
     
     output$GLOSSARY_CONTENT_DATA <- renderUI({
-      bsplus::bs_accordion(
+      acc <- bsplus::bs_accordion(
         id = "HELP_DATA"
       ) %>%
         bsplus::bs_append(
@@ -144,6 +154,10 @@ mod_glossary_server <- function(id){
             "10x Genomics protocol followed by 3' end counting."
           )
         )
+      attrib_ <- acc$children[[1]]$children[[2]]$attribs
+      attrib_[which(attrib_ == "in")] <- NULL
+      acc$children[[1]]$children[[2]]$attribs <- attrib_
+      acc
     })
     
     output$GLOSSARY_TITLE_DA <- renderUI({
@@ -156,7 +170,7 @@ mod_glossary_server <- function(id){
     })
     
     output$GLOSSARY_CONTENT_DA <- renderUI({
-      bsplus::bs_accordion(
+      acc <- bsplus::bs_accordion(
         id = "HELP_DA"
       ) %>%
         bsplus::bs_append(
@@ -164,9 +178,14 @@ mod_glossary_server <- function(id){
           content = paste(
             "Refers to how each cell-cell interaction (CCI) is regulated",
             "with age. UP: increases with age. DOWN: decreases with age.",
-            "FLAT: stable with age. NCS: non-significant change with age."
+            "FLAT: stable with age. NSC: non-significant change with age.",
+            "Exact values of the thresholds used are given in our manuscript."
           )
         )
+      attrib_ <- acc$children[[1]]$children[[2]]$attribs
+      attrib_[which(attrib_ == "in")] <- NULL
+      acc$children[[1]]$children[[2]]$attribs <- attrib_
+      acc
     })
     
     output$GLOSSARY_TITLE_ORA <- renderUI({
@@ -179,33 +198,51 @@ mod_glossary_server <- function(id){
     })
     
     output$GLOSSARY_CONTENT_ORA <- renderUI({
-      bsplus::bs_accordion(
+     acc <- bsplus::bs_accordion(
         id = "HELP_ORA"
       ) %>%
         bsplus::bs_append(
-          title = "ORA",
-          content = paste(
-            "Refers to Over-representation Analysis."
-          )
+          title = "ORA: Over-representation analysis",
+          content = 
+            tags$div(
+              tags$p(
+                paste(
+                  "The method used to infer dominant changes among all detected CCIs.",
+                  "For example, to test if the ligand",
+                  "Apoe has the tendancy to be more associated with up-regulated",
+                  "CCIs in a tissue, we perform a Fisher's exact test on the 2x2",
+                  "contingency table made of",
+                  "1) number of up-regulated CCIs that contain Apoe, 2) number of",
+                  "up-regulated CCIs that do not contain Apoe, 3) number of not",
+                  "up-regulated CCIs that contain Apoe and 4) number of not",
+                  "up-regulated CCIs that do not contain Apoe."
+                )
+              ),
+              tags$p(
+                paste(
+                  "The process can the be repeated not only on all other",
+                  "ligands but on any keywords than can be attached to the CCIs.",
+                  "Here, we did it on LRIs, ligands, receptors, emitter cell types,",
+                  "receiver cell types, emitter-receiver cell-type pairs, GO",
+                  "terms and KEGG pathways (on UP, DOWN and FLAT CCIs)."
+                )
+              )
+            )
+            
         )  %>%
         bsplus::bs_append(
-          title = "Odds Ratio",
+          title = "Odds Ratios (OR), adj. p-values and ORA scores",
           content = paste(
-            ""
+            "The results of the Fisher's exact test described above.",
+            "In addition to the standard odd ratio and p-value, we also defined",
+            "an ORA score as log2(OR)*(-log10(adj. p-value)). This score",
+            "allows us to sort the results based on a single value."
           )
-        )  %>%
-        bsplus::bs_append(
-          title = "Adj. p-value",
-          content = paste(
-            ""
-          )
-        )  %>%
-        bsplus::bs_append(
-          title = "ORA score",
-          content = paste(
-            ""
-          )
-        )
+        ) 
+     attrib_ <- acc$children[[1]]$children[[2]]$attribs
+     attrib_[which(attrib_ == "in")] <- NULL
+     acc$children[[1]]$children[[2]]$attribs <- attrib_
+     acc
     })
     
   })
