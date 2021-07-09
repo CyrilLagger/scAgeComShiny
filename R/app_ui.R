@@ -83,19 +83,19 @@ app_ui <- function(request) {
         #   style = "text-align: center;color:white;"
         # ),
         title = tags$div(
-          tags$a(
-            href = "aaa",
+          tags$p(
             paste(
               "Please consider citing our preprint: (in preparation, stay",
               "tuned!) "
-            ),
-            style = "text-align: center;color:white;font-size: 14px;"
-          )#,
-          # tags$script(
-          #   HTML(
-          #     "var header = $('.navbar > .container-fluid');
-          # header.append('<div style=\"float:right\"><ahref=\"URL\"><img src=\"img/hfsp_logo.jpg\" alt=\"alt\" style=\"float:right;width:150px;height:48px;padding-top:2px;\"> </a>`</div>');
-          # console.log(header)")
+            )
+          )
+          # tags$a(
+          #   href = "aaa",
+          #   paste(
+          #     "Please consider citing our preprint: (in preparation, stay",
+          #     "tuned!) "
+          #   ),
+          #   style = "text-align: center;color:white;font-size: 14px;"
           # )
         ),
         position = "fixed-bottom",
