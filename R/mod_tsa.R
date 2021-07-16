@@ -13,31 +13,31 @@ mod_tsa_ui <- function(id){
     fluidPage(
       fluidRow(
         column(
-          width = 6,
+          width = 8,
           uiOutput(ns("TSA_TISSUE_CHOICE")),
-          offset = 3
+          offset = 2
         )
       ),
       fluidRow(
         column(
-          width = 6,
+          width = 8,
           align = "center",
           DT::dataTableOutput(ns("TSA_OVERVIEW_TABLE")),
-          offset = 3
+          offset = 2
         )
       ),
       fluidRow(
         column(
-          width = 6,
-          offset = 3,
+          width = 8,
+          offset = 2,
           htmlOutput(ns("TSA_OVERVIEW_NOTE"))
         )
       ),
       fluidRow(
         column(
-          width = 6,
+          width = 8,
           uiOutput(ns("TSA_DATASET_CHOICE")),
-          offset = 3
+          offset = 2
         )
       )
     ),
