@@ -103,7 +103,7 @@ mod_glossary_server <- function(id){
         bsplus::bs_append(
           title = "LRI: ligand-receptor interaction",
           content = paste(
-            "A LRI is formally defined as a pair of ligand gene(s)",
+            "A pair of ligand gene(s)",
             "and receptor gene(s) coding for a known protein-protein",
             "interaction. It can be simple, namely involving a single ligand",
             "gene and receptor gene (e.g. Apoe:Ldlr), or complex if",
@@ -174,12 +174,40 @@ mod_glossary_server <- function(id){
         id = "HELP_DA"
       ) %>%
         bsplus::bs_append(
-          title = "UP/DOWN/FLAT/NSC CCIs",
+          title = "Age-regulation: UP/DOWN/FLAT/NSC CCIs",
           content = paste(
             "Refers to how each cell-cell interaction (CCI) is regulated",
             "with age. UP: increases with age. DOWN: decreases with age.",
             "FLAT: stable with age. NSC: non-significant change with age.",
             "Exact values of the thresholds used are given in our manuscript."
+          )
+        ) %>%
+        bsplus::bs_append(
+          title = "Aging Volcano Plot",
+          content = paste(
+            "Displays each detected CCI according to their fold-change with",
+            "age and the significance of their change (adj. p-value)."
+          )
+        )  %>%
+        bsplus::bs_append(
+          title = "Score Plot",
+          content = paste(
+            "Displays each detected CCI according to their scores in Young",
+            "and OLD cells. In addition to the Volcano Plot, it allows to",
+            "distinguish lowly from higly expressed CCIs."
+          )
+        ) %>%
+        bsplus::bs_append(
+          title = "Ligand-FC vs Receptor-FC Plot",
+          content = paste(
+            "Displays each detected CCI according to the fold-change with",
+            "age of their ligand gene and receptor gene. As explained in our",
+            "manuscript, our differential analysis combines the ligand and",
+            "receptor expression in a single score that is then used for",
+            "comparison between the two conditions. This plot allows us to",
+            "recover the change in expression of the ligand and of the receptor",
+            "individually. This might be useful to see if the variation of a",
+            "given CCI is driven more by the ligand or the receptor."
           )
         )
       attrib_ <- acc$children[[1]]$children[[2]]$attribs
@@ -238,7 +266,34 @@ mod_glossary_server <- function(id){
             "an ORA score as log2(OR)*(-log10(adj. p-value)). This score",
             "allows us to sort the results based on a single value."
           )
-        ) 
+        )  %>%
+       bsplus::bs_append(
+         title = "Cell-type centric over-representation Network",
+         content = tags$div(
+           tags$p(
+             paste(
+               "This bipartite graph displays emitter cell types on the left (E)",
+               "and receiver cell types on the right (R). A node is colored",
+               "if the corresponding cell type is over-represented (either as UP,",
+               "DOWN, FLAT or UP/DOWN-regulated with age), as explained above."
+             )
+           ),
+           tags$p(
+             paste(
+               "In addition to the nodes, colored edges are displayed if the",
+               "corresponding emitter-receiver cell-type pair is also",
+               "over-represented."
+             )
+           )
+         )
+       ) %>%
+       bsplus::bs_append(
+         title = "GO Terms Treemap",
+         content = paste(
+           "A treemap obtained by merging over-represented GO terms based",
+           "on semantic similarity."
+         )
+       )
      attrib_ <- acc$children[[1]]$children[[2]]$attribs
      attrib_[which(attrib_ == "in")] <- NULL
      acc$children[[1]]$children[[2]]$attribs <- attrib_
