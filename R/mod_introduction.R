@@ -179,8 +179,7 @@ mod_introduction_server <- function(id) {
           ),
           tags$img(
             src = "img/figure_workflow.png",
-            width = "100%",
-            style = "display: block; margin-left: auto; margin-right: auto;"
+            style = "display: block; margin-left: auto; margin-right: auto; width: 100%; max-width: 630px;"
           ),
           tags$h4("Find our scripts on GitHub"),
           tags$ul(
@@ -266,16 +265,6 @@ mod_introduction_server <- function(id) {
               )
             )
           ),
-          # fluidRow(
-          #   column(
-          #     width = 6,
-          #     htmlOutput(ns("INTRO_SCRNA_HTML_TMS"))
-          #   ),
-          #   column(
-          #     width = 6,
-          #     htmlOutput(ns("INTRO_SCRNA_HTML_CALICO"))
-          #   )
-          # ),
           fluidRow(
             column(
               width = 12,
@@ -285,68 +274,11 @@ mod_introduction_server <- function(id) {
         )
       })
       
-      # output$INTRO_SCRNA_HTML_TMS <- renderUI({
-      #   tags$div(
-      #     style = style_intro_accordion_text,
-      #     tags$ul(
-      #       tags$li(
-      #         "Tabula Muris Senis (TMS):",
-      #         tags$ul(
-      #           tags$li(
-      #             tags$a(
-      #               href = "https://tabula-muris-senis.ds.czbiohub.org/",
-      #               "webpage",
-      #               target = "_blank"
-      #             )
-      #           ),
-      #           tags$li(
-      #             tags$a(
-      #               href = "https://www.nature.com/articles/s41586-020-2496-1",
-      #               "Nature article",
-      #               target = "_blank",
-      #               .noWS = "outside"
-      #             )
-      #           )
-      #         )
-      #       )
-      #     )
-      #   )
-      # })
-      # 
-      # output$INTRO_SCRNA_HTML_CALICO <- renderUI({
-      #   tags$div(
-      #     style = style_intro_accordion_text,
-      #     tags$ul(
-      #       tags$li(
-      #         "Calico Murine aging cell atlas:",
-      #         tags$ul(
-      #           tags$li(
-      #             tags$a(
-      #               href = "https://mca.research.calicolabs.com/",
-      #               "webpage",
-      #               target = "_blank"
-      #             )
-      #           ),
-      #           tags$li(
-      #             tags$a(
-      #               href = "https://genome.cshlp.org/content/29/12/2088",
-      #               "Genome Research article",
-      #               target = "_blank",
-      #               .noWS = "outside"
-      #             )
-      #           )
-      #         )
-      #       )
-      #     )
-      #   )
-      # })
-      
       output$INTRO_SCRNA_HTML_FIG <- renderUI({
         tags$div(
           tags$img(
-            src = "img/figure_dataset_f.png",
-            width = "100%",
-            style = "display: block; margin-left: auto; margin-right: auto;"
+            src = "img/figure_dataset.png",
+            style = "display: block; margin-left: auto; margin-right: auto; width: 100%; max-width: 630px;"
           )
         )
       })
@@ -378,12 +310,8 @@ mod_introduction_server <- function(id) {
           ),
           fluidRow(
             column(
-              width = 10,
-              offset = 1,
-              plotOutput(
-                ns("INTRO_LRI_UPSET_PLOT"),
-                height = "500px"
-              )
+              width = 12,
+              htmlOutput(ns("INTRO_LRI_UPSET_PLOT"))
             )
           )
         )
@@ -528,14 +456,15 @@ mod_introduction_server <- function(id) {
         )
       })
       
-      output$INTRO_LRI_UPSET_PLOT <- renderPlot({
-        plot_upset_LRI(
-          LRI_table = scAgeComShiny::scAgeCom_data$LRI_mouse_curated,
-          groups = colnames(scAgeComShiny::scAgeCom_data$LRI_mouse_curated)[9:15],
-          min_size = 40
+      output$INTRO_LRI_UPSET_PLOT <- renderUI({
+        tags$div(
+          tags$img(
+            src = "img/upset_LRI_mouse_shiny.png",
+            style = "display: block; margin-left: auto; margin-right: auto; width: 100%; max-width: 800px;"
+          )
         )
       })
-      
+
       output$INTRO_ABOUT_TITLE <- renderUI({
         tags$h3(
           style = style_intro_accordion_title,
@@ -605,36 +534,3 @@ display_LRI_table <- function(
     )
   )
 }
-
-plot_upset_LRI <- function(
-  LRI_table,
-  groups,
-  min_size
-) {
-  Type <- NULL
-  p <- ComplexUpset::upset(
-    as.data.frame(LRI_table),
-    groups,
-    name = "Database",
-    set_sizes = ComplexUpset::upset_set_size()
-    + ggplot2::ylab('Database size'),
-    base_annotations = list(
-      'Intersection size' = ComplexUpset::intersection_size(
-        mapping = ggplot2::aes(fill = Type),
-        counts = TRUE,
-        bar_number_threshold = 100
-      ) + ggplot2::scale_fill_manual(
-        values = c("purple", "coral")
-      )
-    ),
-    themes = ComplexUpset::upset_default_themes(
-      text = ggplot2::element_text(size = 16)
-    ),
-    min_size = min_size
-  ) + ggplot2::ggtitle(
-    "Number of curated mouse ligand-receptor interactions"
-  ) 
-  return(p)
-}
-
-
