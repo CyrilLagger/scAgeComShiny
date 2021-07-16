@@ -40,10 +40,12 @@ app_ui <- function(request) {
                 style = "text-align: left;",
                 tags$div(
                   tags$img(
-                    src = "img/uol_logo_f.png"
+                    src = "img/uol_logo.png",
+                    style = "width: 200px;"
                   ),
                   tags$img(
-                    src = "img/hfsp_logo_f.jpg"
+                    src = "img/hfsp_logo.jpg",
+                    style = "width: 200px;"
                   )
                 )
               )
@@ -75,32 +77,27 @@ app_ui <- function(request) {
           mod_glossary_ui("glossary_ui_1"),
           value = "HELP_navbar"
         )
-      ),
-      navbarPage(
-        # title = tags$a(
-        #   href = "aaa",
-        #   "Please cite: (article in preparation)",
-        #   style = "text-align: center;color:white;"
-        # ),
-        title = tags$div(
-          tags$p(
-            paste(
-              "Please consider citing our preprint: (in preparation, stay",
-              "tuned!) "
-            )
-          )
-          # tags$a(
-          #   href = "aaa",
-          #   paste(
-          #     "Please consider citing our preprint: (in preparation, stay",
-          #     "tuned!) "
-          #   ),
-          #   style = "text-align: center;color:white;font-size: 14px;"
-          # )
-        ),
-        position = "fixed-bottom",
-        id = "navbarBottom"
-      )
+      )#,
+      # navbarPage(
+      #   title = tags$div(
+      #     tags$p(
+      #       paste(
+      #         "Please consider citing our preprint: (in preparation, stay",
+      #         "tuned!) "
+      #       )
+      #     )
+      #     # tags$a(
+      #     #   href = "aaa",
+      #     #   paste(
+      #     #     "Please consider citing our preprint: (in preparation, stay",
+      #     #     "tuned!) "
+      #     #   ),
+      #     #   style = "text-align: center;color:white;font-size: 14px;"
+      #     # )
+      #   ),
+      #   position = "fixed-bottom",
+      #   id = "navbarBottom"
+      # )
     )
   )
 }
