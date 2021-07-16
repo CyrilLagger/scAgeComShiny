@@ -15,7 +15,6 @@ License: MIT + file LICENSE
 Imports: 
     attempt,
     bsplus,
-    ComplexUpset,
     config (>= 0.3.1),
     data.table,
     DT,
