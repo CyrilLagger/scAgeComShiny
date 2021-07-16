@@ -197,31 +197,33 @@ mod_tsa_cci_server <- function(
         #print("hello9b")
         fluidPage(
           fluidRow(
-          column(
-            style = "padding: 10px;margin-bottom:50px;",
-            width = 6,
-            plotly::plotlyOutput(
-              outputId = ns("TSA_PLOTLY_VOLCANO"),
-              height = "520px"
+            column(
+              style = "padding: 10px;margin-bottom:50px;",
+              width = 5,
+              offset = 1,
+              plotly::plotlyOutput(
+                outputId = ns("TSA_PLOTLY_VOLCANO"),
+                height = "460px"
+              )
+            ),
+            column(
+              style = "padding: 10px;margin-bottom:50px;",
+              width = 5,
+              offset = 1,
+              plotly::plotlyOutput(
+                outputId = ns("TSA_PLOTLY_SCORE"),
+                height = "460px"
+              )
             )
-          ),
-          column(
-            style = "padding: 10px;margin-bottom:50px;",
-            width = 6,
-            plotly::plotlyOutput(
-              outputId = ns("TSA_PLOTLY_SCORE"),
-              height = "520px"
-            )
-          )
           ),
           fluidRow(
             column(
               style = "padding: 10px;",
-              width = 6,
+              width = 5,
               offset = 3,
               plotly::plotlyOutput(
                 outputId = ns("TSA_PLOTLY_LRFC"),
-                height = "520px"
+                height = "460px"
               )
             )
           ),
@@ -650,9 +652,9 @@ display_CCI_table <- function(
     rownames = rownames,
     extensions = c("Buttons")
   ) %>% DT::formatStyle(
-      colnames(dt[, -c(9, 10)])[4:8],
-      `text-align` = 'center'
-    )
+    colnames(dt[, -c(9, 10)])[4:8],
+    `text-align` = 'center'
+  )
 }
 
 plot_volcano_CCI <- function(
