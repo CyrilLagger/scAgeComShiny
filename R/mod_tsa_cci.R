@@ -201,18 +201,26 @@ mod_tsa_cci_server <- function(
               style = "padding: 10px;margin-bottom:50px;",
               width = 5,
               offset = 1,
-              plotly::plotlyOutput(
-                outputId = ns("TSA_PLOTLY_VOLCANO"),
-                height = "460px"
+              shinycssloaders::withSpinner(
+                plotly::plotlyOutput(
+                  outputId = ns("TSA_PLOTLY_VOLCANO"),
+                  height = "460px"
+                ),
+                type=3,
+                color.background="white"
               )
             ),
             column(
               style = "padding: 10px;margin-bottom:50px;",
               width = 5,
               offset = 1,
-              plotly::plotlyOutput(
-                outputId = ns("TSA_PLOTLY_SCORE"),
-                height = "460px"
+              shinycssloaders::withSpinner(
+                plotly::plotlyOutput(
+                  outputId = ns("TSA_PLOTLY_SCORE"),
+                  height = "460px"
+                ),
+                type=3,
+                color.background="white"
               )
             )
           ),
@@ -221,9 +229,13 @@ mod_tsa_cci_server <- function(
               style = "padding: 10px;",
               width = 5,
               offset = 3,
-              plotly::plotlyOutput(
-                outputId = ns("TSA_PLOTLY_LRFC"),
-                height = "460px"
+              shinycssloaders::withSpinner(
+                plotly::plotlyOutput(
+                  outputId = ns("TSA_PLOTLY_LRFC"),
+                  height = "460px"
+                ),
+                type=3,
+                color.background="white"
               )
             )
           ),
