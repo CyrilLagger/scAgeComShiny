@@ -41,11 +41,11 @@ app_ui <- function(request) {
                 tags$div(
                   tags$img(
                     src = "img/uol_logo.png",
-                    style = "width: 200px;"
+                    style = "max-width: 100%; width: 200px; height: auto;"
                   ),
                   tags$img(
                     src = "img/hfsp_logo.jpg",
-                    style = "width: 200px;"
+                    style = "max-width: 100%; width: 200px; height: auto;"
                   )
                 )
               )
@@ -77,27 +77,38 @@ app_ui <- function(request) {
           mod_glossary_ui("glossary_ui_1"),
           value = "HELP_navbar"
         )
-      )#,
-      # navbarPage(
-      #   title = tags$div(
-      #     tags$p(
-      #       paste(
-      #         "Please consider citing our preprint: (in preparation, stay",
-      #         "tuned!) "
-      #       )
-      #     )
-      #     # tags$a(
-      #     #   href = "aaa",
-      #     #   paste(
-      #     #     "Please consider citing our preprint: (in preparation, stay",
-      #     #     "tuned!) "
-      #     #   ),
-      #     #   style = "text-align: center;color:white;font-size: 14px;"
-      #     # )
-      #   ),
-      #   position = "fixed-bottom",
-      #   id = "navbarBottom"
-      # )
+      ),
+      navbarPage(
+        title = tags$div(
+          tags$p(
+            paste(
+              "Please consider citing:"
+            ),
+            tags$em(
+              paste(
+                "scAgeCom: a murine atlas of age-related changes in",
+                "intercellular communication inferred with the package",
+                "scDiffCom."
+              )
+            ),
+            paste(
+              "Cyril Lagger, Eugen Ursu, Anais Equey, Roberto A Avelar,",
+              "Angela O Pisco, Robi Tacutu, Joao Pedro de Magalhaes."
+            ),
+            style = "text-align: center;color:white;font-size: 12px;"
+          )
+          # tags$a(
+          #   href = "aaa",
+          #   paste(
+          #     "Please consider citing our preprint: (in preparation, stay",
+          #     "tuned!) "
+          #   ),
+          #   style = "text-align: center;color:white;font-size: 14px;"
+          # )
+        ),
+        position = "fixed-bottom",
+        id = "navbarBottom"
+      )
     )
   )
 }
