@@ -32,6 +32,7 @@ Imports:
     RColorBrewer,
     scDiffCom,
     shiny (>= 1.6.0),
+    shinycssloaders,
     shinythemes,
     shinyWidgets,
     stats,
