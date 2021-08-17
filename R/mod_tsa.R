@@ -14,7 +14,11 @@ mod_tsa_ui <- function(id){
       fluidRow(
         column(
           width = 8,
-          uiOutput(ns("TSA_TISSUE_CHOICE")),
+          shinycssloaders::withSpinner(
+            uiOutput(ns("TSA_TISSUE_CHOICE")),
+            type=3,
+            color.background="white"
+          ),
           offset = 2
         )
       ),

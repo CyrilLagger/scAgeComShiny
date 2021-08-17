@@ -143,9 +143,13 @@ mod_tsa_ora_server <- function(
                 width = 9,
                 offset = 1,
                 style = "margin-bottom: 50px;",
-                visNetwork::visNetworkOutput(
-                  ns("TSA_ORA_NETWORK_PLOT"),
-                  height = "700px"
+                shinycssloaders::withSpinner(
+                  visNetwork::visNetworkOutput(
+                    ns("TSA_ORA_NETWORK_PLOT"),
+                    height = "700px"
+                  ),
+                  type=3,
+                  color.background="white"
                 )
               )
             ),
