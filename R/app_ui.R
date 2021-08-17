@@ -80,31 +80,27 @@ app_ui <- function(request) {
       ),
       navbarPage(
         title = tags$div(
-          tags$p(
-            paste(
-              "Please consider citing:"
-            ),
-            tags$em(
+          tags$a(
+            href = "https://www.biorxiv.org/content/10.1101/2021.08.13.456238v1",
+            tags$p(
               paste(
-                "scAgeCom: a murine atlas of age-related changes in",
-                "intercellular communication inferred with the package",
-                "scDiffCom."
-              )
+                "Please consider citing:"
+              ),
+              tags$em(
+                paste(
+                  "scAgeCom: a murine atlas of age-related changes in",
+                  "intercellular communication inferred with the package",
+                  "scDiffCom."
+                )
+              ),
+              paste(
+                "Cyril Lagger, Eugen Ursu, Anais Equey, Roberto A Avelar,",
+                "Angela O Pisco, Robi Tacutu, Joao Pedro de Magalhaes."
+              ),
+              style = "text-align: center;color:white;font-size: 12px;"
             ),
-            paste(
-              "Cyril Lagger, Eugen Ursu, Anais Equey, Roberto A Avelar,",
-              "Angela O Pisco, Robi Tacutu, Joao Pedro de Magalhaes."
-            ),
-            style = "text-align: center;color:white;font-size: 12px;"
+            target = "_blank"
           )
-          # tags$a(
-          #   href = "aaa",
-          #   paste(
-          #     "Please consider citing our preprint: (in preparation, stay",
-          #     "tuned!) "
-          #   ),
-          #   style = "text-align: center;color:white;font-size: 14px;"
-          # )
         ),
         position = "fixed-bottom",
         id = "navbarBottom"
