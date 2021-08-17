@@ -15,6 +15,7 @@ run_app <- function(
   uiPattern = "/",
   ...
 ) {
+  options(DT.TOJSON_ARGS = list(na = "string"))
   with_golem_options(
     app = shinyApp(
       ui = app_ui,
