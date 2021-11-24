@@ -6,27 +6,32 @@
 <!-- badges: start -->
 
 [![Lifecycle:
-experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
+stable](https://img.shields.io/badge/lifecycle-stable-brightgreen.svg)](https://lifecycle.r-lib.org/articles/stages.html#stable)
 <!-- badges: end -->
 
-The goal of scAgeComShiny is to provide a Shiny App to explore how
-intercellular communication changes with age in 23 mouse tissues.
+scAgeComShiny provides a shiny app to explore how intercellular
+communication changes with age in 23 mouse tissues.
 
-The online version of this App can be accessed here (in preparation).
+An online version of this app can be accessed here:
+[scagecom.org](https://scagecom.org/).
+
+A docker image of the app is available
+[here](https://hub.docker.com/r/ursueugen/scagecom).
 
 ## Installation
 
-You can also install a local version of scAgeComShiny with:
+You can also install a local version of scAgeComShiny as follows:
 
 ``` r
 if(!require(devtools)) install.packages("devtools")
 devtools::install_github("CyrilLagger/scAgeComShiny")
 ```
 
-Note that the dataset required to build the App is not included in this
-repository (link in preparation).
+Note that to launch the app, you will need to download the associated
+data available on
+[figshare](http://doi.org/10.6084/m9.figshare.17075375).
 
 ## Reference
 
-This Shiny App has been built with
+This shiny app has been built with
 [golem](https://golemverse.org/packages_list/golem/).
