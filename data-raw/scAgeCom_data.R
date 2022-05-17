@@ -4,7 +4,7 @@
 # here we retrieve them locally
 
 scAgeCom_data <- readRDS(
-  "../data_scAgeCom/analysis/outputs_data/scAgeCom_shiny_data.rds"
+  "../data_scAgeCom/output/scAgeComShiny_data.rds"
 )
 
 usethis::use_data(scAgeCom_data, overwrite = TRUE, compress = "xz")
