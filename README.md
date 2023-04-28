@@ -33,5 +33,4 @@ data available on
 
 ## Reference
 
-This shiny app has been built with
-[golem](https://golemverse.org/packages_list/golem/).
+This shiny app has been built with [golem](https://golemverse.org/).
