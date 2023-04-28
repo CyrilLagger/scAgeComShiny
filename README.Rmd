@@ -42,4 +42,4 @@ available on [figshare](http://doi.org/10.6084/m9.figshare.17075375).
 ## Reference
 
 This shiny app has been built with
-[golem](https://golemverse.org/packages_list/golem/).
+[golem](https://golemverse.org/).
