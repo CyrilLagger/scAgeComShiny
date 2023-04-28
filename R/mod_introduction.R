@@ -478,7 +478,7 @@ mod_introduction_server <- function(id) {
           tags$p(
             paste(
               "For questions, issues or comments, please contact Cyril Lagger",
-              "(cyril.lagger@liverpool.ac.uk) or Joao Pedro de Magalhaes",
+              "(lagger.cyril@gmail.com) or Joao Pedro de Magalhaes",
               "(aging@liverpool.ac.uk)."
             )
           )
