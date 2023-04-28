@@ -675,7 +675,7 @@ plot_KEYWORD_summary <- function(
         "Not Detected" = "gray",
         "UP" = "red",
         "DOWN" = "blue",
-        "FLAT" = "green",
+        "FLAT" = "black",
         "UP:DOWN" = "yellow"
       )
     ) +

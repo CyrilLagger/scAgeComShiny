@@ -725,7 +725,7 @@ plot_volcano_CCI <- function(
     ),
     color = ~`Age Regulation`,
     colors = stats::setNames(
-      c("red", "blue", "green", "gray"),
+      c("red", "blue", "black", "gray"),
       c("UP", "DOWN", "FLAT", "NSC")
     )
   ) %>% plotly::layout(
@@ -805,7 +805,7 @@ plot_scores_CCI <- function(
     ),
     color = ~`Age Regulation`,
     colors = stats::setNames(
-      c("red", "blue", "green", "gray"),
+      c("red", "blue", "black", "gray"),
       c("UP", "DOWN", "FLAT", "NSC")
     )
   ) %>% plotly::layout(
@@ -871,7 +871,7 @@ plot_lrfc_CCI <- function(
     ),
     color = ~`Age Regulation`,
     colors = stats::setNames(
-      c("red", "blue", "green", "gray"),
+      c("red", "blue", "black", "gray"),
       c("UP", "DOWN", "FLAT", "NSC")
     )
   )  %>% plotly::layout(
