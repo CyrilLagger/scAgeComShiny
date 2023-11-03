@@ -81,16 +81,16 @@ app_ui <- function(request) {
       navbarPage(
         title = tags$div(
           tags$a(
-            href = "https://www.biorxiv.org/content/10.1101/2021.08.13.456238v1",
+            href = "https://www.nature.com/articles/s43587-023-00514-x",
             tags$p(
               paste(
                 "Please consider citing:"
               ),
               tags$em(
                 paste(
-                  "scAgeCom: a murine atlas of age-related changes in",
-                  "intercellular communication inferred with the package",
-                  "scDiffCom."
+                  "scDiffCom: a tool for differential analysis of cell-cell",
+                  "interactions provides a mouse atlas of aging changes in",
+                  "intercellular communication."
                 )
               ),
               paste(
