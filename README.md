@@ -20,16 +20,26 @@ A docker image of the app is available
 
 ## Installation
 
-You can also install a local version of scAgeComShiny as follows:
+You can run a local version of the website locally as follows.
+
+- Git clone this repo locally
+- Launch R and install the package
 
 ``` r
 if(!require(devtools)) install.packages("devtools")
 devtools::install_github("CyrilLagger/scAgeComShiny")
 ```
 
-Note that to launch the app, you will need to download the associated
-data available on
-[figshare](http://doi.org/10.6084/m9.figshare.17075375).
+- Download the associated data available at
+  [figshare](http://doi.org/10.6084/m9.figshare.17075375) and save the
+  file scAgeCom_data.rda under scAgeComShiny/data/
+- Run
+
+``` r
+pkgload::load_all(export_all = FALSE, helpers = FALSE, attach_testthat = FALSE)
+options("golem.app.prod" = TRUE)
+scAgeComShiny::run_app()
+```
 
 ## Reference
 
